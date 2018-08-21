@@ -1,0 +1,128 @@
+body {
+    background-color: rgb(80,80,80);
+}
+
+h1{
+    padding:1%;
+    color:rgb(220,220,220);
+    background-color: rgb(90,90,90);
+    font-size:150%;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+}
+
+#dTitleText{
+    padding:1%
+}
+
+.column {
+    text-align: center;
+    flex: 50%;
+    color:rgb(220,220,220);
+    border:rgb(220,220,220) solid;
+    padding:1%;
+}
+
+.cardHeader {
+    float: right;
+    color:rgb(220,220,220);
+    background-color: rgb(90,90,90);
+    font-size:150%;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+/*Clear floats after the folumns */
+.row{
+    display: flex;
+}
+
+div.c3{
+    column-count: 3;
+}
+
+.randomizer{
+    text-align: center;
+}
+.navBar{
+    list-style-type: none;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333333;
+    position: relative;
+    right: 0;
+    top: 0;
+}
+.navBar li{
+    float: left;
+}
+li{
+    list-style-type: none;
+}
+
+.navBar li a  {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: black;
+}
+
+.basicContent{
+    text-align: center;
+    color:rgb(220,220,220);
+}
+footer {
+    text-align: center;
+    background-color: rgb(80,80,80);
+    color:rgb(220,220,220);
+    padding: 1%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+span{
+    display:inline;
+    padding: 0.5%;
+}
+section{
+    background-color: rgb(80,80,80);
+    color:rgb(220,220,220);
+}
+a{
+    color: rgb(147, 171, 202);
+    -webkit-transition-duration: 0.7s;
+    transition-duration: 0.7s;
+}
+a:hover{
+    color: rgb(255, 255, 255)
+}
+
+button{
+    color:rgb(220,220,220);
+    background-color: rgb(100, 100, 100, 0.3);
+    filter: alpha(opacity=30);
+    padding: 1%;
+    border:rgb(220,220,220) solid;
+    border-radius: 5%;
+    -webkit-transition-duration: 0.7s;
+    transition-duration: 0.7s;
+}
+button:hover{
+    background-color: white;
+    color:black;
+}
+#randomizer{
+     display: block;
+     margin: 0 auto;
+     align-items: center;
+     justify-content: center;
+}
+
+.card{
+    float: left;
+}
