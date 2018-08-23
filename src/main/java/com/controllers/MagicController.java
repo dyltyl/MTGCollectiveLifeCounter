@@ -33,7 +33,8 @@ public class MagicController {
         basicDataSource.setPassword(password);
 
         Statement stmt = basicDataSource.getConnection().createStatement();
+        stmt.executeQuery("Select * from games");
 
-        return new ResponseEntity<>(stmt.executeQuery("Select * from games"), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>("Good job", new HttpHeaders(), HttpStatus.OK);
     }
 }
