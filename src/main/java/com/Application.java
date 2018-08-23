@@ -1,18 +1,22 @@
 package com;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.sql.ResultSet;
+
 @SpringBootApplication
 public class Application {
+    private static BasicDataSource dataSource;
     public static void main(String[] args) {
+        initializeDatabase();
         SpringApplication.run(Application.class, args);
-        System.out.println("\n\n\n-------");
+        System.out.println("\n\n\n");
     }
     @Bean
     public CorsFilter corsFilter() {
@@ -27,4 +31,28 @@ public class Application {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+    private static void initializeDatabase() {
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        String username = System.getenv("JDBC_DATABASE_USERNAME");
+        String password = System.getenv("JDBC_DATABASE_PASSWORD");
+
+        dataSource = new BasicDataSource();
+        dataSource.setUrl(dbUrl);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+    }
+    public static BasicDataSource getDataSource() {
+        return dataSource;
+    }
+    public static ResultSet query(String query) {
+        System.out.println(query);
+        try {
+            return dataSource.getConnection().createStatement().executeQuery(query);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
