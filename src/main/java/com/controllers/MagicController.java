@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @CrossOrigin(origins = "*")
@@ -19,7 +22,7 @@ public class MagicController {
         return new ResponseEntity<>("Server is online", new HttpHeaders(), HttpStatus.OK);
     }
     @RequestMapping(value={"/connect"}, method = GET)
-    public ResponseEntity<?> connect() {
+    public ResponseEntity<?> connect() throws SQLException {
         String dbUrl = System.getenv("JDBC_DATABASE_URL");
         String username = System.getenv("JDBC_DATABASE_USERNAME");
         String password = System.getenv("JDBC_DATABASE_PASSWORD");
@@ -29,6 +32,8 @@ public class MagicController {
         basicDataSource.setUsername(username);
         basicDataSource.setPassword(password);
 
-        return new ResponseEntity<>(dbUrl, new HttpHeaders(), HttpStatus.OK);
+        Statement stmt = basicDataSource.getConnection().createStatement();
+
+        return new ResponseEntity<>(stmt.executeQuery("Select * from games"), new HttpHeaders(), HttpStatus.OK);
     }
 }
