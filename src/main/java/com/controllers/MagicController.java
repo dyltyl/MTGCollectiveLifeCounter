@@ -29,7 +29,7 @@ public class MagicController {
     @RequestMapping(value={"/createGame"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         StringBuilder builder = new StringBuilder();
-        builder.append("INSERT INTO game (\"gameId\", \"gamePassword\") VALUES (\"");
+        builder.append("INSERT INTO games (\"gameId\", \"gamePassword\") VALUES (\"");
         builder.append(game.getGameId());
         builder.append("\", \"");
         builder.append(game.getGamePassword());
