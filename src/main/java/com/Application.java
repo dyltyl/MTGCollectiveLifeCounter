@@ -11,7 +11,6 @@ import org.springframework.web.filter.CorsFilter;
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Application.class.getPackage().getName());
         SpringApplication.run(Application.class, args);
     }
     @Bean
