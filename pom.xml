@@ -29,9 +29,9 @@
         <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.twitter4j</groupId>
-        <artifactId>twitter4j-core</artifactId>
-        <version>4.0.6</version>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-dbcp2</artifactId>
+        <version>2.5.0</version>
     </dependency>
 </dependencies>
 
