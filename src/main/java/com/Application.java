@@ -54,5 +54,14 @@ public class Application {
         }
         return null;
     }
+    public static void queryNoResults(String query) {
+        System.out.println(query);
+        try {
+            dataSource.getConnection().createStatement().execute(query);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

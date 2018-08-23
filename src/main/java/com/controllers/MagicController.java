@@ -34,10 +34,7 @@ public class MagicController {
         builder.append("', '");
         builder.append(game.getGamePassword());
         builder.append("');");
-        ResultSet result = Application.query(builder.toString());
-        if(result == null) {
-            return new ResponseEntity<>("Sorry, something went wrong", HttpStatus.BAD_REQUEST);
-        }
+        Application.queryNoResults(builder.toString());
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
 }
