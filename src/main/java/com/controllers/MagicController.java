@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -33,7 +34,8 @@ public class MagicController {
         basicDataSource.setPassword(password);
 
         Statement stmt = basicDataSource.getConnection().createStatement();
-        stmt.executeQuery("Select * from games");
+        ResultSet result = stmt.executeQuery("Select * from games");
+        System.out.println(result.getSQLXML(0));
 
         return new ResponseEntity<>("Good job", new HttpHeaders(), HttpStatus.OK);
     }
