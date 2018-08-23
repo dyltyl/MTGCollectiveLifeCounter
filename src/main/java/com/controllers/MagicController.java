@@ -29,11 +29,11 @@ public class MagicController {
     @RequestMapping(value={"/createGame"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         StringBuilder builder = new StringBuilder();
-        builder.append("INSERT INTO games (\"gameId\", \"gamePassword\") VALUES (\"");
+        builder.append("INSERT INTO games (\"gameId\", \"gamePassword\") VALUES ('");
         builder.append(game.getGameId());
-        builder.append("\", \"");
+        builder.append("', '");
         builder.append(game.getGamePassword());
-        builder.append("\");");
+        builder.append("');");
         ResultSet result = Application.query(builder.toString());
         if(result == null) {
             return new ResponseEntity<>("Sorry, something went wrong", HttpStatus.BAD_REQUEST);
