@@ -34,9 +34,9 @@ public class MagicController {
         basicDataSource.setPassword(password);
 
         Statement stmt = basicDataSource.getConnection().createStatement();
-        ResultSet result = stmt.executeQuery("Select * from games");
+        ResultSet result = stmt.executeQuery("Select * from games;");
         result.next();
-        System.out.println(result.getSQLXML(0));
+        System.out.println(result.getSQLXML(1));
 
         return new ResponseEntity<>("Good job", new HttpHeaders(), HttpStatus.OK);
     }
