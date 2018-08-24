@@ -30,8 +30,7 @@ public class MagicController {
     }
     @RequestMapping(value={"/createGame"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("INSERT INTO games (\"gameId\", \"gamePassword\") VALUES ('");
+        StringBuilder builder = new StringBuilder("INSERT INTO games (\"gameId\", \"gamePassword\") VALUES ('");
         builder.append(game.getGameId());
         builder.append("', '");
         builder.append(game.getGamePassword());
@@ -40,10 +39,30 @@ public class MagicController {
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
     @RequestMapping(value={"/joinGame"}, method = POST)
-    public ResponseEntity<?> joinGame(HttpServletRequest request, @RequestBody Player player) {
-        System.out.println(player);
-        System.out.println(request);
+    public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody Player player) {
+        StringBuilder builder = new StringBuilder("INSERT INTO players (\"name\", \"life\", \"poison\", \"experience\", \"game\", \"commanders\") VALUES('");
+        builder.append(player.getName());
+        builder.append("', '");
+        builder.append(player.getLife());
+        builder.append("', '");
+        builder.append(player.getPoison());
+        builder.append("', '");
+        builder.append(player.getExperience());
+        builder.append("', '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("', '");
+        builder.append(player.getCommanders());
+        builder.append("') RETURNING \"playerId\";");
+        ResultSet result = Application.query(builder.toString());
+        try {
+            result.next();
+            int id = result.getInt(1);
+            return new ResponseEntity<>(id,new HttpHeaders(), HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
+
     }
 }
