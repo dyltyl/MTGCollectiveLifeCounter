@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,9 +40,9 @@ public class MagicController {
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
     @RequestMapping(value={"/joinGame"}, method = POST)
-    public ResponseEntity<?> joinGame(@RequestBody Game game, @RequestBody Player player) {
-        System.out.println(game);
+    public ResponseEntity<?> joinGame(HttpServletRequest request, @RequestBody Player player) {
         System.out.println(player);
+        System.out.println(request);
 
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
