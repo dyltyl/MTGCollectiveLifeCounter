@@ -2,6 +2,7 @@ package com.controllers;
 
 import com.Application;
 import com.objects.Game;
+import com.objects.Player;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,13 @@ public class MagicController {
         builder.append(game.getGamePassword());
         builder.append("');");
         Application.queryNoResults(builder.toString());
+        return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
+    }
+    @RequestMapping(value={"/joinGame"}, method = POST)
+    public ResponseEntity<?> joinGame(@RequestBody Game game, @RequestBody Player player) {
+        System.out.println(game);
+        System.out.println(player);
+
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
 }
