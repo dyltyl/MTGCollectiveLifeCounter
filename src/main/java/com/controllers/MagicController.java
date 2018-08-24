@@ -3,7 +3,6 @@ package com.controllers;
 import com.Application;
 import com.objects.Game;
 import com.objects.Player;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -60,9 +57,22 @@ public class MagicController {
             return new ResponseEntity<>(id,new HttpHeaders(), HttpStatus.OK);
         }
         catch(Exception e) {
-            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("-1", HttpStatus.BAD_REQUEST);
         }
+    }
+    @RequestMapping(value = {"/verify"}, method = POST)
+    public boolean verifyGame(@RequestBody Game game) {
+        StringBuilder builder = new StringBuilder("SELECT \"gamePassword\" FROM games WHERE \"gameId\" = '");
+        builder.append(game.getGameId());
+        builder.append("';");
+        ResultSet result = Application.query(builder.toString());
+        try {
+            result.next();
+            System.out.println(result.getRow());
+        }
+        catch(Exception e) {
 
-
+        }
+        return true;
     }
 }
