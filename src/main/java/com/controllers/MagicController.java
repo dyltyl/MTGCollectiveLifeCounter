@@ -37,9 +37,11 @@ public class MagicController {
     }
     @RequestMapping(value={"/joinGame"}, method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody Player player) {
+        System.out.println("Joining game");
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Game credentials incorrect", HttpStatus.BAD_REQUEST);
         }
+        System.out.println("Game verified");
         StringBuilder builder = new StringBuilder("INSERT INTO players (\"name\", \"life\", \"poison\", \"experience\", \"game\", \"commanders\") VALUES('");
         builder.append(player.getName());
         builder.append("', '");
@@ -71,13 +73,16 @@ public class MagicController {
         try {
             result.next();
             if(result.getRow() > 0) {
-                if(gamePassword.equals(result.getString(1)))
+                if(gamePassword.equals(result.getString(1))) {
+                    System.out.println("verified");
                     return true;
+                }
             }
-        }
-        catch(Exception e) {
             return false;
         }
-        return false;
+        catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
