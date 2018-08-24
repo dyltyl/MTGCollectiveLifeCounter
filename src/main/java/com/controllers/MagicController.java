@@ -71,7 +71,7 @@ public class MagicController {
         try {
             result.next();
             if(result.getRow() > 0) {
-                if(gamePassword.equals(result.getString(0)))
+                if(gamePassword.equals(result.getString(1)))
                     return true;
             }
         }
