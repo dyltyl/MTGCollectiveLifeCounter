@@ -37,6 +37,9 @@ public class MagicController {
     }
     @RequestMapping(value={"/joinGame"}, method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody Player player) {
+        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
+            return new ResponseEntity<>("Game credentials incorrect", HttpStatus.BAD_REQUEST);
+        }
         StringBuilder builder = new StringBuilder("INSERT INTO players (\"name\", \"life\", \"poison\", \"experience\", \"game\", \"commanders\") VALUES('");
         builder.append(player.getName());
         builder.append("', '");
@@ -60,19 +63,21 @@ public class MagicController {
             return new ResponseEntity<>("-1", HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/verify"}, method = POST)
-    public boolean verifyGame(@RequestBody Game game) {
+    public boolean verifyGame(String gameId, String gamePassword) {
         StringBuilder builder = new StringBuilder("SELECT \"gamePassword\" FROM games WHERE \"gameId\" = '");
-        builder.append(game.getGameId());
+        builder.append(gameId);
         builder.append("';");
         ResultSet result = Application.query(builder.toString());
         try {
             result.next();
-            System.out.println(result.getRow());
+            if(result.getRow() > 0) {
+                if(gamePassword.equals(result.getString(0)))
+                    return true;
+            }
         }
         catch(Exception e) {
-
+            return false;
         }
-        return true;
+        return false;
     }
 }
