@@ -27,7 +27,7 @@ public class MagicController {
     }
     @RequestMapping(value={"/createGame"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
-        StringBuilder builder = new StringBuilder("INSERT INTO games (\"gameId\", \"gamePassword\") VALUES ('");
+        StringBuilder builder = new StringBuilder("INSERT INTO games (id, password) VALUES ('");
         builder.append(game.getGameId());
         builder.append("', '");
         builder.append(game.getGamePassword());
@@ -40,24 +40,15 @@ public class MagicController {
         }
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value={"/joinGame"}, method = POST)
-    public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody Player player) {
-        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
-            return new ResponseEntity<>("Game credentials incorrect", HttpStatus.BAD_REQUEST);
-        }
-        StringBuilder builder = new StringBuilder("INSERT INTO players (\"name\", \"life\", \"poison\", \"experience\", \"game\", \"commanders\") VALUES('");
+    @RequestMapping(value={"/createPlayer"}, method = POST)
+    public ResponseEntity<?> joinGame(@RequestBody Player player) {
+        StringBuilder builder = new StringBuilder("INSERT INTO players (email, password, name) VALUES('");
+        builder.append(player.getEmail());
+        builder.append("', '");
+        builder.append(player.getPassword());
+        builder.append("', '");
         builder.append(player.getName());
-        builder.append("', '");
-        builder.append(player.getLife());
-        builder.append("', '");
-        builder.append(player.getPoison());
-        builder.append("', '");
-        builder.append(player.getExperience());
-        builder.append("', '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("', '");
-        builder.append(player.getCommanders());
-        builder.append("') RETURNING \"playerId\";");
+        builder.append("') RETURNING email;");
         ResultSet result = Application.query(builder.toString());
         try {
             result.next();
@@ -69,7 +60,7 @@ public class MagicController {
         }
     }
     public boolean verifyGame(String gameId, String gamePassword) {
-        StringBuilder builder = new StringBuilder("SELECT \"gamePassword\" FROM games WHERE \"gameId\" = '");
+        StringBuilder builder = new StringBuilder("SELECT password FROM games WHERE id = '");
         builder.append(gameId);
         builder.append("';");
         ResultSet result = Application.query(builder.toString());
@@ -87,4 +78,7 @@ public class MagicController {
             return false;
         }
     }
+   /* public ResponseEntity<?> loseLife(@RequestBody Player player) {
+        return null;
+    }*/
 }
