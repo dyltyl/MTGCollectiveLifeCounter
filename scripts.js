@@ -16,10 +16,15 @@ function addFields(){
             'Eight Player Maximum'));
             createLineBreak(container);
         number = 8;
-    } else if(number<2){
+    } else if(number<2 && number>-1){
         number = 0;  
         container.appendChild(document.createTextNode(
             'Additional Friends Required'));
+    } else if(number<0){
+        number = 0;
+        container.appendChild(document.createTextNode(
+            'It is beyond the scope of this app to create "negative" friends. Only Magic can do that.'
+        ));
     }
     for (i=0;i<number;i++){
         // Append a node with a random text

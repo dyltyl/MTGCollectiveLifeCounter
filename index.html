@@ -5,16 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Game Creation</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
-        <script src="scripts.js"></script>
+        <script src="homeScript.js"></script> 
 </head>
-<h1>Game Creation</h1>
-<body style= 'text-align: center;color:white'>
-        Number of players
-    <input type="number" id="player" name="player" value="">
-    <input type='number' id='lifeTotal' name='lifeTotal' value='40'>
-        LifeTotal
+<script>
+</script>
+<h1>
+    Welcome!
     <br/>
-    <button><a href="#" id="createPlayers" onclick="addFields()">Create</a></button>
-    <div id="container"></div>
-    <button>Enter Match</button>
+    <button id="returnGame" onclick='addInput()'>Return to Game</button>
+    <button id="createGame">Create a Game</button>
+    <button id="findGame" onclick ='addInput()'>Find a Game</button>
+</h1>
+<body style= 'text-align: center;color:white'>
+    <div id='root'></div>
 </body>

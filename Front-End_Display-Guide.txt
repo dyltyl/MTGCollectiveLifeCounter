@@ -1,0 +1,36 @@
+--Home Screen--
+Return to Game<button>(ID<input>, password<input>) -> Connecting To Game
+Join a Game<button>(ID<input>, password<input>) -> Connecting To Game
+Create Game<button>() -> Game Creation
+
+--Game Creation--
+Number of Players<input>
+Starting Life Total<input>
+Enter Match<button>(Confirm<button>) -> Waiting Lobby
+
+--Waiting Lobby--
+GameId<div>
+For Each Player(playerName||Empty||Ready<div>)
+x/numPlayers read<div>
+BeginMatch<button>() -> GameScreen
+
+--Game Screen--
+GameId<div>
+Players<li>forEach( playerDisplay<ul focusDisplay<button>> ) //Horizontal display of lists, select each for details, LifeTotal primary display
+GameId<div>
+YourLife<customElement>(increaseLife<button>,decreaseLife<button>,
+    increaseCDamage<button selectCom<li commander<ul>>>, 
+    decreaseCDamage<button selectCom<li commander<ul>>>)
+
+Dead<button>() -> SpectatorScreen
+exitGame<button>() -> Home
+
+--Connecting To Game--
+PlayerName<input> -> [Begin Connection].display(Connecting to Game)
+PlayerCommander<input> -> [Begin Connect].display(Connecting to Game)
+Connecting to Game[ID]<div>
+Loading Bar<Img> -> Ready!Enter Match<button> -> if (in Progress)-> Game Screen
+                                                    else -> Waiting Lobb
+
+--SpectatorScreen--
+//Mimic displays screen but hides personal lifeTotal                                       
