@@ -9,6 +9,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @SpringBootApplication
 public class Application {
@@ -54,14 +55,8 @@ public class Application {
         }
         return null;
     }
-    public static void queryNoResults(String query) {
+    public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
-        try {
-            dataSource.getConnection().createStatement().execute(query);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+        dataSource.getConnection().createStatement().execute(query);
     }
-
 }

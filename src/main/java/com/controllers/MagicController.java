@@ -32,16 +32,19 @@ public class MagicController {
         builder.append("', '");
         builder.append(game.getGamePassword());
         builder.append("');");
-        Application.queryNoResults(builder.toString());
+        try {
+            Application.queryNoResults(builder.toString());
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>("Cannot create game", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
     @RequestMapping(value={"/joinGame"}, method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody Player player) {
-        System.out.println("Joining game");
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Game credentials incorrect", HttpStatus.BAD_REQUEST);
         }
-        System.out.println("Game verified");
         StringBuilder builder = new StringBuilder("INSERT INTO players (\"name\", \"life\", \"poison\", \"experience\", \"game\", \"commanders\") VALUES('");
         builder.append(player.getName());
         builder.append("', '");
@@ -74,7 +77,6 @@ public class MagicController {
             result.next();
             if(result.getRow() > 0) {
                 if(gamePassword.equals(result.getString(1))) {
-                    System.out.println("verified");
                     return true;
                 }
             }
