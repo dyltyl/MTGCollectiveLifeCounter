@@ -6,10 +6,7 @@ import com.objects.Player;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
@@ -149,5 +146,32 @@ public class MagicController {
            e.printStackTrace();
        }
        return false;
+   }
+   @RequestMapping(value = {"/setLife/{life}"}, method = POST)
+   public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
+       if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
+           return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
+       }
+       if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
+           return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
+       }
+        StringBuilder builder = new StringBuilder("UPDATE life SET life = ");
+        builder.append(life);
+        builder.append(" WHERE email = '");
+        builder.append(headers.getHeader("email"));
+        builder.append("' AND game = '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("' RETURNING life;");
+        try {
+            ResultSet result = Application.query(builder.toString());
+            result.next();
+            if(result.getRow() > 0) {
+                return new ResponseEntity<>(life, new HttpHeaders(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
    }
 }
