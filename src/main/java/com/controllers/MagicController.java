@@ -78,9 +78,9 @@ public class MagicController {
             return new ResponseEntity<>("Starting life must be greater than 0", HttpStatus.BAD_REQUEST);
         }
         StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life) VALUES ('");
-        builder.append(headers.getHeaders("email"));
+        builder.append(headers.getHeader("email"));
         builder.append("', '");
-        builder.append(headers.getHeaders("gameId"));
+        builder.append(headers.getHeader("gameId"));
         builder.append("', ");
         builder.append(startingLife);
         builder.append(") RETURNING email;");
