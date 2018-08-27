@@ -95,15 +95,14 @@ public class MagicController {
     public boolean verifyGame(String gameId, String gamePassword) {
         StringBuilder builder = new StringBuilder("SELECT password FROM games WHERE id = '");
         builder.append(gameId);
+        builder.append("' AND password = '");
+        builder.append(gamePassword);
         builder.append("';");
-
         try {
             ResultSet result = Application.query(builder.toString());
             result.next();
             if(result.getRow() > 0) {
-                if(gamePassword.equals(result.getString(1))) {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
