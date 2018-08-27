@@ -76,9 +76,10 @@ public class MagicController {
         builder.append(headers.getHeaders("email"));
         builder.append("', '");
         builder.append(headers.getHeaders("gameId"));
-        builder.append("', '");
+        builder.append("', ");
         builder.append(startingLife);
-        builder.append(") RETURNING email");
+        builder.append(") RETURNING email;");
+        System.out.println(builder.toString());
         ResultSet result = Application.query(builder.toString());
         try {
             result.next();
