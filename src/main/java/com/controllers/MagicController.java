@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -62,8 +63,9 @@ public class MagicController {
     }
     @RequestMapping(value = {"/joinGame"}, method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers) {
-        while(headers.getHeaderNames().hasMoreElements()) {
-            System.out.println(headers.getHeaderNames().nextElement());
+        Enumeration<String> keys = headers.getHeaderNames();
+        while(keys.hasMoreElements()) {
+            System.out.println(keys.nextElement());
         }
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
