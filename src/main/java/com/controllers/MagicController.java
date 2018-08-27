@@ -166,7 +166,7 @@ public class MagicController {
             ResultSet result = Application.query(builder.toString());
             result.next();
             if(result.getRow() > 0) {
-                return new ResponseEntity<>(life, new HttpHeaders(), HttpStatus.OK);
+                return new ResponseEntity<>(result.getInt(1), new HttpHeaders(), HttpStatus.OK);
             }
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
@@ -174,4 +174,58 @@ public class MagicController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
    }
+    @RequestMapping(value = {"/setPoison/{poison}"}, method = POST)
+    public ResponseEntity<?> setPoison(HttpServletRequest headers, @PathVariable int poison) {
+        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
+            return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
+        }
+        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
+            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
+        }
+        StringBuilder builder = new StringBuilder("UPDATE life SET poison = ");
+        builder.append(poison);
+        builder.append(" WHERE email = '");
+        builder.append(headers.getHeader("email"));
+        builder.append("' AND game = '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("' RETURNING poison;");
+        try {
+            ResultSet result = Application.query(builder.toString());
+            result.next();
+            if(result.getRow() > 0) {
+                return new ResponseEntity<>(result.getInt(1), new HttpHeaders(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/setExperience/{experience}"}, method = POST)
+    public ResponseEntity<?> setExperience(HttpServletRequest headers, @PathVariable int experience) {
+        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
+            return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
+        }
+        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
+            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
+        }
+        StringBuilder builder = new StringBuilder("UPDATE life SET experience = ");
+        builder.append(experience);
+        builder.append(" WHERE email = '");
+        builder.append(headers.getHeader("email"));
+        builder.append("' AND game = '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("' RETURNING experience;");
+        try {
+            ResultSet result = Application.query(builder.toString());
+            result.next();
+            if(result.getRow() > 0) {
+                return new ResponseEntity<>(result.getInt(1), new HttpHeaders(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
