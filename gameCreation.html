@@ -5,8 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Game Creation</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
-        <script src="scripts.js"></script>
+        <script src="cookieCreator.js"></script>
 </head>
+
 <h1>Game Creation</h1>
 <body style= 'text-align: center;color:white'>
         Number of players
@@ -14,7 +15,10 @@
     <input type='number' id='lifeTotal' name='lifeTotal' value='40'>
         LifeTotal
     <br/>
-    <button><a href="#" id="createPlayers" onclick="addFields()">Create</a></button>
     <div id="container"></div>
-    <button>Enter Match</button>
+    <button><a href = 'playerCreation.html' onclick="createCookie('playerAmt',document.getElementById('player').value,1)">Enter Match</a></button>
 </body>
+<footer>
+        <a href='index.html'>Home</a>
+</footer>
+</html>

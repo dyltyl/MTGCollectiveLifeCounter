@@ -1,3 +1,7 @@
+{/* HTML Call to this function appears as follows: 
+    <button><a href="#" id="createPlayers" onclick="addFields()">Create</a></button> */}
+
+
 function createLineBreak(container){
     container.appendChild(document.createElement("br"));
 }
