@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Enumeration;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -37,8 +36,8 @@ public class MagicController {
         try {
             Application.queryNoResults(builder.toString());
         }
-        catch(Exception e) {
-            return new ResponseEntity<>("Cannot create game", HttpStatus.BAD_REQUEST);
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
@@ -51,14 +50,14 @@ public class MagicController {
         builder.append("', '");
         builder.append(player.getName());
         builder.append("') RETURNING email;");
-        ResultSet result = Application.query(builder.toString());
         try {
+            ResultSet result = Application.query(builder.toString());
             result.next();
             String email = result.getString(1);
             return new ResponseEntity<>(email,new HttpHeaders(), HttpStatus.OK);
         }
-        catch(Exception e) {
-            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     @RequestMapping(value = {"/joinGame"}, method = POST)
@@ -80,8 +79,9 @@ public class MagicController {
         builder.append("', ");
         builder.append(startingLife);
         builder.append(") RETURNING email;");
-        ResultSet result = Application.query(builder.toString());
+
         try {
+            ResultSet result = Application.query(builder.toString());
             result.next();
             if(result.getRow() > 0) {
                 String email = result.getString(1);
@@ -97,8 +97,9 @@ public class MagicController {
         StringBuilder builder = new StringBuilder("SELECT password FROM games WHERE id = '");
         builder.append(gameId);
         builder.append("';");
-        ResultSet result = Application.query(builder.toString());
+
         try {
+            ResultSet result = Application.query(builder.toString());
             result.next();
             if(result.getRow() > 0) {
                 if(gamePassword.equals(result.getString(1))) {
@@ -116,8 +117,8 @@ public class MagicController {
         StringBuilder builder = new StringBuilder("SELECT starting_life FROM games WHERE id = '");
         builder.append(gameId);
         builder.append("';");
-        ResultSet result = Application.query(builder.toString());
         try {
+            ResultSet result = Application.query(builder.toString());
             result.next();
             if(result.getRow() > 0) {
                 return result.getInt(1);
@@ -135,8 +136,9 @@ public class MagicController {
         builder.append("' AND password = '");
         builder.append(password); //TODO: Encrypt password
         builder.append("';");
-        ResultSet result = Application.query(builder.toString());
+
        try {
+           ResultSet result = Application.query(builder.toString());
            result.next();
            if(result.getRow() == 1) {
                return true;

@@ -45,15 +45,9 @@ public class Application {
     public static BasicDataSource getDataSource() {
         return dataSource;
     }
-    public static ResultSet query(String query) {
+    public static ResultSet query(String query) throws SQLException {
         System.out.println(query);
-        try {
-            return dataSource.getConnection().createStatement().executeQuery(query);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return dataSource.getConnection().createStatement().executeQuery(query);
     }
     public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
