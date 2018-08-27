@@ -152,12 +152,12 @@ public class MagicController {
    @RequestMapping(value = {"/setLife/{life}"}, method = PUT)
    public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
        System.out.println("Setting life");
-       if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
+       /*if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
            return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
        }
        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
-       }
+       }*/
        System.out.println("Done verifying");
         StringBuilder builder = new StringBuilder("UPDATE life SET life = ");
         builder.append(life);
