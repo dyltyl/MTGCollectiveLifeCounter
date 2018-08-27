@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -41,7 +42,7 @@ public class MagicController {
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
     @RequestMapping(value={"/createPlayer"}, method = POST)
-    public ResponseEntity<?> joinGame(@RequestBody Player player) {
+    public ResponseEntity<?> createPlayer(@RequestBody Player player) {
         StringBuilder builder = new StringBuilder("INSERT INTO players (email, password, name) VALUES('");
         builder.append(player.getEmail());
         builder.append("', '");
@@ -52,11 +53,40 @@ public class MagicController {
         ResultSet result = Application.query(builder.toString());
         try {
             result.next();
-            int id = result.getInt(1);
-            return new ResponseEntity<>(id,new HttpHeaders(), HttpStatus.OK);
+            String email = result.getString(1);
+            return new ResponseEntity<>(email,new HttpHeaders(), HttpStatus.OK);
         }
         catch(Exception e) {
-            return new ResponseEntity<>("-1", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/joinGame"}, method = POST)
+    public ResponseEntity<?> joinGame(HttpServletRequest headers) {
+        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
+            return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
+        }
+        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
+            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
+        }
+        int startingLife = getStartingLife(headers.getHeader("gameId"));
+        if(startingLife < 1) {
+            return new ResponseEntity<>("Starting life must be greater than 0", HttpStatus.BAD_REQUEST);
+        }
+        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life) VALUES ('");
+        builder.append(headers.getHeaders("email"));
+        builder.append("', '");
+        builder.append(headers.getHeaders("gameId"));
+        builder.append("', '");
+        builder.append(startingLife);
+        builder.append(") RETURNING email");
+        ResultSet result = Application.query(builder.toString());
+        try {
+            result.next();
+            String email = result.getString(1);
+            return new ResponseEntity<>(email, new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
     }
     public boolean verifyGame(String gameId, String gamePassword) {
@@ -78,7 +108,38 @@ public class MagicController {
             return false;
         }
     }
-   /* public ResponseEntity<?> loseLife(@RequestBody Player player) {
-        return null;
-    }*/
+    public int getStartingLife(String gameId) {
+        StringBuilder builder = new StringBuilder("SELECT starting_life FROM games WHERE id = ");
+        builder.append(gameId);
+        builder.append(";");
+        ResultSet result = Application.query(builder.toString());
+        try {
+            result.next();
+            if(result.getRow() > 0) {
+                return result.getInt(1);
+            }
+            return -1;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+   public boolean verifyUser(String email, String password) {
+        StringBuilder builder = new StringBuilder("SELECT email FROM players WHERE email = ");
+        builder.append(email);
+        builder.append(" AND password = ");
+        builder.append(password); //TODO: Encrypt password
+        builder.append(";");
+        ResultSet result = Application.query(builder.toString());
+       try {
+           result.next();
+           if(result.getRow() == 1) {
+               return true;
+           }
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+       return false;
+   }
 }
