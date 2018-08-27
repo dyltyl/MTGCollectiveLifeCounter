@@ -109,9 +109,9 @@ public class MagicController {
         }
     }
     public int getStartingLife(String gameId) {
-        StringBuilder builder = new StringBuilder("SELECT starting_life FROM games WHERE id = ");
+        StringBuilder builder = new StringBuilder("SELECT starting_life FROM games WHERE id = '");
         builder.append(gameId);
-        builder.append(";");
+        builder.append("';");
         ResultSet result = Application.query(builder.toString());
         try {
             result.next();
