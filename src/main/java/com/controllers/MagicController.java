@@ -62,6 +62,9 @@ public class MagicController {
     }
     @RequestMapping(value = {"/joinGame"}, method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers) {
+        while(headers.getHeaderNames().hasMoreElements()) {
+            System.out.println(headers.getHeaderNames().nextElement());
+        }
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
         }
@@ -79,7 +82,6 @@ public class MagicController {
         builder.append("', ");
         builder.append(startingLife);
         builder.append(") RETURNING email;");
-        System.out.println(builder.toString());
         ResultSet result = Application.query(builder.toString());
         try {
             result.next();
