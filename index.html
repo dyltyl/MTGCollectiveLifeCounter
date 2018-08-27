@@ -3,18 +3,16 @@
 <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Game Creation</title>
+        <title>Home</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
         <script src="homeScript.js"></script> 
 </head>
-<script>
-</script>
 <h1>
     Welcome!
     <br/>
-    <button id="returnGame" onclick='addInput()'>Return to Game</button>
-    <button id="createGame">Create a Game</button>
-    <button id="findGame" onclick ='addInput()'>Find a Game</button>
+    <button id="returnGame" onclick='addInput(returnGame)'>Return to Game</button>
+    <a href = 'gameCreation.html'><button id="createGame">Create a Game</button></a>
+    <button id="searchGame" onclick ='addInput(this)'>Search for a Game</button>
 </h1>
 <body style= 'text-align: center;color:white'>
     <div id='root'></div>
