@@ -126,11 +126,11 @@ public class MagicController {
         }
     }
    public boolean verifyUser(String email, String password) {
-        StringBuilder builder = new StringBuilder("SELECT email FROM players WHERE email = ");
+        StringBuilder builder = new StringBuilder("SELECT email FROM players WHERE email = '");
         builder.append(email);
-        builder.append(" AND password = ");
+        builder.append("' AND password = '");
         builder.append(password); //TODO: Encrypt password
-        builder.append(";");
+        builder.append("';");
         ResultSet result = Application.query(builder.toString());
        try {
            result.next();
