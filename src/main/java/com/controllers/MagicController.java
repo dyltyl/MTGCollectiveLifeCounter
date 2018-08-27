@@ -102,6 +102,7 @@ public class MagicController {
             ResultSet result = Application.query(builder.toString());
             result.next();
             if(result.getRow() > 0) {
+                System.out.println("Game verified");
                 return true;
             }
             return false;
@@ -139,6 +140,7 @@ public class MagicController {
            ResultSet result = Application.query(builder.toString());
            result.next();
            if(result.getRow() == 1) {
+               System.out.println("Verified user");
                return true;
            }
        } catch (SQLException e) {
@@ -148,12 +150,14 @@ public class MagicController {
    }
    @RequestMapping(value = {"/setLife/{life}"}, method = POST)
    public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
+       System.out.println("Setting life");
        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
            return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
        }
        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
        }
+       System.out.println("Done verifying");
         StringBuilder builder = new StringBuilder("UPDATE life SET life = ");
         builder.append(life);
         builder.append(" WHERE email = '");
@@ -165,6 +169,7 @@ public class MagicController {
             ResultSet result = Application.query(builder.toString());
             result.next();
             if(result.getRow() > 0) {
+                System.out.println("All good");
                 return new ResponseEntity<>(result.getInt(1), new HttpHeaders(), HttpStatus.OK);
             }
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
