@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -148,7 +149,7 @@ public class MagicController {
        }
        return false;
    }
-   @RequestMapping(value = {"/setLife/{life}"}, method = POST)
+   @RequestMapping(value = {"/setLife/{life}"}, method = PUT)
    public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
        System.out.println("Setting life");
        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
