@@ -10,10 +10,15 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.sql.Connection;
 
 @SpringBootApplication
 public class Application {
     private static BasicDataSource dataSource;
+    private static EntityManager em;
+    private static Connection connection;
     public static void main(String[] args) {
         initializeDatabase();
         SpringApplication.run(Application.class, args);
@@ -47,10 +52,19 @@ public class Application {
     }
     public static ResultSet query(String query) throws SQLException {
         System.out.println(query);
-        return dataSource.getConnection().createStatement().executeQuery(query);
+        //return dataSource.getConnection().createStatement().executeQuery(query);
+        return connection.createStatement().executeQuery(query);
     }
     public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
         dataSource.getConnection().createStatement().execute(query);
+
+    }
+    @PersistenceContext
+    public void setEntityManager(EntityManager entityManager){
+        em = entityManager;
+    }
+    public EntityManager getEntityManager() {
+        return em;
     }
 }
