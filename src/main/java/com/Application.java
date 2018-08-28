@@ -50,7 +50,7 @@ public class Application {
     public static BasicDataSource getDataSource() {
         return dataSource;
     }
-    public static List<String[]> query(String query) throws SQLException {
+    public static String[][] query(String query) throws SQLException {
         System.out.println(query);
         Connection connection = null;
         PreparedStatement statement = null;
@@ -58,13 +58,16 @@ public class Application {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(query);
             ResultSet result = statement.executeQuery();
-            List<String[]> myList = new ArrayList<>();
-            while(result.next()) {
+            result.last();
+            int rows = result.getRow();
+            result.first();
+            String[][] myList = new String[result.getMetaData().getColumnCount()][rows];
+            for(int j = 0; j < rows; j++) {
                 String[] arr = new String[result.getMetaData().getColumnCount()];
                 for(int i = 0; i < arr.length; i++) {
                     arr[i] = result.getString(i+1);
                 }
-                myList.add(arr);
+                myList[j] = arr;
             }
             return myList;
         }
@@ -80,7 +83,11 @@ public class Application {
     }
     public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
-        dataSource.getConnection().createStatement().execute(query);
+        Connection connection = dataSource.getConnection();
+        Statement statement = connection.createStatement();
+        statement.execute(query);
+        statement.close();
+        connection.close();
     }
     public static String getJson(Object object, boolean pretty) {
         ObjectMapper mapper = new ObjectMapper();
