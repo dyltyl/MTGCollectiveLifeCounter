@@ -2,6 +2,7 @@ package com;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -83,6 +84,7 @@ public class Application {
     }
     public static String getJson(Object object) {
         ObjectMapper mapper = new ObjectMapper();
+        //mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
             return mapper.writeValueAsString(object);
         }

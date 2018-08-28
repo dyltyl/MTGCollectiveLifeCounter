@@ -61,7 +61,7 @@ public class MagicController {
         }
     }
     @RequestMapping(value = {"/joinGame"}, method = POST)
-    public ResponseEntity<?> joinGame(HttpServletRequest headers) {
+    public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody String[] commanders) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
         }
@@ -72,12 +72,25 @@ public class MagicController {
         if(startingLife < 1) {
             return new ResponseEntity<>("Starting life must be greater than 0", HttpStatus.BAD_REQUEST);
         }
-        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life) VALUES ('");
-        builder.append(headers.getHeader("email"));
-        builder.append("', '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("', ");
-        builder.append(startingLife);
+        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life");
+        if(commanders.length > 0) {
+            builder.append(", commanders) VALUES ('");
+            builder.append(headers.getHeader("email"));
+            builder.append("', '");
+            builder.append(headers.getHeader("gameId"));
+            builder.append("', ");
+            builder.append(startingLife);
+            builder.append("', ");
+            builder.append(Application.getJson(commanders));
+        }
+        else {
+            builder.append(") VALUES ('");
+            builder.append(headers.getHeader("email"));
+            builder.append("', '");
+            builder.append(headers.getHeader("gameId"));
+            builder.append("', ");
+            builder.append(startingLife);
+        }
         builder.append(") RETURNING email;");
 
         try {
@@ -243,7 +256,6 @@ public class MagicController {
         try {
             List<String[]> result = Application.query(builder.toString());
             if(result.size() > 0) {
-                System.out.println(Application.getJson(damage));
                 return new ResponseEntity<>(result.get(0)[0], new HttpHeaders(), HttpStatus.OK);
             }
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
