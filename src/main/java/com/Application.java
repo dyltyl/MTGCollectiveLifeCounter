@@ -41,6 +41,7 @@ public class Application {
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
+        dataSource.setMaxWaitMillis(10000);
     }
     public static BasicDataSource getDataSource() {
         return dataSource;
