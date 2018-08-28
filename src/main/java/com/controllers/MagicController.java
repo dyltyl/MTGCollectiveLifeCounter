@@ -80,7 +80,7 @@ public class MagicController {
             builder.append(headers.getHeader("gameId"));
             builder.append("', ");
             builder.append(startingLife);
-            builder.append("', '");
+            builder.append(", '");
             builder.append(Application.getJson(commanders));
             builder.append("'");
         }
