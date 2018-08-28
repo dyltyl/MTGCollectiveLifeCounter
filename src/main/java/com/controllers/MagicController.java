@@ -61,7 +61,7 @@ public class MagicController {
         }
     }
     @RequestMapping(value = {"/joinGame"}, method = POST)
-    public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody String commanders) {
+    public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody String[] commanders) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
         }
