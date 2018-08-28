@@ -50,7 +50,7 @@ public class Application {
         Connection connection = dataSource.getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet result = statement.executeQuery();
-        statement.close();
+        //statement.close();
         connection.close();
         return result;
     }
