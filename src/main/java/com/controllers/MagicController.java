@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -51,9 +52,8 @@ public class MagicController {
         builder.append(player.getName());
         builder.append("') RETURNING email;");
         try {
-            ResultSet result = Application.query(builder.toString());
-            result.next();
-            String email = result.getString(1);
+            List<String[]> result = Application.query(builder.toString());
+            String email = result.get(0)[0];
             return new ResponseEntity<>(email,new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
@@ -81,10 +81,9 @@ public class MagicController {
         builder.append(") RETURNING email;");
 
         try {
-            ResultSet result = Application.query(builder.toString());
-            result.next();
-            if(result.getRow() > 0) {
-                String email = result.getString(1);
+            List<String[]> result = Application.query(builder.toString());
+            if(result.size() > 0) {
+                String email = result.get(0)[0];
                 return new ResponseEntity<>(email, new HttpHeaders(), HttpStatus.OK);
             }
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
@@ -100,9 +99,8 @@ public class MagicController {
         builder.append(gamePassword);
         builder.append("';");
         try {
-            ResultSet result = Application.query(builder.toString());
-            result.next();
-            if(result.getRow() > 0) {
+            List<String[]> result = Application.query(builder.toString());
+            if(result.size() > 0) {
                 System.out.println("Game verified");
                 return true;
             }
@@ -118,10 +116,9 @@ public class MagicController {
         builder.append(gameId);
         builder.append("';");
         try {
-            ResultSet result = Application.query(builder.toString());
-            result.next();
-            if(result.getRow() > 0) {
-                return result.getInt(1);
+            List<String[]> result = Application.query(builder.toString());
+            if(result.size() > 0) {
+                return Integer.parseInt(result.get(0)[0]);
             }
             return -1;
         }
@@ -138,9 +135,8 @@ public class MagicController {
         builder.append("';");
 
        try {
-           ResultSet result = Application.query(builder.toString());
-           result.next();
-           if(result.getRow() == 1) {
+           List<String[]> result = Application.query(builder.toString());
+           if(result.size() == 1) {
                System.out.println("Verified user");
                return true;
            }
@@ -167,11 +163,10 @@ public class MagicController {
         builder.append(headers.getHeader("gameId"));
         builder.append("' RETURNING life;");
         try {
-            ResultSet result = Application.query(builder.toString());
-            result.next();
-            if(result.getRow() > 0) {
+            List<String[]> result = Application.query(builder.toString());
+            if(result.size() > 0) {
                 System.out.println("All good");
-                return new ResponseEntity<>(result.getInt(1), new HttpHeaders(), HttpStatus.OK);
+                return new ResponseEntity<>(result.get(0)[0], new HttpHeaders(), HttpStatus.OK);
             }
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
@@ -195,10 +190,9 @@ public class MagicController {
         builder.append(headers.getHeader("gameId"));
         builder.append("' RETURNING poison;");
         try {
-            ResultSet result = Application.query(builder.toString());
-            result.next();
-            if(result.getRow() > 0) {
-                return new ResponseEntity<>(result.getInt(1), new HttpHeaders(), HttpStatus.OK);
+            List<String[]> result = Application.query(builder.toString());
+            if(result.size() > 0) {
+                return new ResponseEntity<>(result.get(0)[0], new HttpHeaders(), HttpStatus.OK);
             }
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
@@ -222,10 +216,9 @@ public class MagicController {
         builder.append(headers.getHeader("gameId"));
         builder.append("' RETURNING experience;");
         try {
-            ResultSet result = Application.query(builder.toString());
-            result.next();
-            if(result.getRow() > 0) {
-                return new ResponseEntity<>(result.getInt(1), new HttpHeaders(), HttpStatus.OK);
+            List<String[]> result = Application.query(builder.toString());
+            if(result.size() > 0) {
+                return new ResponseEntity<>(result.get(0)[0], new HttpHeaders(), HttpStatus.OK);
             }
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
