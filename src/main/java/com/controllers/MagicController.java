@@ -72,27 +72,15 @@ public class MagicController {
         if(startingLife < 1) {
             return new ResponseEntity<>("Starting life must be greater than 0", HttpStatus.BAD_REQUEST);
         }
-        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life");
-        if(commanders.length > 0) {
-            builder.append(", commanders) VALUES ('");
-            builder.append(headers.getHeader("email"));
-            builder.append("', '");
-            builder.append(headers.getHeader("gameId"));
-            builder.append("', ");
-            builder.append(startingLife);
-            builder.append(", '");
-            builder.append(Application.getJson(commanders));
-            builder.append("'");
-        }
-        else {
-            builder.append(") VALUES ('");
-            builder.append(headers.getHeader("email"));
-            builder.append("', '");
-            builder.append(headers.getHeader("gameId"));
-            builder.append("', ");
-            builder.append(startingLife);
-        }
-        builder.append(") RETURNING email;");
+        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life, commanders) VALUES ('");
+        builder.append(headers.getHeader("email"));
+        builder.append("', '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("', ");
+        builder.append(startingLife);
+        builder.append(", '");
+        builder.append(Application.getJson(commanders));
+        builder.append("') RETURNING email;");
 
         try {
             List<String[]> result = Application.query(builder.toString());
