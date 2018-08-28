@@ -253,4 +253,18 @@ public class MagicController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @RequestMapping(value = {"/getAllCommanders"}, method = GET)
+    public ResponseEntity<?> getAllCommanders(HttpServletRequest headers) {
+        StringBuilder builder = new StringBuilder("SELECT commanders FROM life WHERE game = '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("';");
+        try {
+            List<String[]> result = Application.query(builder.toString());
+            System.out.println(Application.getJson(result));
+            return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
+        }
+        catch(SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
