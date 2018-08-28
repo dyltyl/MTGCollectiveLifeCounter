@@ -82,9 +82,10 @@ public class Application {
         System.out.println(query);
         dataSource.getConnection().createStatement().execute(query);
     }
-    public static String getJson(Object object) {
+    public static String getJson(Object object, boolean pretty) {
         ObjectMapper mapper = new ObjectMapper();
-        //mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        if(pretty)
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
             return mapper.writeValueAsString(object);
         }

@@ -79,7 +79,7 @@ public class MagicController {
         builder.append("', ");
         builder.append(startingLife);
         builder.append(", '");
-        builder.append(Application.getJson(commanders));
+        builder.append(Application.getJson(commanders, false));
         builder.append("') RETURNING email;");
 
         try {
@@ -260,7 +260,7 @@ public class MagicController {
         builder.append("';");
         try {
             List<String[]> result = Application.query(builder.toString());
-            System.out.println(Application.getJson(result));
+            System.out.println(Application.getJson(result, true));
             return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
         }
         catch(SQLException e) {
