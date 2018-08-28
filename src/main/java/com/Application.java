@@ -1,5 +1,7 @@
 package com;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -78,5 +80,15 @@ public class Application {
     public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
         dataSource.getConnection().createStatement().execute(query);
+    }
+    public static String getJson(Object object) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(object);
+        }
+        catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

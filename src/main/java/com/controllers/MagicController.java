@@ -1,6 +1,7 @@
 package com.controllers;
 
 import com.Application;
+import com.objects.CommanderDamage;
 import com.objects.Game;
 import com.objects.Player;
 import org.springframework.http.HttpHeaders;
@@ -217,6 +218,37 @@ public class MagicController {
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
         catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/setCommanderDamage"}, method = POST)
+    public ResponseEntity<?> setCommanderDamage(HttpServletRequest headers, @RequestBody CommanderDamage damage) {
+        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
+            return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
+        }
+        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
+            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
+        }
+        StringBuilder builder = new StringBuilder("INSERT INTO commander_damage (player, enemy_player, game, commander, damage) VALUES ('");
+        builder.append(damage.getPlayer());
+        builder.append("', '");
+        builder.append(damage.getEnemyPlayer());
+        builder.append("', '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("', '");
+        builder.append(damage.getCommander());
+        builder.append("', ");
+        builder.append(damage.getDamage());
+        builder.append(") ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage RETURNING damage;");
+        try {
+            List<String[]> result = Application.query(builder.toString());
+            if(result.size() > 0) {
+                System.out.println(Application.getJson(damage));
+                return new ResponseEntity<>(result.get(0)[0], new HttpHeaders(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
+        catch(SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
