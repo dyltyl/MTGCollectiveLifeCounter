@@ -15,13 +15,13 @@ import java.sql.SQLException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.Connection;
+import java.util.List;
 
 @SpringBootApplication
 public class Application {
     private static BasicDataSource dataSource;
     private static EntityManager em;
-    @Lazy @Autowired
-    private static Connection connection;
+   // private static Connection connection;
     public static void main(String[] args) {
         initializeDatabase();
         SpringApplication.run(Application.class, args);
@@ -53,10 +53,10 @@ public class Application {
     public static BasicDataSource getDataSource() {
         return dataSource;
     }
-    public static ResultSet query(String query) throws SQLException {
+    public static List query(String query) {
         System.out.println(query);
         //return dataSource.getConnection().createStatement().executeQuery(query);
-        return connection.createStatement().executeQuery(query);
+        return em.createQuery(query).getResultList();
     }
     public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
