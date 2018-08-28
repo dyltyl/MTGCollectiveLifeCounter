@@ -1,11 +1,9 @@
 package com;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -20,7 +18,6 @@ import java.sql.Connection;
 public class Application {
     private static BasicDataSource dataSource;
     private static EntityManager em;
-    @Lazy @Autowired
     private static Connection connection;
     public static void main(String[] args) {
         initializeDatabase();
