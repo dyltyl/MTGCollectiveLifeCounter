@@ -55,6 +55,7 @@ public class Application {
     }
     public static List query(String query) {
         System.out.println(query);
+        System.out.println(em);
         //return dataSource.getConnection().createStatement().executeQuery(query);
         return em.createQuery(query).getResultList();
     }
