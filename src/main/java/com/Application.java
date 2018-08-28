@@ -8,8 +8,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @SpringBootApplication
 public class Application {
@@ -48,7 +50,12 @@ public class Application {
     }
     public static ResultSet query(String query) throws SQLException {
         System.out.println(query);
-        return dataSource.getConnection().createStatement().executeQuery(query);
+        Connection connection = dataSource.getConnection();
+        Statement statement = connection.prepareStatement(query);
+        ResultSet result = statement.executeQuery(query);
+        statement.close();
+        connection.close();
+        return result;
     }
     public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
