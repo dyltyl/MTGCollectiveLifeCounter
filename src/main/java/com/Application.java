@@ -50,7 +50,7 @@ public class Application {
     public static BasicDataSource getDataSource() {
         return dataSource;
     }
-    public static String[][] query(String query) throws SQLException {
+    public static String[][]query(String query) throws SQLException {
         System.out.println(query);
         Connection connection = null;
         PreparedStatement statement = null;
@@ -58,18 +58,15 @@ public class Application {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(query);
             ResultSet result = statement.executeQuery();
-            result.last();
-            int rows = result.getRow();
-            result.first();
-            String[][] myList = new String[result.getMetaData().getColumnCount()][rows];
-            for(int j = 0; j < rows; j++) {
+            List<String[]> myList = new ArrayList<>();
+            while(result.next()) {
                 String[] arr = new String[result.getMetaData().getColumnCount()];
                 for(int i = 0; i < arr.length; i++) {
                     arr[i] = result.getString(i+1);
                 }
-                myList[j] = arr;
+                myList.add(arr);
             }
-            return myList;
+            return myList.toArray(new String[myList.size()][myList.get(0).length]);
         }
         catch(SQLException exception) {
             throw exception;
