@@ -72,15 +72,28 @@ public class MagicController {
         if(startingLife < 1) {
             return new ResponseEntity<>("Starting life must be greater than 0", HttpStatus.BAD_REQUEST);
         }
-        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life, commanders) VALUES ('");
+        for(String commander : commanders) {
+            StringBuilder builder = new StringBuilder("INSERT INTO commanders (game, player, commander) VALUES ('");
+            builder.append(headers.getHeader("gameId"));
+            builder.append("', '");
+            builder.append(headers.getHeader("email"));
+            builder.append("', '");
+            builder.append(commander);
+            builder.append("');");
+            try {
+                Application.query(builder.toString());
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life) VALUES ('");
         builder.append(headers.getHeader("email"));
         builder.append("', '");
         builder.append(headers.getHeader("gameId"));
         builder.append("', ");
         builder.append(startingLife);
-        builder.append(", '");
-        builder.append(Application.getJson(commanders, false));
-        builder.append("') RETURNING email;");
+        builder.append(") RETURNING email;");
 
         try {
             String[][] result = Application.query(builder.toString());
@@ -255,7 +268,7 @@ public class MagicController {
     }
     @RequestMapping(value = {"/getAllCommanders"}, method = GET)
     public ResponseEntity<?> getAllCommanders(HttpServletRequest headers) {
-        StringBuilder builder = new StringBuilder("SELECT commanders FROM life WHERE game = '");
+        StringBuilder builder = new StringBuilder("SELECT commander, player FROM commanders WHERE game = '");
         builder.append(headers.getHeader("gameId"));
         builder.append("';");
         try {
