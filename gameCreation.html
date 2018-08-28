@@ -5,18 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Game Creation</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
-        <script src="cookieCreator.js"></script>
+        <script src="gameCreation.js"></script>
 </head>
 
 <h1>Game Creation</h1>
 <body style= 'text-align: center;color:white'>
         Number of players
-    <input type="number" id="player" name="player" value="">
-    <input type='number' id='lifeTotal' name='lifeTotal' value='40'>
+    <input type="number" id="gameSize" name="player" value="">
+    <input type='number' id='baseLife' name='lifeTotal' value='40'>
         LifeTotal
     <br/>
     <div id="container"></div>
-    <button><a href = 'playerCreation.html' onclick="createCookie('playerAmt',document.getElementById('player').value,1)">Enter Match</a></button>
+    <button><a href = 'playerCreation.html' onclick="createLocalGameStorage()">Enter Match</a></button>
+    <button onClick = 'checkLocalLog()'>Log_Test</button>
 </body>
 <footer>
         <a href='index.html'>Home</a>

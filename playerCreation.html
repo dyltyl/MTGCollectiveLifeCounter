@@ -3,7 +3,7 @@
 <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Home</title>
+        <title>playerCreation</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
         <script src="playerCreation.js"></script> 
 </head>
@@ -13,12 +13,13 @@
 </h1>
 <body style= 'text-align: center;color:white'>
     Your Name
-    <input type ="text" id name= 'playerName'>
+    <input type ="text" id ='playerName'>
     Commander's Name
     <input type = 'text' id = 'commanderName'>
     <input type= 'checkbox' id ='partnerBool' name = 'partner' value ='false' onClick = 'createInputField()'> Partner?
     <div id='root'></div>
-    <button><a href = 'waitingLobby.html'>Enter Match</a></button>
+    <button onclick= 'createEntranceStorage()'><a href = 'waitingLobby.html'>Enter Match</a></button>
+    <!-- <button onClick = 'checkLocalLog()'>checkLocalLog</button> -->
 </body>
 <footer>
         <a href='index.html'>Home</a>
