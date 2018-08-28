@@ -39,11 +39,7 @@ function createInputField(){
     }
 }
 
-function createEntranceCookies(){
-    createCookie('playerName', document.getElementById(playerName),1);
-    createCookie('commanderName',document.getElementById(commanderName),1);
-    if(document.getElementById(partnerBool).value != false){
-        createCookie('commanderName2', document.getElementById(partnerBool),1);
-    }
-    
+function createEntranceStorage(){
+    localStorage.setItem('playerName', JSON.stringify(document.getElementById('playerName')));
+    localStorage.setItem('commanderName', JSON.stringify(document.getElementById('commanderName')));
 }
