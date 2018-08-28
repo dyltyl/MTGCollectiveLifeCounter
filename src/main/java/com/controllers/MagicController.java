@@ -260,8 +260,8 @@ public class MagicController {
         builder.append("';");
         try {
             List<String[]> result = Application.query(builder.toString());
-            System.out.println(Application.getJson(result, true));
-            return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
+            System.out.println(Application.getJson(result.get(0), true));
+            return new ResponseEntity<>(result.get(0), new HttpHeaders(), HttpStatus.OK);
         }
         catch(SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
