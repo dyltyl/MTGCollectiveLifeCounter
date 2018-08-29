@@ -7,9 +7,13 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -96,6 +100,18 @@ public class Application {
         catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    @Configuration
+    public class JacksonPrettyPrintConfiguration extends WebMvcConfigurationSupport {
+        @Override
+        protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+            for(HttpMessageConverter<?> converter : converters) {
+                if(converter instanceof MappingJackson2HttpMessageConverter) {
+                    MappingJackson2HttpMessageConverter jacksonConverter = (MappingJackson2HttpMessageConverter) converter;
+                    jacksonConverter.setPrettyPrint(true);
+                }
+            }
         }
     }
 }
