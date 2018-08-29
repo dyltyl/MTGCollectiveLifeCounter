@@ -13,28 +13,31 @@ function checkLocalLog(){
 
 
 const Data={
-    gameId : "te262stID",
-    gamePassword : "Hello",
+    gameId : "IAMTHEALPXCVBHA",
+    gamePassword : "ANDTHEOMEGA",
     startingLife : 40
 }
 console.log(JSON.stringify(Data));
 const otherParam={
+    method: "POST",
+    body: JSON.stringify(Data),
     headers:{
         "content-type": "application/json; charset=UTF-8"
-    },
-    body: (Data),
-    method: "POST"
+    }
 };
 
-/*
+
+
 function dbCreateGame(){
     console.log('dbCreateGame() called');
     fetch(url, otherParam)
-    // .then(data=>{return data.json()})
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
-}*/
+}
 
+
+
+/*
 function dbCreateGame(){
     fetch(url, {
         method: 'post',
@@ -42,6 +45,6 @@ function dbCreateGame(){
     }).then(function(response){
         return response.json();
     })
-}
+}*/
 
 dbCreateGame();
