@@ -374,4 +374,33 @@ public class MagicController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @RequestMapping(value = {"/player"}, method = POST)
+    public ResponseEntity<?> updatePlayer(HttpServletRequest headers, @RequestBody Player player) {
+        StringBuilder builder = new StringBuilder("UPDATE players SET email = '");
+        builder.append(player.getEmail());
+        if(player.getPassword() != null) {
+            builder.append("', password = '");
+            builder.append(player.getPassword());
+        }
+        if(player.getName() != null) {
+            builder.append("', name = '");
+            builder.append(player.getName());
+        }
+        builder.append("' WHERE email = '");
+        builder.append(headers.getHeader("email"));
+        builder.append("' RETURNING *;");
+        try {
+            String[][] result = Application.query(builder.toString());
+            if(result.length < 1)
+                return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+            Player newPlayer = player;
+            newPlayer.setEmail(result[0][0]);
+            newPlayer.setPassword("**********");
+            newPlayer.setName(result[0][1]);
+            return new ResponseEntity<>(newPlayer, new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

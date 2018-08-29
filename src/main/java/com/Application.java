@@ -70,7 +70,7 @@ public class Application {
                 }
                 myList.add(arr);
             }
-            return myList.toArray(new String[myList.size()][myList.get(0).length]);
+            return myList.toArray(new String[myList.size()][result.getMetaData().getColumnCount()]);
         }
         catch(SQLException exception) {
             throw exception;
