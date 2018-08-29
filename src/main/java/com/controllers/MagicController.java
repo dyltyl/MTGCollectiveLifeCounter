@@ -397,7 +397,7 @@ public class MagicController {
             SmallPlayer newPlayer = new SmallPlayer();
             newPlayer.setEmail(result[0][0]);
             newPlayer.setPassword("**********");
-            newPlayer.setName(result[0][1]);
+            newPlayer.setName(result[0][2]);
             return new ResponseEntity<>(newPlayer, new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
