@@ -1,3 +1,5 @@
+//Apply PArtner Commanders when applicable 
+
 var lSPlayerName = localStorage.getItem('playerName');
 var lSCommanderName = localStorage.getItem('commanderName');
 var gameSize = localStorage.getItem('gameSize');
@@ -10,50 +12,44 @@ function checkLog(){
     console.log('GameSize: ' + gameSize);
     console.log('BaseLife: ' + baseLife );
 }
-
-function createEmptySlot(){
+/**
+ * Creates and emptySlot element within JS, intended to be replaced by a 
+ * createPlayerSlot element
+ */
+function createEmptySlot(){ 
     var root = document.getElementById('root');
     var emptySlot = document.createElement('div');
-    emptySlot.class = 'emptySlot';
+    emptySlot.setAttribute('class','playerSlot');
     var txtNode = document.createTextNode('...Waiting for player...');
     emptySlot.appendChild(txtNode);
 
-    // root.appendChild(emptySlot);
-return emptySlot;
+    //root.appendChild(emptySlot);
+    return emptySlot;
 }
+
 function createPlayerSlot(name, commanderOne, commanderTwo){
     var root = document.getElementById('root');
     var playerSlot = document.createElement('div');
     playerSlot.setAttribute('class','playerSlot');
-    var playerName = document.createElement('p');
-        playerName.innerHTML = name;
-
-    var c1 = document.createElement('p');
-        c1.innerHTML = commanderOne;
-
+    var playerText = document.createTextNode(lSPlayerName + ' || ' + lSCommanderName);
+        
+/*
     if (commanderTwo != undefined){
-        var c2 = document.createElement('p');
-            c2.innerHTML = commanderTwo;
-            playerSlot.appendChild(c2);
+        playerText += " || "  +
     }
+*/
 
-    playerSlot.appendChild(playerName);
-    playerSlot.appendChild(c1);
+    playerSlot.appendChild(playerText);
+    // playerSlot.appendChild(c1);
     // root.appendChild(playerSlot);
     return playerSlot;
 }
 
 function createPlayerSlots(){
-    var root = document.getElementById('root');
-    var availSlots = [gameSize];
-    var test = createEmptySlot();
-
-    root.appendChild(test);
-
-    /*
-    for(var i = 0; i<gameSize; i++){
-        root.appendChild(root.appendChild(createEmptySlot()));
-    }*/
+    for(i=0; i<gameSize-1; i++){
+        root.appendChild(createEmptySlot());
+    }
 }
 
+root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName));
 createPlayerSlots();

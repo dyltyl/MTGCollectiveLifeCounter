@@ -19,6 +19,13 @@ h1{
     padding:1%
 }
 
+.playerSlot{
+    text-align: center;
+    color:rgb(220,220,220);
+    border:rgb(220,220,220) solid;
+    padding: 1%;
+}
+
 .column {
     text-align: center;
     flex: 50%;
