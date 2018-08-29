@@ -35,7 +35,7 @@ public class MagicController {
         builder.append(game.getStartingLife());
         builder.append(");");
         try {
-            Application.queryNoResults(builder.toString());
+            Application.query(builder.toString());
         }
         catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

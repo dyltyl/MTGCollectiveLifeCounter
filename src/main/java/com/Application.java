@@ -82,14 +82,6 @@ public class Application {
                 connection.close();
         }
     }
-    public static void queryNoResults(String query) throws SQLException {
-        System.out.println(query);
-        Connection connection = dataSource.getConnection();
-        Statement statement = connection.createStatement();
-        statement.execute(query);
-        statement.close();
-        connection.close();
-    }
     public static String getJson(Object object, boolean pretty) {
         ObjectMapper mapper = new ObjectMapper();
         if(pretty)
