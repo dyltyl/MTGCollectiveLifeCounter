@@ -4,6 +4,7 @@ import com.Application;
 import com.objects.CommanderDamage;
 import com.objects.Game;
 import com.objects.Player;
+import com.objects.SmallPlayer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -393,7 +394,7 @@ public class MagicController {
             String[][] result = Application.query(builder.toString());
             if(result.length < 1)
                 return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
-            Player newPlayer = player;
+            SmallPlayer newPlayer = new SmallPlayer();
             newPlayer.setEmail(result[0][0]);
             newPlayer.setPassword("**********");
             newPlayer.setName(result[0][1]);
