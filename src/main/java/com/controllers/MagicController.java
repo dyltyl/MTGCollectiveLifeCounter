@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
-import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -116,10 +115,7 @@ public class MagicController {
         builder.append("';");
         try {
             String[][] result = Application.query(builder.toString());
-            if(result.length > 0) {
-                return true;
-            }
-            return false;
+            return result.length > 0;
         }
         catch(Exception e) {
             e.printStackTrace();
