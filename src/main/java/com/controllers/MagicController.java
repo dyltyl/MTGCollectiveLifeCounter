@@ -304,12 +304,12 @@ public class MagicController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/player/{email}"}, method = GET)
-    public ResponseEntity<?> getPlayer(HttpServletRequest headers, @PathVariable String email) {
+    @RequestMapping(value = {"/player"}, method = GET)
+    public ResponseEntity<?> getPlayer(HttpServletRequest headers) {
         StringBuilder builder = new StringBuilder("SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email  WHERE game = '");
         builder.append(headers.getHeader("gameId"));
         builder.append("' AND life.email = '");
-        builder.append(email);
+        builder.append(headers.getHeader("email"));
         builder.append("';");
         try {
             String[][] result = Application.query(builder.toString());
