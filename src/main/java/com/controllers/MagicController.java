@@ -282,7 +282,7 @@ public class MagicController {
     }
     @RequestMapping(value = {"/getAllPlayers"}, method = GET)
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
-        StringBuilder builder = new StringBuilder("SELECT name, players.email, life, poison, experience FROM life JOIN players ON players.email = life.email  WHERE game = '");
+        StringBuilder builder = new StringBuilder("SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email  WHERE game = '");
         builder.append(headers.getHeader("gameId"));
         builder.append("';");
         Player[] players;
