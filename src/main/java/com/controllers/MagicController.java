@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -277,7 +275,7 @@ public class MagicController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/getAllPlayers"}, method = GET)
+    @RequestMapping(value = {"/getAllPlayers"}, method = GET) //TODO: errors when there are none
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
         StringBuilder builder = new StringBuilder("SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email  WHERE game = '");
         builder.append(headers.getHeader("gameId"));
@@ -337,6 +335,40 @@ public class MagicController {
         try {
             String[][] result = Application.query(builder.toString());
             return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/game/{gameId}"}, method = DELETE)
+    public ResponseEntity<?> deleteGame(@PathVariable String gameId) {
+        StringBuilder builder = new StringBuilder("DELETE FROM games WHERE id = '");
+        builder.append(gameId);
+        builder.append("' RETURNING id;");
+        try {
+            String[][] result = Application.query(builder.toString());
+            if(result.length == 0) {
+                return new ResponseEntity<>("Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>("Deleted game: " + result[0][0],new HttpHeaders(), HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/player"}, method = DELETE)
+    public ResponseEntity<?> deletePlayer(HttpServletRequest headers) {
+        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
+            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
+        }
+        StringBuilder builder = new StringBuilder("DELETE FROM players WHERE email = '");
+        builder.append(headers.getHeader("email"));
+        builder.append("' RETURNING email;");
+        try {
+            String[][] result = Application.query(builder.toString());
+            if(result.length == 0) {
+                return new ResponseEntity<>("Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>("Deleted player: " + result[0][0],new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
