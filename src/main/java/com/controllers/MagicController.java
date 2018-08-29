@@ -282,7 +282,7 @@ public class MagicController {
     }
     @RequestMapping(value = {"/getAllPlayers"}, method = GET)
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
-        StringBuilder builder = new StringBuilder("SELECT email, life, poison, experience FROM life WHERE game = '");
+        StringBuilder builder = new StringBuilder("SELECT name, players.email, life, poison, experience FROM life JOIN players ON players.email = life.email  WHERE game = '");
         builder.append(headers.getHeader("gameId"));
         builder.append("';");
         Player[] players;
@@ -295,23 +295,13 @@ public class MagicController {
                 players[i].setLife(Integer.parseInt(result[i][1]));
                 players[i].setPoison(Integer.parseInt(result[i][2]));
                 players[i].setExperience(Integer.parseInt(result[i][3]));
+                players[i].setName(result[i][4]);
+
             }
+            return new ResponseEntity<>(players, new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        builder = new StringBuilder("SELECT name FROM players WHERE game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("';");
-        try {
-            String[][] result = Application.query(builder.toString());
-            for(int i = 0; i < result.length; i++) {
-                players[i].setName(result[i][0]);
-            }
-        }
-        catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(players, new HttpHeaders(), HttpStatus.OK);
     }
 }
