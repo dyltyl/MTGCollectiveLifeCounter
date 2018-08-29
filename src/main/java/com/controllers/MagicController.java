@@ -27,6 +27,7 @@ public class MagicController {
     }
     @RequestMapping(value={"/createGame"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
+        System.out.println(Application.getJson(game, true));
         StringBuilder builder = new StringBuilder("INSERT INTO games (id, password, starting_life) VALUES ('");
         builder.append(game.getGameId());
         builder.append("', '");
@@ -320,6 +321,26 @@ public class MagicController {
             player.setExperience(Integer.parseInt(result[0][3]));
             player.setName(result[0][4]);
             return new ResponseEntity<>(player, new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/commanderDamage/{commander}"}, method = GET)
+    public ResponseEntity<?> getCommanderDamage(HttpServletRequest headers, @PathVariable String commander) {
+        //SELECT damage FROM commander_damage WHERE player = 'Dylan@gmail.com' AND enemy_player = 'tyler@gmail.com' AND commander = 'Narset' AND game = 'newGame';
+        StringBuilder builder = new StringBuilder("SELECT damage FROM commander_damage WHERE player = '");
+        builder.append(headers.getHeader("email"));
+        builder.append("' AND enemy_player = '");
+        builder.append(headers.getHeader("enemyPlayer"));
+        builder.append("' AND commander = '");
+        builder.append(commander);
+        builder.append("' AND game = '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("';");
+        try {
+            String[][] result = Application.query(builder.toString());
+            return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
