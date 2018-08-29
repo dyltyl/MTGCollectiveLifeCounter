@@ -351,6 +351,7 @@ public class MagicController {
         @ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
         protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
             String bodyOfResponse = Application.getJson(request, true);
+            System.out.println(bodyOfResponse);
             return handleExceptionInternal(ex, bodyOfResponse,
                     new HttpHeaders(), HttpStatus.CONFLICT, request);
         }
