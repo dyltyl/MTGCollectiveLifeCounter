@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -24,7 +22,7 @@ public class MagicController {
     public ResponseEntity<String> getStatus() {
         return new ResponseEntity<>("Server is online", new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value={"/createGame"}, method = POST)
+    @RequestMapping(value={"/createGame"}, method = OPTIONS)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
         StringBuilder builder = new StringBuilder("INSERT INTO games (id, password, starting_life) VALUES ('");
