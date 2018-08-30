@@ -516,7 +516,7 @@ public class MagicController {
     }
     @RequestMapping(value = {"/gameSearch"}, method = GET)
     public ResponseEntity<?> searchForGame(HttpServletRequest headers) {
-        String query = "SELECT * FROM games WHERE id LIKE ?;";
+        String query = "SELECT * FROM games WHERE UPPER(id) LIKE UPPER(?);";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
