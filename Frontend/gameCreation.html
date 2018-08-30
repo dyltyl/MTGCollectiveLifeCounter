@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Game Creation</title>        
+        <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
+    </head>
+
+<h1>Game Creation</h1>
+<body style= 'text-align: center;color:white'>
+    <div>
+            Number of players
+        <input type="number" id="gameSize" name="gS" placeholder="2">
+        <input type='number' id='baseLife' name='lifeTotal' value='40'>
+            LifeTotal
+        <br/>
+            Game Name
+        <input type='text' id='gameName' name = 'gN' placeholder ='Name me for Later!'>
+        <input type='text' id='gamePass' name = 'gP' placeholder ='Hold your secrets Here'>
+            Password
+        <br/>
+        <!-- <button onClick = 'checkLocalLog()'>Log_Test</button> -->
+    </div>
+    <div>
+        <!-- <button onload = 'getInputContent()' onclick="getInputContent()">getInputContent</button> -->
+        <button id = 'cG' onload = 'createGame(); insertLink()' onclick= "createGame(); insertLink()">Create Game</button>
+        <p id= 'dbInsert'></p>
+    </div>
+</body>
+<script src="gameCreation.js"></script>
+<footer>
+        <a href='index.html'>Home</a>
+</footer>
+</html>
