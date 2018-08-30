@@ -319,7 +319,7 @@ public class MagicController {
                     }
                 }
                 catch(SQLException e) {
-                    System.out.println(e);
+                    e.printStackTrace();
                 }
 
                 players[i].setCommanderDamage(map);
@@ -495,5 +495,23 @@ public class MagicController {
             }
         }
         return new ResponseEntity<>(player, new HttpHeaders(), HttpStatus.OK);
+    }
+    @RequestMapping(value = {"/gamesPlayerIsIn"}, method = GET)
+    public ResponseEntity<?> getGamesPlayerIsIn(HttpServletRequest headers) {
+        String query = "SELECT game FROM life WHERE email = ?;";
+        try {
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("email"));
+            String[][] result = Application.query(statement);
+            String[] games = new String[result.length];
+            for(int i = 0; i < result.length; i++) {
+                games[i] = result[i][0];
+            }
+            return new ResponseEntity<>(games, new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
