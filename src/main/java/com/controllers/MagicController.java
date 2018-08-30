@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -80,7 +81,7 @@ public class MagicController {
             builder.append(commander);
             builder.append("');");
             try {
-                Application.query(builder.toString());
+                Application.queryNoResults(builder.toString());
             }
             catch (SQLException e) {
                 e.printStackTrace();
@@ -293,6 +294,26 @@ public class MagicController {
                 players[i].setPoison(Integer.parseInt(result[i][2]));
                 players[i].setExperience(Integer.parseInt(result[i][3]));
                 players[i].setName(result[i][4]);
+                HashMap<String, HashMap<String, Integer>> map = new HashMap<>();
+                builder = new StringBuilder("SELECT enemy_player, commander, damage FROM commander_damage WHERE game = '");
+                builder.append(headers.getHeader("gameId"));
+                builder.append("' AND player = '");
+                builder.append(players[i].getEmail());
+                builder.append("';");
+                try {
+                    String[][] result2 = Application.query(builder.toString());
+                    for(String[] arr : result2) {
+                        if(!map.containsKey(arr[0])) {
+                            HashMap<String, Integer> commanderDamage = new HashMap<>();
+                            map.put(arr[0], commanderDamage);
+                        }
+                        map.get(arr[0]).put(arr[1], Integer.parseInt(arr[2]));
+                    }
+                }
+                catch(SQLException e) {
+                }
+
+                players[i].setCommanderDamage(map);
 
             }
             return new ResponseEntity<>(players, new HttpHeaders(), HttpStatus.OK);
