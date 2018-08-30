@@ -84,6 +84,7 @@ public class Application {
     }
     public static String[][] query(PreparedStatement statement) throws SQLException {
         try {
+            System.out.println(statement.toString());
             ResultSet result = statement.executeQuery();
             List<String[]> myList = new ArrayList<>();
             while(result.next()) {
@@ -112,6 +113,7 @@ public class Application {
         connection.close();
     }
     public static void queryNoResults(PreparedStatement statement) throws SQLException {
+        System.out.println(statement.toString());
         statement.execute();
         statement.close();
     }
