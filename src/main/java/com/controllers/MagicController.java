@@ -504,6 +504,7 @@ public class MagicController {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("email"));
             String[][] result = Application.query(statement);
+            connection.close();
             String[] games = new String[result.length];
             for(int i = 0; i < result.length; i++) {
                 games[i] = result[i][0];
@@ -522,6 +523,7 @@ public class MagicController {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%"+headers.getHeader("gameId")+"%");
             String[][] result = Application.query(statement);
+            connection.close();
             String[] games = new String[result.length];
             for(int i = 0; i < result.length; i++) {
                 games[i] = result[i][0];
@@ -530,6 +532,35 @@ public class MagicController {
         }
         catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/startGame"}, method = GET)
+    public ResponseEntity<?> startGame(HttpServletRequest headers) {
+        String query = "UPDATE game SET started = true WHERE id = ?";
+        try {
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("gameId"));
+            Application.queryNoResults(statement);
+            return new ResponseEntity<>("Success", new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/hasGameStarted"}, method = GET)
+    public ResponseEntity<Boolean> hasGameStarted(HttpServletRequest headers) {
+        String query = "SELECT started FROM games WHERE id = ?;";
+        try {
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
+            return new ResponseEntity<>(Boolean.parseBoolean(result[0][0]), new HttpHeaders(), HttpStatus.OK);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
 }
