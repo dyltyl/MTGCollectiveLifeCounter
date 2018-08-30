@@ -429,4 +429,46 @@ public class MagicController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @RequestMapping(value = {"/life"}, method = POST)
+    public ResponseEntity<?> updateLife(HttpServletRequest headers, @RequestBody Player player) {
+        StringBuilder builder = new StringBuilder("UPDATE life SET life = ");
+        builder.append(player.getLife());
+        builder.append(", poison = ");
+        builder.append(player.getPoison());
+        builder.append(", experience = ");
+        builder.append(player.getCommanderDamage());
+        builder.append(" WHERE email = '");
+        builder.append(player.getEmail());
+        builder.append("' AND game = '");
+        builder.append(headers.getHeader("gameId"));
+        builder.append("';");
+        try {
+            Application.queryNoResults(builder.toString());
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        for(String enemyPlayer : player.getCommanderDamage().keySet()) {
+            for(String commander : player.getCommanderDamage().get(enemyPlayer).keySet()) {
+                builder = new StringBuilder("INSERT INTO commander_damage (player, enemy_player, game, commander, damage) VALUES ('");
+                builder.append(player.getEmail());
+                builder.append("', '");
+                builder.append(enemyPlayer);
+                builder.append("', '");
+                builder.append(headers.getHeader("gameId"));
+                builder.append("', '");
+                builder.append(commander);
+                builder.append("', ");
+                builder.append(player.getCommanderDamage().get(enemyPlayer).get(commander));
+                builder.append(") ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage");
+                try {
+                    Application.queryNoResults(builder.toString());
+                }
+                catch (SQLException e) {
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                }
+            }
+        }
+        return new ResponseEntity<>(player, new HttpHeaders(), HttpStatus.OK);
+    }
 }

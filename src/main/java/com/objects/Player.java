@@ -7,9 +7,9 @@ import java.util.HashMap;
 public class Player {
     private String name, email, password;
     private int life, poison, experience;
-    private HashMap<String, Integer> commanderDamage;
+    private HashMap<String, HashMap<String, Integer>> commanderDamage;
 
-    public Player(String email, String password, String name, int life, int poison, int experience, HashMap<String, Integer> commanderDamage) {
+    public Player(String email, String password, String name, int life, int poison, int experience, HashMap<String, HashMap<String, Integer>> commanderDamage) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -33,7 +33,7 @@ public class Player {
     public int getLife() {
         return life;
     }
-    public HashMap<String, Integer> getCommanderDamage() {
+    public HashMap<String, HashMap<String, Integer>> getCommanderDamage() {
         return commanderDamage;
     }
     public int getPoison() {
@@ -60,7 +60,7 @@ public class Player {
     public void setPassword(String password) {
         this.password = password;
     }
-    public void setCommanderDamage(HashMap<String, Integer> commanderDamage) {
+    public void setCommanderDamage(HashMap<String, HashMap<String, Integer>> commanderDamage) {
         this.commanderDamage = commanderDamage;
     }
     public void addLife(int life) {
