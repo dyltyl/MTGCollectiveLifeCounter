@@ -34,9 +34,9 @@ public class MagicController {
         try {
             connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(0, game.getGameId());
-            statement.setString(1, game.getGamePassword());
-            statement.setInt(2, game.getStartingLife());
+            statement.setString(1, game.getGameId());
+            statement.setString(2, game.getGamePassword());
+            statement.setInt(3, game.getStartingLife());
             Application.queryNoResults(statement);
 
             connection.close();
