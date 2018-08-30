@@ -82,6 +82,27 @@ public class Application {
                 connection.close();
         }
     }
+    public static String[][] query(PreparedStatement statement) throws SQLException {
+        try {
+            ResultSet result = statement.executeQuery();
+            List<String[]> myList = new ArrayList<>();
+            while(result.next()) {
+                String[] arr = new String[result.getMetaData().getColumnCount()];
+                for(int i = 0; i < arr.length; i++) {
+                    arr[i] = result.getString(i+1);
+                }
+                myList.add(arr);
+            }
+            return myList.toArray(new String[myList.size()][result.getMetaData().getColumnCount()]);
+        }
+        catch(SQLException exception) {
+            throw exception;
+        }
+        finally {
+            if(statement != null)
+                statement.close();
+        }
+    }
     public static void queryNoResults(String query) throws SQLException {
         System.out.println(query);
         Connection connection = dataSource.getConnection();
@@ -89,6 +110,10 @@ public class Application {
         statement.execute(query);
         statement.close();
         connection.close();
+    }
+    public static void queryNoResults(PreparedStatement statement) throws SQLException {
+        statement.execute();
+        statement.close();
     }
     public static String getJson(Object object, boolean pretty) {
         ObjectMapper mapper = new ObjectMapper();

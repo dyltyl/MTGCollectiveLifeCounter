@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -27,15 +29,17 @@ public class MagicController {
     @RequestMapping(value={"/createGame"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
-        StringBuilder builder = new StringBuilder("INSERT INTO games (id, password, starting_life) VALUES ('");
-        builder.append(game.getGameId());
-        builder.append("', '");
-        builder.append(game.getGamePassword());
-        builder.append("', ");
-        builder.append(game.getStartingLife());
-        builder.append(");");
+        String query = "INSERT INTO games (id, password, starting_life) VALUES ('?', '?', ?);";
+        Connection connection = null;
         try {
-            Application.queryNoResults(builder.toString());
+            connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(0, game.getGameId());
+            statement.setString(1, game.getGamePassword());
+            statement.setInt(2, game.getStartingLife());
+            Application.queryNoResults(statement);
+
+            connection.close();
         }
         catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
