@@ -514,4 +514,22 @@ public class MagicController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @RequestMapping(value = {"/gameSearch"}, method = GET)
+    public ResponseEntity<?> searchForGame(HttpServletRequest headers) {
+        String query = "SELECT * FROM games WHERE id LIKE ?;";
+        try {
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, "%"+headers.getHeader("email")+"%");
+            String[][] result = Application.query(statement);
+            String[] games = new String[result.length];
+            for(int i = 0; i < result.length; i++) {
+                games[i] = result[i][0];
+            }
+            return new ResponseEntity<>(games, new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
