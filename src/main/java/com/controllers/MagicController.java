@@ -520,7 +520,7 @@ public class MagicController {
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, "%"+headers.getHeader("email")+"%");
+            statement.setString(1, "%"+headers.getHeader("gameId")+"%");
             String[][] result = Application.query(statement);
             String[] games = new String[result.length];
             for(int i = 0; i < result.length; i++) {
