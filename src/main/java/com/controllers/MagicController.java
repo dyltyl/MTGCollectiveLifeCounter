@@ -458,7 +458,7 @@ public class MagicController {
         builder.append(", poison = ");
         builder.append(player.getPoison());
         builder.append(", experience = ");
-        builder.append(player.getCommanderDamage());
+        builder.append(player.getExperience());
         builder.append(" WHERE email = '");
         builder.append(player.getEmail());
         builder.append("' AND game = '");
