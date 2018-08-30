@@ -536,7 +536,7 @@ public class MagicController {
     }
     @RequestMapping(value = {"/startGame"}, method = GET)
     public ResponseEntity<?> startGame(HttpServletRequest headers) {
-        String query = "UPDATE game SET started = true WHERE id = ?";
+        String query = "UPDATE games SET started = true WHERE id = ?";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -557,7 +557,9 @@ public class MagicController {
             statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
             connection.close();
-            return new ResponseEntity<>(Boolean.parseBoolean(result[0][0]), new HttpHeaders(), HttpStatus.OK);
+            if(result.length > 0 && result[0].length > 0)
+                return new ResponseEntity<>(Boolean.parseBoolean(result[0][0]), new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
