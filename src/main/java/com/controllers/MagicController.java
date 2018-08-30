@@ -30,15 +30,13 @@ public class MagicController {
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
         String query = "INSERT INTO games (id, password, starting_life) VALUES (?, ?, ?);";
-        Connection connection = null;
         try {
-            connection = Application.getDataSource().getConnection();
+            Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, game.getGameId());
             statement.setString(2, game.getGamePassword());
             statement.setInt(3, game.getStartingLife());
             Application.queryNoResults(statement);
-
             connection.close();
         }
         catch (SQLException e) {
@@ -48,15 +46,15 @@ public class MagicController {
     }
     @RequestMapping(value={"/createPlayer"}, method = POST)
     public ResponseEntity<?> createPlayer(@RequestBody Player player) {
-        StringBuilder builder = new StringBuilder("INSERT INTO players (email, password, name) VALUES('");
-        builder.append(player.getEmail());
-        builder.append("', '");
-        builder.append(player.getPassword());
-        builder.append("', '");
-        builder.append(player.getName());
-        builder.append("') RETURNING email;");
+        String query = "INSERT INTO players (email, password, name) VALUES(?, ?, ?) RETURNING email";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, player.getEmail());
+            statement.setString(2, player.getPassword());
+            statement.setString(3, player.getName());
+            String[][] result = Application.query(statement);
+            connection.close();
             String email = result[0][0];
             return new ResponseEntity<>(email,new HttpHeaders(), HttpStatus.OK);
         }
@@ -77,30 +75,29 @@ public class MagicController {
             return new ResponseEntity<>("Starting life must be greater than 0", HttpStatus.BAD_REQUEST);
         }
         for(String commander : commanders) {
-            StringBuilder builder = new StringBuilder("INSERT INTO commanders (game, player, commander) VALUES ('");
-            builder.append(headers.getHeader("gameId"));
-            builder.append("', '");
-            builder.append(headers.getHeader("email"));
-            builder.append("', '");
-            builder.append(commander);
-            builder.append("');");
+            String query = "INSERT INTO commanders (game, player, commander) VALUES (?, ?, ?);";
             try {
-                Application.queryNoResults(builder.toString());
+                Connection connection = Application.getDataSource().getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, headers.getHeader("gameId"));
+                statement.setString(2, headers.getHeader("email"));
+                statement.setString(3, commander);
+                Application.queryNoResults(statement);
+                connection.close();
             }
             catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        StringBuilder builder = new StringBuilder("INSERT INTO life (email, game, life) VALUES ('");
-        builder.append(headers.getHeader("email"));
-        builder.append("', '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("', ");
-        builder.append(startingLife);
-        builder.append(") RETURNING email;");
-
+        String query = "INSERT INTO life (email, game, life) VALUES (?, ?, ?) RETURNING email;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("email"));
+            statement.setString(2, headers.getHeader("gameId"));
+            statement.setInt(3, startingLife);
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length > 0) {
                 String email = result[0][0];
                 return new ResponseEntity<>(email, new HttpHeaders(), HttpStatus.OK);
@@ -112,13 +109,14 @@ public class MagicController {
         }
     }
     public boolean verifyGame(String gameId, String gamePassword) {
-        StringBuilder builder = new StringBuilder("SELECT password FROM games WHERE id = '");
-        builder.append(gameId);
-        builder.append("' AND password = '");
-        builder.append(gamePassword);
-        builder.append("';");
+        String query = "SELECT id FROM games WHERE id = ? AND password = ?;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, gameId);
+            statement.setString(2, gamePassword);
+            String[][] result = Application.query(statement);
+            connection.close();
             return result.length > 0;
         }
         catch(Exception e) {
@@ -127,11 +125,13 @@ public class MagicController {
         }
     }
     public int getStartingLife(String gameId) {
-        StringBuilder builder = new StringBuilder("SELECT starting_life FROM games WHERE id = '");
-        builder.append(gameId);
-        builder.append("';");
+        String query = "SELECT starting_life FROM games WHERE id = ?";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, gameId);
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length > 0) {
                 return Integer.parseInt(result[0][0]);
             }
@@ -142,15 +142,15 @@ public class MagicController {
             return -1;
         }
     }
-   public boolean verifyUser(String email, String password) {
-        StringBuilder builder = new StringBuilder("SELECT email FROM players WHERE email = '");
-        builder.append(email);
-        builder.append("' AND password = '");
-        builder.append(password); //TODO: Encrypt password
-        builder.append("';");
-
+    public boolean verifyUser(String email, String password) {
+        String query = "SELECT email FROM players WHERE email = ? AND password = ?;"; //TODO: encrypt password
        try {
-           String[][] result = Application.query(builder.toString());
+           Connection connection = Application.getDataSource().getConnection();
+           PreparedStatement statement = connection.prepareStatement(query);
+           statement.setString(1, email);
+           statement.setString(2, password);
+           String[][] result = Application.query(statement);
+           connection.close();
            if(result.length == 1) {
                return true;
            }
@@ -159,23 +159,23 @@ public class MagicController {
        }
        return false;
    }
-   @RequestMapping(value = {"/setLife/{life}"}, method = PUT)
-   public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
+    @RequestMapping(value = {"/setLife/{life}"}, method = PUT)
+    public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
        if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
            return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
        }
        if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
            return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
        }
-        StringBuilder builder = new StringBuilder("UPDATE life SET life = ");
-        builder.append(life);
-        builder.append(" WHERE email = '");
-        builder.append(headers.getHeader("email"));
-        builder.append("' AND game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("' RETURNING life;");
+        String query = "UPDATE life SET life = ? WHERE email = ? AND game = ? RETURNING life";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, life);
+            statement.setString(2, headers.getHeader("email"));
+            statement.setString(3, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length > 0) {
                 return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
@@ -193,15 +193,15 @@ public class MagicController {
         if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
-        StringBuilder builder = new StringBuilder("UPDATE life SET poison = ");
-        builder.append(poison);
-        builder.append(" WHERE email = '");
-        builder.append(headers.getHeader("email"));
-        builder.append("' AND game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("' RETURNING poison;");
+        String query = "UPDATE life SET poison = ? WHERE email = ? AND game = ? RETURNING poison";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, poison);
+            statement.setString(2, headers.getHeader("email"));
+            statement.setString(3, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length > 0) {
                 return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
@@ -219,15 +219,15 @@ public class MagicController {
         if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
-        StringBuilder builder = new StringBuilder("UPDATE life SET experience = ");
-        builder.append(experience);
-        builder.append(" WHERE email = '");
-        builder.append(headers.getHeader("email"));
-        builder.append("' AND game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("' RETURNING experience;");
+        String query = "UPDATE life SET experience = ? WHERE email = ? AND game = ? RETURNING experience";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, experience);
+            statement.setString(2, headers.getHeader("email"));
+            statement.setString(3, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length > 0) {
                 return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
@@ -245,19 +245,18 @@ public class MagicController {
         if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
-        StringBuilder builder = new StringBuilder("INSERT INTO commander_damage (player, enemy_player, game, commander, damage) VALUES ('");
-        builder.append(damage.getPlayer());
-        builder.append("', '");
-        builder.append(damage.getEnemyPlayer());
-        builder.append("', '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("', '");
-        builder.append(damage.getCommander());
-        builder.append("', ");
-        builder.append(damage.getDamage());
-        builder.append(") ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage RETURNING damage;");
+        String query = "INSERT INTO commander_damage (player, enemy_player, game, commander, damage) Values (?, ?, ?, ?, ?) " +
+                "ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage RETURNING damage;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, damage.getPlayer());
+            statement.setString(2, damage.getEnemyPlayer());
+            statement.setString(3, headers.getHeader("gameId"));
+            statement.setString(4, damage.getCommander());
+            statement.setInt(5, damage.getDamage());
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length > 0) {
                 return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
@@ -269,11 +268,13 @@ public class MagicController {
     }
     @RequestMapping(value = {"/getAllCommanders"}, method = GET)
     public ResponseEntity<?> getAllCommanders(HttpServletRequest headers) {
-        StringBuilder builder = new StringBuilder("SELECT commander, player FROM commanders WHERE game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("';");
+        String query = "SELECT commander, player FROM commanders WHERE game = ?;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
             System.out.println(Application.getJson(result, true));
             return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
         }
@@ -283,12 +284,14 @@ public class MagicController {
     }
     @RequestMapping(value = {"/getAllPlayers"}, method = GET) //TODO: errors when there are none
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
-        StringBuilder builder = new StringBuilder("SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email  WHERE game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("';");
+        String query = "SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = ?;";
         Player[] players;
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
             players = new Player[result.length];
             for(int i = 0; i < result.length; i++) {
                 players[i] = new Player();
@@ -299,13 +302,14 @@ public class MagicController {
                 players[i].setExperience(Integer.parseInt(result[i][3]));
                 players[i].setName(result[i][4]);
                 HashMap<String, HashMap<String, Integer>> map = new HashMap<>();
-                builder = new StringBuilder("SELECT enemy_player, commander, damage FROM commander_damage WHERE game = '");
-                builder.append(headers.getHeader("gameId"));
-                builder.append("' AND player = '");
-                builder.append(players[i].getEmail());
-                builder.append("';");
+                query = "SELECT enemy_player, commander, damage FROM commander_damage WHERE game = ? AND player = ?;";
                 try {
-                    String[][] result2 = Application.query(builder.toString());
+                    connection = Application.getDataSource().getConnection();
+                    statement = connection.prepareStatement(query);
+                    statement.setString(1, headers.getHeader("gameId"));
+                    statement.setString(2, players[i].getEmail());
+                    String[][] result2 = Application.query(statement);
+                    connection.close();
                     for(String[] arr : result2) {
                         if(!map.containsKey(arr[0])) {
                             HashMap<String, Integer> commanderDamage = new HashMap<>();
@@ -315,6 +319,7 @@ public class MagicController {
                     }
                 }
                 catch(SQLException e) {
+                    System.out.println(e);
                 }
 
                 players[i].setCommanderDamage(map);
@@ -328,13 +333,14 @@ public class MagicController {
     }
     @RequestMapping(value = {"/player"}, method = GET)
     public ResponseEntity<?> getPlayer(HttpServletRequest headers) {
-        StringBuilder builder = new StringBuilder("SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email  WHERE game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("' AND life.email = '");
-        builder.append(headers.getHeader("email"));
-        builder.append("';");
+        String query = "SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = ? AND life.email = ?;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("gameId"));
+            statement.setString(2, headers.getHeader("email"));
+            String[][] result = Application.query(statement);
+            connection.close();
             Player player = new Player();
             player.setEmail(result[0][0]);
             player.setLife(Integer.parseInt(result[0][1]));
@@ -349,18 +355,16 @@ public class MagicController {
     }
     @RequestMapping(value = {"/commanderDamage/{commander}"}, method = GET)
     public ResponseEntity<?> getCommanderDamage(HttpServletRequest headers, @PathVariable String commander) {
-        //SELECT damage FROM commander_damage WHERE player = 'Dylan@gmail.com' AND enemy_player = 'tyler@gmail.com' AND commander = 'Narset' AND game = 'newGame';
-        StringBuilder builder = new StringBuilder("SELECT damage FROM commander_damage WHERE player = '");
-        builder.append(headers.getHeader("email"));
-        builder.append("' AND enemy_player = '");
-        builder.append(headers.getHeader("enemyPlayer"));
-        builder.append("' AND commander = '");
-        builder.append(commander);
-        builder.append("' AND game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("';");
+        String query = "SELECT damage FROM commander_damage WHERE player = ? AND enemy_player = ? AND commander = ? AND game = ?;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("email"));
+            statement.setString(2, headers.getHeader("enemyPlayer"));
+            statement.setString(3, commander);
+            statement.setString(4, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
             return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
@@ -369,11 +373,13 @@ public class MagicController {
     }
     @RequestMapping(value = {"/game/{gameId}"}, method = DELETE)
     public ResponseEntity<?> deleteGame(@PathVariable String gameId) {
-        StringBuilder builder = new StringBuilder("DELETE FROM games WHERE id = '");
-        builder.append(gameId);
-        builder.append("' RETURNING id;");
+        String query = "DELETE FROM games WHERE id = ? RETURNING id;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, gameId);
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length == 0) {
                 return new ResponseEntity<>("Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
@@ -387,11 +393,13 @@ public class MagicController {
         if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
-        StringBuilder builder = new StringBuilder("DELETE FROM players WHERE email = '");
-        builder.append(headers.getHeader("email"));
-        builder.append("' RETURNING email;");
+        String query = "DELETE FROM players WHERE email = ? RETURNING email;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("email"));
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length == 0) {
                 return new ResponseEntity<>("Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
@@ -403,21 +411,16 @@ public class MagicController {
     }
     @RequestMapping(value = {"/player"}, method = POST)
     public ResponseEntity<?> updatePlayer(HttpServletRequest headers, @RequestBody Player player) {
-        StringBuilder builder = new StringBuilder("UPDATE players SET email = '");
-        builder.append(player.getEmail());
-        if(player.getPassword() != null) {
-            builder.append("', password = '");
-            builder.append(player.getPassword());
-        }
-        if(player.getName() != null) {
-            builder.append("', name = '");
-            builder.append(player.getName());
-        }
-        builder.append("' WHERE email = '");
-        builder.append(headers.getHeader("email"));
-        builder.append("' RETURNING *;");
+        String query = "UPDATE players SET email = ?, password = ?, name = ? WHERE email = ? RETURNING *;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, player.getEmail());
+            statement.setString(2, player.getPassword());
+            statement.setString(3, player.getName());
+            statement.setString(4, headers.getHeader("email"));
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length < 1)
                 return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
             SmallPlayer newPlayer = new SmallPlayer();
@@ -432,17 +435,16 @@ public class MagicController {
     }
     @RequestMapping(value = {"/game"}, method = POST)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
-        StringBuilder builder = new StringBuilder("UPDATE games SET id = '");
-        builder.append(game.getGameId());
-        builder.append("', password = '");
-        builder.append(game.getGamePassword());
-        builder.append("', starting_life = '");
-        builder.append(game.getStartingLife());
-        builder.append("' WHERE id = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("' RETURNING *;");
+        String query = "UPDATE games SET id = ?, password = ?, starting_life = ? WHERE id = ? RETURNING *;";
         try {
-            String[][] result = Application.query(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, game.getGameId());
+            statement.setString(2, game.getGamePassword());
+            statement.setInt(3, game.getStartingLife());
+            statement.setString(4, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            connection.close();
             if(result.length < 1)
                 return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
             Game newGame = game;
@@ -457,38 +459,35 @@ public class MagicController {
     }
     @RequestMapping(value = {"/life"}, method = POST)
     public ResponseEntity<?> updateLife(HttpServletRequest headers, @RequestBody Player player) {
-        StringBuilder builder = new StringBuilder("UPDATE life SET life = ");
-        builder.append(player.getLife());
-        builder.append(", poison = ");
-        builder.append(player.getPoison());
-        builder.append(", experience = ");
-        builder.append(player.getExperience());
-        builder.append(" WHERE email = '");
-        builder.append(player.getEmail());
-        builder.append("' AND game = '");
-        builder.append(headers.getHeader("gameId"));
-        builder.append("';");
+        String query = "UPDATE life SET life = ?, poison = ?, experience = ? WHERE email = ? AND game = ?;";
         try {
-            Application.queryNoResults(builder.toString());
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, player.getLife());
+            statement.setInt(2, player.getPoison());
+            statement.setInt(3, player.getExperience());
+            statement.setString(4, headers.getHeader("email"));
+            statement.setString(5, headers.getHeader("gameId"));
+            Application.queryNoResults(statement);
+            connection.close();
         }
         catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         for(String enemyPlayer : player.getCommanderDamage().keySet()) {
             for(String commander : player.getCommanderDamage().get(enemyPlayer).keySet()) {
-                builder = new StringBuilder("INSERT INTO commander_damage (player, enemy_player, game, commander, damage) VALUES ('");
-                builder.append(player.getEmail());
-                builder.append("', '");
-                builder.append(enemyPlayer);
-                builder.append("', '");
-                builder.append(headers.getHeader("gameId"));
-                builder.append("', '");
-                builder.append(commander);
-                builder.append("', ");
-                builder.append(player.getCommanderDamage().get(enemyPlayer).get(commander));
-                builder.append(") ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage");
+                query = "INSERT INTO commander_damage (player, enemy_player, game, commander, damage) VALUES (?, ?, ?, ?, ?) " +
+                        "ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage;";
                 try {
-                    Application.queryNoResults(builder.toString());
+                    Connection connection = Application.getDataSource().getConnection();
+                    PreparedStatement statement = connection.prepareStatement(query);
+                    statement.setString(1, player.getEmail());
+                    statement.setString(2, enemyPlayer);
+                    statement.setString(3, headers.getHeader("gameId"));
+                    statement.setString(4, commander);
+                    statement.setInt(5, player.getCommanderDamage().get(enemyPlayer).get(commander));
+                    Application.queryNoResults(statement);
+                    connection.close();
                 }
                 catch (SQLException e) {
                     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
