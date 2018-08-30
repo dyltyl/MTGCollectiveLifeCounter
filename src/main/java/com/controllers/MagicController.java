@@ -29,7 +29,7 @@ public class MagicController {
     @RequestMapping(value={"/createGame"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
-        String query = "INSERT INTO games (id, password, starting_life) VALUES ('?', '?', ?);";
+        String query = "INSERT INTO games (id, password, starting_life) VALUES (?, ?, ?);";
         Connection connection = null;
         try {
             connection = Application.getDataSource().getConnection();
