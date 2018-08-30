@@ -288,6 +288,7 @@ public class MagicController {
             for(int i = 0; i < result.length; i++) {
                 players[i] = new Player();
                 players[i].setEmail(result[i][0]);
+                players[i].setPassword("**********");
                 players[i].setLife(Integer.parseInt(result[i][1]));
                 players[i].setPoison(Integer.parseInt(result[i][2]));
                 players[i].setExperience(Integer.parseInt(result[i][3]));
