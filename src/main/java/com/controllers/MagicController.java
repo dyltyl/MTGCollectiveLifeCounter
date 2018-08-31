@@ -559,7 +559,7 @@ public class MagicController {
             connection.close();
             System.out.println(result[0][0]);
             if(result.length > 0 && result[0].length > 0)
-                return new ResponseEntity<>(Boolean.parseBoolean(result[0][0]), new HttpHeaders(), HttpStatus.OK);
+                return new ResponseEntity<>(result[0][0].equals("t"), new HttpHeaders(), HttpStatus.OK);
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         } catch (SQLException e) {
             e.printStackTrace();
