@@ -557,7 +557,7 @@ public class MagicController {
             statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
             connection.close();
-            System.out.println(Boolean.parseBoolean(result[0][0]));
+            System.out.println(result[0][0]);
             if(result.length > 0 && result[0].length > 0)
                 return new ResponseEntity<>(Boolean.parseBoolean(result[0][0]), new HttpHeaders(), HttpStatus.OK);
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
