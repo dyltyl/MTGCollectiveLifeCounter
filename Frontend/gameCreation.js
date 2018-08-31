@@ -1,4 +1,4 @@
-const url = 'https://magic-database.herokuapp.com/createGame';
+const url = 'https://magic-database.herokuapp.com/game';
 
 
 
@@ -41,6 +41,9 @@ function dbCreateGame(){
 
     console.log('dbCreateGame() called');
     fetch(url, otherParam)
+    .then(function(response){
+        console.log(response.text())
+    })
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
 }
@@ -53,7 +56,7 @@ function insertLink(){
         entranceLink.appendChild(document.createTextNode('Enter Match'));
         entrance.appendChild(entranceLink);
         dbInsert.appendChild(entrance);
-        document.getElementById('cG').style.display = 'none';
+        // document.getElementById('cG').style.display = 'none';
     }
 }
 
@@ -66,4 +69,11 @@ function getInputContent(){
     console.log(document.getElementById('gameName').value)
     console.log(document.getElementById('gamePass').value)
     console.log(document.getElementById('baseLife').value)
+}
+
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
 }
