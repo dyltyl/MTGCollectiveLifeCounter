@@ -565,17 +565,20 @@ public class MagicController {
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/leaveGame"}, method = GET)
+    @RequestMapping(value = {"/leaveGame"}, method = DELETE)
     public ResponseEntity<?> leaveGame(HttpServletRequest headers) {
-        String query = "DELETE FROM commander_damage WHERE player = ?; " +
-                        "DELETE FROM commanders WHERE player = ?; " +
-                        "DELETE FROM life WHERE email = ?;";
+        String query = "DELETE FROM commander_damage WHERE player = ? AND game = ?; " +
+                        "DELETE FROM commanders WHERE player = ? AND game = ?; " +
+                        "DELETE FROM life WHERE email = ? AND game = ?;";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("email"));
-            statement.setString(2, headers.getHeader("email"));
+            statement.setString(2, headers.getHeader("gameId"));
             statement.setString(3, headers.getHeader("email"));
+            statement.setString(4, headers.getHeader("gameId"));
+            statement.setString(5, headers.getHeader("email"));
+            statement.setString(6, headers.getHeader("gameId"));
             Application.queryNoResults(statement);
             return new ResponseEntity<>("Success", new HttpHeaders(), HttpStatus.OK);
         }
