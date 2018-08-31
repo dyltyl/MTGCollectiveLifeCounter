@@ -557,13 +557,30 @@ public class MagicController {
             statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
             connection.close();
-            System.out.println(result[0][0]);
             if(result.length > 0 && result[0].length > 0)
                 return new ResponseEntity<>(result[0][0].equals("t"), new HttpHeaders(), HttpStatus.OK);
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping(value = {"/leaveGame"}, method = GET)
+    public ResponseEntity<?> leaveGame(HttpServletRequest headers) {
+        String query = "DELETE FROM commander_damage WHERE player = ?; " +
+                        "DELETE FROM commanders WHERE player = ?; " +
+                        "DELETE FROM life WHERE email = ?;";
+        try {
+            Connection connection = Application.getDataSource().getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("email"));
+            statement.setString(2, headers.getHeader("email"));
+            statement.setString(3, headers.getHeader("email"));
+            Application.queryNoResults(statement);
+            return new ResponseEntity<>("Success", new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            return new ResponseEntity<>("Something went wrong", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
 }
