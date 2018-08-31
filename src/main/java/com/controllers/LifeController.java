@@ -40,7 +40,7 @@ public class LifeController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/setCommanderDamage"}, method = POST)
+    @RequestMapping(value = {"/commanderDamage"}, method = PUT)
     public ResponseEntity<?> setCommanderDamage(HttpServletRequest headers, @RequestBody CommanderDamage damage) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
@@ -108,7 +108,7 @@ public class LifeController {
         }
         return new ResponseEntity<>(player, new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value = {"/setLife/{life}"}, method = PUT)
+    @RequestMapping(value = {"/life/{life}"}, method = PUT)
     public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
@@ -134,7 +134,7 @@ public class LifeController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/setPoison/{poison}"}, method = POST)
+    @RequestMapping(value = {"/poison/{poison}"}, method = PUT)
     public ResponseEntity<?> setPoison(HttpServletRequest headers, @PathVariable int poison) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
@@ -160,7 +160,7 @@ public class LifeController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/setExperience/{experience}"}, method = POST)
+    @RequestMapping(value = {"/experience/{experience}"}, method = PUT)
     public ResponseEntity<?> setExperience(HttpServletRequest headers, @PathVariable int experience) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);

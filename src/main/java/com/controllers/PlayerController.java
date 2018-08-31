@@ -19,14 +19,12 @@ import java.util.HashMap;
 
 import static com.controllers.GameController.getStartingLife;
 import static com.controllers.GameController.verifyGame;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin(origins = "*")
 @RestController
 public class PlayerController {
-    @RequestMapping(value={"/createPlayer"}, method = POST)
+    @RequestMapping(value={"/player"}, method = POST)
     public ResponseEntity<?> createPlayer(@RequestBody Player player) {
         String query = "INSERT INTO players (email, password, name) VALUES(?, ?, ?) RETURNING email";
         try {
@@ -44,7 +42,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/player"}, method = POST)
+    @RequestMapping(value = {"/player"}, method = PUT)
     public ResponseEntity<?> updatePlayer(HttpServletRequest headers, @RequestBody Player player) {
         String query = "UPDATE players SET email = ?, password = ?, name = ? WHERE email = ? RETURNING *;";
         try {
@@ -89,7 +87,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/getAllPlayers"}, method = GET) //TODO: errors when there are none
+    @RequestMapping(value = {"/players"}, method = GET) //TODO: errors when there are none
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
         String query = "SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = ?;";
         Player[] players;

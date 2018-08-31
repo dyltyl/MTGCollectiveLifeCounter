@@ -12,9 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -23,7 +21,7 @@ public class GameController {
     public ResponseEntity<String> getStatus() {
         return new ResponseEntity<>("Server is online", new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value={"/createGame"}, method = POST)
+    @RequestMapping(value={"/game"}, method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
         String query = "INSERT INTO games (id, password, starting_life) VALUES (?, ?, ?);";
@@ -41,7 +39,7 @@ public class GameController {
         }
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value = {"/game"}, method = POST)
+    @RequestMapping(value = {"/game"}, method = PUT)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
         String query = "UPDATE games SET id = ?, password = ?, starting_life = ? WHERE id = ? RETURNING *;";
         try {
@@ -65,13 +63,13 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/game/{gameId}"}, method = DELETE)
-    public ResponseEntity<?> deleteGame(@PathVariable String gameId) {
+    @RequestMapping(value = {"/game"}, method = DELETE)
+    public ResponseEntity<?> deleteGame(HttpServletRequest headers) {
         String query = "DELETE FROM games WHERE id = ? RETURNING id;";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, gameId);
+            statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
             connection.close();
             if(result.length == 0) {
@@ -82,7 +80,7 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/getAllCommanders"}, method = GET)
+    @RequestMapping(value = {"/commanders"}, method = GET)
     public ResponseEntity<?> getAllCommanders(HttpServletRequest headers) {
         String query = "SELECT commander, player FROM commanders WHERE game = ?;";
         try {
@@ -98,7 +96,7 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/gameSearch"}, method = GET)
+    @RequestMapping(value = {"/game"}, method = GET)
     public ResponseEntity<?> searchForGame(HttpServletRequest headers) {
         String query = "SELECT * FROM games WHERE UPPER(id) LIKE UPPER(?);";
         try {
