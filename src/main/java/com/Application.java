@@ -55,9 +55,9 @@ public class Application {
         return dataSource;
     }
     public static String[][]query(String query) throws SQLException {
-        String pattern = "/text\\(digest\\('.*'\\)\\)/g";
+        String pattern = "text\\(digest\\('.*'\\)\\)";
         String printableQuery = query.replaceAll(pattern, "*******");
-        pattern = "/digest\\('.*'\\)/g";
+        pattern = "digest\\('.*'\\)";
         printableQuery = printableQuery.replaceAll(pattern, "*******");
         System.out.println(printableQuery);
         Connection connection = null;
@@ -88,9 +88,9 @@ public class Application {
     }
     public static String[][] query(PreparedStatement statement) throws SQLException {
         try {
-            String pattern = "/text\\(digest\\('.*'\\)\\)/g";
+            String pattern = "text\\(digest\\('.*'\\)\\)";
             String printableQuery = statement.toString().replaceAll(pattern, "*******");
-            pattern = "/digest\\('.*'\\)/g";
+            pattern = "digest\\('.*'\\)";
             printableQuery = printableQuery.replaceAll(pattern, "*******");
             System.out.println(printableQuery);
             ResultSet result = statement.executeQuery();
@@ -113,9 +113,9 @@ public class Application {
         }
     }
     public static void queryNoResults(String query) throws SQLException {
-        String pattern = "/text\\(digest\\('.*'\\)\\)/g";
+        String pattern = "text\\(digest\\('.*'\\)\\)";
         String printableQuery = query.replaceAll(pattern, "*******");
-        pattern = "/digest\\('.*'\\)/g";
+        pattern = "digest\\('.*'\\)";
         printableQuery = printableQuery.replaceAll(pattern, "*******");
         System.out.println(printableQuery);
         Connection connection = dataSource.getConnection();
@@ -125,9 +125,9 @@ public class Application {
         connection.close();
     }
     public static void queryNoResults(PreparedStatement statement) throws SQLException {
-        String pattern = "/text\\(digest\\('.*'\\)\\)/g";
+        String pattern = "text\\(digest\\('.*'\\)\\)";
         String printableQuery = statement.toString().replaceAll(pattern, "*******");
-        pattern = "/digest\\('.*'\\)/g";
+        pattern = "digest\\('.*'\\)";
         printableQuery = printableQuery.replaceAll(pattern, "*******");
         System.out.println(printableQuery);
         statement.execute();
