@@ -24,7 +24,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @CrossOrigin(origins = "*")
 @RestController
 public class PlayerController {
-    @RequestMapping(value={"/player"}, method = POST)
+    @RequestMapping(value="/player", method = POST)
     public ResponseEntity<?> createPlayer(@RequestBody Player player) {
         String query = "INSERT INTO players (email, password, name) VALUES(?, ?, ?) RETURNING email";
         try {
@@ -42,7 +42,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/player"}, method = PUT)
+    @RequestMapping(value = "/player", method = PUT)
     public ResponseEntity<?> updatePlayer(HttpServletRequest headers, @RequestBody Player player) {
         String query = "UPDATE players SET email = ?, password = ?, name = ? WHERE email = ? RETURNING *;";
         try {
@@ -66,7 +66,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/player"}, method = DELETE)
+    @RequestMapping(value = "/player", method = DELETE)
     public ResponseEntity<?> deletePlayer(HttpServletRequest headers) {
         if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
@@ -87,7 +87,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/players"}, method = GET) //TODO: errors when there are none
+    @RequestMapping(value = "/players", method = GET) //TODO: errors when there are none
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
         String query = "SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = ?;";
         Player[] players;
@@ -136,7 +136,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/player"}, method = GET)
+    @RequestMapping(value = "/player", method = GET)
     public ResponseEntity<?> getPlayer(HttpServletRequest headers) {
         String query = "SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = ? AND life.email = ?;";
         try {
@@ -158,7 +158,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/gamesPlayerIsIn"}, method = GET)
+    @RequestMapping(value = "/gamesPlayerIsIn", method = GET)
     public ResponseEntity<?> getGamesPlayerIsIn(HttpServletRequest headers) {
         String query = "SELECT game FROM life WHERE email = ?;";
         try {
@@ -177,7 +177,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/joinGame"}, method = POST)
+    @RequestMapping(value = "/joinGame", method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody String[] commanders) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
@@ -223,7 +223,7 @@ public class PlayerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/leaveGame"}, method = DELETE)
+    @RequestMapping(value = "/leaveGame", method = DELETE)
     public ResponseEntity<?> leaveGame(HttpServletRequest headers) {
         String query = "DELETE FROM commander_damage WHERE player = ? AND game = ?; " +
                 "DELETE FROM commanders WHERE player = ? AND game = ?; " +
@@ -244,7 +244,7 @@ public class PlayerController {
             return new ResponseEntity<>("Something went wrong", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/login"}, method = GET)
+    @RequestMapping(value = "/login", method = GET)
     public ResponseEntity<?> login(HttpServletRequest headers) {
         return new ResponseEntity<>(verifyUser(headers.getHeader("email"), headers.getHeader("password")), new HttpHeaders(), HttpStatus.OK);
     }

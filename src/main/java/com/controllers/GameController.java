@@ -17,11 +17,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @CrossOrigin(origins = "*")
 @RestController
 public class GameController {
-    @RequestMapping(value= {"/status"}, method = GET)
+    @RequestMapping(value= "/status", method = GET)
     public ResponseEntity<String> getStatus() {
         return new ResponseEntity<>("Server is online", new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value={"/game"}, method = POST)
+    @RequestMapping(value="/game", method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
         String query = "INSERT INTO games (id, password, starting_life) VALUES (?, ?, ?);";
@@ -39,7 +39,7 @@ public class GameController {
         }
         return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value = {"/game"}, method = PUT)
+    @RequestMapping(value = "/game", method = PUT)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
         String query = "UPDATE games SET id = ?, password = ?, starting_life = ? WHERE id = ? RETURNING *;";
         try {
@@ -63,7 +63,7 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/game"}, method = DELETE)
+    @RequestMapping(value = "/game", method = DELETE)
     public ResponseEntity<?> deleteGame(HttpServletRequest headers) {
         String query = "DELETE FROM games WHERE id = ? RETURNING id;";
         try {
@@ -80,7 +80,7 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/commanders"}, method = GET)
+    @RequestMapping(value = "/commanders", method = GET)
     public ResponseEntity<?> getAllCommanders(HttpServletRequest headers) {
         String query = "SELECT commander, player FROM commanders WHERE game = ?;";
         try {
@@ -96,7 +96,7 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/game"}, method = GET)
+    @RequestMapping(value = "/game", method = GET)
     public ResponseEntity<?> searchForGame(HttpServletRequest headers) {
         String query = "SELECT * FROM games WHERE UPPER(id) LIKE UPPER(?);";
         try {
@@ -115,7 +115,7 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/startGame"}, method = GET)
+    @RequestMapping(value = "/startGame", method = GET)
     public ResponseEntity<?> startGame(HttpServletRequest headers) {
         String query = "UPDATE games SET started = true WHERE id = ?";
         try {
@@ -129,7 +129,7 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/hasGameStarted"}, method = GET)
+    @RequestMapping(value = "/hasGameStarted", method = GET)
     public ResponseEntity<Boolean> hasGameStarted(HttpServletRequest headers) {
         String query = "SELECT started FROM games WHERE id = ?;";
         try {
@@ -146,7 +146,7 @@ public class GameController {
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/verifyGame"}, method = GET)
+    @RequestMapping(value = "/verifyGame", method = GET)
     public ResponseEntity<?> loginToGame(HttpServletRequest headers) {
         return new ResponseEntity<>(verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword")), new HttpHeaders(), HttpStatus.OK);
     }

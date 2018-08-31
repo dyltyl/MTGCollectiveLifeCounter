@@ -22,7 +22,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @CrossOrigin(origins = "*")
 @RestController
 public class LifeController {
-    @RequestMapping(value = {"/commanderDamage/{commander}"}, method = GET)
+    @RequestMapping(value = "/commanderDamage/{commander}", method = GET)
     public ResponseEntity<?> getCommanderDamage(HttpServletRequest headers, @PathVariable String commander) {
         String query = "SELECT damage FROM commander_damage WHERE player = ? AND enemy_player = ? AND commander = ? AND game = ?;";
         try {
@@ -40,7 +40,7 @@ public class LifeController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/commanderDamage"}, method = PUT)
+    @RequestMapping(value = "/commanderDamage", method = PUT)
     public ResponseEntity<?> setCommanderDamage(HttpServletRequest headers, @RequestBody CommanderDamage damage) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
@@ -69,7 +69,7 @@ public class LifeController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/life"}, method = POST)
+    @RequestMapping(value = "/life", method = POST)
     public ResponseEntity<?> updateLife(HttpServletRequest headers, @RequestBody Player player) {
         String query = "UPDATE life SET life = ?, poison = ?, experience = ? WHERE email = ? AND game = ?;";
         try {
@@ -108,7 +108,7 @@ public class LifeController {
         }
         return new ResponseEntity<>(player, new HttpHeaders(), HttpStatus.OK);
     }
-    @RequestMapping(value = {"/life/{life}"}, method = PUT)
+    @RequestMapping(value = "/life/{life}", method = PUT)
     public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
@@ -134,7 +134,7 @@ public class LifeController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/poison/{poison}"}, method = PUT)
+    @RequestMapping(value = "/poison/{poison}", method = PUT)
     public ResponseEntity<?> setPoison(HttpServletRequest headers, @PathVariable int poison) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
@@ -160,7 +160,7 @@ public class LifeController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = {"/experience/{experience}"}, method = PUT)
+    @RequestMapping(value = "/experience/{experience}", method = PUT)
     public ResponseEntity<?> setExperience(HttpServletRequest headers, @PathVariable int experience) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
