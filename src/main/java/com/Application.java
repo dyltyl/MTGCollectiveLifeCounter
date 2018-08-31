@@ -56,9 +56,9 @@ public class Application {
     }
     public static String[][]query(String query) throws SQLException {
         String pattern = "text\\(digest\\('.*'\\)\\)";
-        String printableQuery = query.replaceAll(pattern, "*******");
+        String printableQuery = query.replaceAll(pattern, "'*******'");
         pattern = "digest\\('.*'\\)";
-        printableQuery = printableQuery.replaceAll(pattern, "*******");
+        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
         System.out.println(printableQuery);
         Connection connection = null;
         PreparedStatement statement = null;
@@ -89,9 +89,9 @@ public class Application {
     public static String[][] query(PreparedStatement statement) throws SQLException {
         try {
             String pattern = "text\\(digest\\('.*'\\)\\)";
-            String printableQuery = statement.toString().replaceAll(pattern, "*******");
+            String printableQuery = statement.toString().replaceAll(pattern, "'*******'");
             pattern = "digest\\('.*'\\)";
-            printableQuery = printableQuery.replaceAll(pattern, "*******");
+            printableQuery = printableQuery.replaceAll(pattern, "'*******'");
             System.out.println(printableQuery);
             ResultSet result = statement.executeQuery();
             List<String[]> myList = new ArrayList<>();
@@ -114,9 +114,9 @@ public class Application {
     }
     public static void queryNoResults(String query) throws SQLException {
         String pattern = "text\\(digest\\('.*'\\)\\)";
-        String printableQuery = query.replaceAll(pattern, "*******");
+        String printableQuery = query.replaceAll(pattern, "'*******'");
         pattern = "digest\\('.*'\\)";
-        printableQuery = printableQuery.replaceAll(pattern, "*******");
+        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
         System.out.println(printableQuery);
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
@@ -126,9 +126,9 @@ public class Application {
     }
     public static void queryNoResults(PreparedStatement statement) throws SQLException {
         String pattern = "text\\(digest\\('.*'\\)\\)";
-        String printableQuery = statement.toString().replaceAll(pattern, "*******");
+        String printableQuery = statement.toString().replaceAll(pattern, "'*******'");
         pattern = "digest\\('.*'\\)";
-        printableQuery = printableQuery.replaceAll(pattern, "*******");
+        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
         System.out.println(printableQuery);
         statement.execute();
         statement.close();

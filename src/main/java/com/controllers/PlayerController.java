@@ -249,7 +249,7 @@ public class PlayerController {
         return new ResponseEntity<>(verifyUser(headers.getHeader("email"), headers.getHeader("password")), new HttpHeaders(), HttpStatus.OK);
     }
     public static boolean verifyUser(String email, String password) {
-        String query = "SELECT email FROM players WHERE email = ? AND password = text(digest(?, 'sha512'));"; //TODO: encrypt password
+        String query = "SELECT email FROM players WHERE email = ? AND password = text(digest(?, 'sha512'));";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
