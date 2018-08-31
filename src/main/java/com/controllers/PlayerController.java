@@ -244,6 +244,10 @@ public class PlayerController {
             return new ResponseEntity<>("Something went wrong", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
+    @RequestMapping(value = {"/login"}, method = GET)
+    public ResponseEntity<?> login(HttpServletRequest headers) {
+        return new ResponseEntity<>(verifyUser(headers.getHeader("email"), headers.getHeader("password")), new HttpHeaders(), HttpStatus.OK);
+    }
     public static boolean verifyUser(String email, String password) {
         String query = "SELECT email FROM players WHERE email = ? AND password = ?;"; //TODO: encrypt password
         try {

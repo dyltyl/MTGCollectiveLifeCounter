@@ -146,6 +146,10 @@ public class GameController {
             return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
+    @RequestMapping(value = {"/verifyGame"}, method = GET)
+    public ResponseEntity<?> loginToGame(HttpServletRequest headers) {
+        return new ResponseEntity<>(verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword")), new HttpHeaders(), HttpStatus.OK);
+    }
     public static boolean verifyGame(String gameId, String gamePassword) {
         String query = "SELECT id FROM games WHERE id = ? AND password = ?;";
         try {
