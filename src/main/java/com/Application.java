@@ -55,7 +55,11 @@ public class Application {
         return dataSource;
     }
     public static String[][]query(String query) throws SQLException {
-        System.out.println(query);
+        String pattern = "text\\(digest\\('.*'\\)\\)";
+        String printableQuery = query.replaceAll(pattern, "'*******'");
+        pattern = "digest\\('.*'\\)";
+        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
+        System.out.println(printableQuery);
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -84,7 +88,11 @@ public class Application {
     }
     public static String[][] query(PreparedStatement statement) throws SQLException {
         try {
-            System.out.println(statement.toString());
+            String pattern = "text\\(digest\\('.*'\\)\\)";
+            String printableQuery = statement.toString().replaceAll(pattern, "'*******'");
+            pattern = "digest\\('.*'\\)";
+            printableQuery = printableQuery.replaceAll(pattern, "'*******'");
+            System.out.println(printableQuery);
             ResultSet result = statement.executeQuery();
             List<String[]> myList = new ArrayList<>();
             while(result.next()) {
@@ -105,7 +113,11 @@ public class Application {
         }
     }
     public static void queryNoResults(String query) throws SQLException {
-        System.out.println(query);
+        String pattern = "text\\(digest\\('.*'\\)\\)";
+        String printableQuery = query.replaceAll(pattern, "'*******'");
+        pattern = "digest\\('.*'\\)";
+        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
+        System.out.println(printableQuery);
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
         statement.execute(query);
@@ -113,7 +125,11 @@ public class Application {
         connection.close();
     }
     public static void queryNoResults(PreparedStatement statement) throws SQLException {
-        System.out.println(statement.toString());
+        String pattern = "text\\(digest\\('.*'\\)\\)";
+        String printableQuery = statement.toString().replaceAll(pattern, "'*******'");
+        pattern = "digest\\('.*'\\)";
+        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
+        System.out.println(printableQuery);
         statement.execute();
         statement.close();
     }
