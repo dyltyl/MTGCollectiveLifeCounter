@@ -1,6 +1,7 @@
 package com.restObjects;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.Headers;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -22,6 +23,8 @@ public class RestObject {
     private ObjectMapper mapper;
     public RestObject() {
         headers = new ArrayList<>();
+        headers.add(new BasicHeader("Content-type", "application/json"));
+
     }
     public void setHeader(String headerName, String value) {
         this.headers.add(new BasicHeader(headerName, value));

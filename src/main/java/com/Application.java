@@ -135,8 +135,10 @@ public class Application {
     }
     public static String getJson(Object object, boolean pretty) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         if(pretty)
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
         try {
             return mapper.writeValueAsString(object);
         }

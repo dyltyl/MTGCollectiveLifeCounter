@@ -17,12 +17,12 @@ public class Player extends RestObject {
         player.setEmail(email);
         player.setName(name);
         player.setPassword(password);
-        return player.getRest().sendPostRequest(RestObject.BASE_URL + "/player", Application.getJson(player, true));
+        return player.rest().sendPostRequest(RestObject.BASE_URL + "/player", Application.getJson(player, true));
     }
     public static Response createPlayer(Player player) {
         return createPlayer(player.getEmail(), player.getName(), player.getPassword());
     }
-    public RestObject getRest() {
+    public RestObject rest() {
         return rest;
     }
 
