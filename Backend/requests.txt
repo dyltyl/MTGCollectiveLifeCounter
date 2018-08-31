@@ -1,0 +1,58 @@
+REQUESTS:
+GET /status - checks if the server is online
+GET /commanders HEADERS: {gameId} -Gets all commanders with their associated players in the game
+GET /players HEADERS: {gameId} -Gets all players in the game
+GET /player HEADERS: {gameId, email} -Gets the player in the game, with life stats
+GET /commanderDamage/{commander} HEADERS: {gameId, email, enemyPlayer} 
+GET /gamesPlayerIsIn HEADERS: {email}
+GET /game HEADERS: {gameId}
+GET /startGame HEADERS: {gameId}
+GET /hasGameStarted HEADERS: {gameId}
+GET /verifyGame HEADERS: {gameId, gamePassword}
+GET /login HEADERS: {email, password}
+
+POST /game (Game) - inserts the game object into the database
+POST /createPlayer (Player) - inserts the player object into the database
+POST /joinGame HEADERS: {gameId, gamePassword, email, password} BODY: ["commander1", "commander2"] - adds the player to the game
+POST /player HEADERS: {email} (Player) - createPlayer
+POST /life HEADERS {gameId} (Player) - updateLife
+
+PUT /life/{amount} HEADERS: {gameId, gamePassword, email, password} 
+PUT /poison/{amount}  HEADERS: {gameId, gamePassword, email, password} 
+PUT /experience/{amount}  HEADERS: {gameId, gamePassword, email, password} 
+PUT /commanderDamage HEADERS: {gameId, gamePassword, email, password} (commanderDamage)
+PUT /player HEADERS: {email} (Player) - updatePlayer
+PUT /game HEADERS: {gameId} (Game) - updateGameDELETE /game HEADERS: {gameId}
+
+DELETE /player HEADERS: {email, password}
+DELETE /leaveGame HEADERS: {email, gameId}
+DELETE /game HEADERS: {gameId}
+
+GAME
+{
+	"gameId": "newGame",
+	"gamePassword": "password",
+	"startingLife": 40
+}
+PLAYER
+{
+  "name" : "Tyler",
+  "email" : "Tyler@gmail.com",
+  "password" : "**********",
+  "life" : 40,
+  "poison" : 0,
+  "experience" : 0,
+  "commanderDamage" : {
+    "Dylan@gmail.com" : {
+      "Squee" : 2,
+      "Thrasios" : 1
+    }
+  }
+}
+COMMANDER_DAMAGE
+{
+	"player":"Dylan@gmail.com",
+	"enemyPlayer":"tyler@gmail.com",
+	"commander":"Narset", //enemyPlayer
+	"damage":400
+}
