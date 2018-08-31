@@ -24,7 +24,7 @@ public class GameController {
     @RequestMapping(value="/game", method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
-        String query = "INSERT INTO games (id, password, starting_life) VALUES (?, ?, ?);";
+        String query = "INSERT INTO games (id, password, starting_life) VALUES (?, digest(?, 'sha512'), ?);";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -41,7 +41,7 @@ public class GameController {
     }
     @RequestMapping(value = "/game", method = PUT)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
-        String query = "UPDATE games SET id = ?, password = ?, starting_life = ? WHERE id = ? RETURNING *;";
+        String query = "UPDATE games SET id = ?, password = digest(?, 'sha512'), starting_life = ? WHERE id = ? RETURNING *;";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -151,7 +151,7 @@ public class GameController {
         return new ResponseEntity<>(verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword")), new HttpHeaders(), HttpStatus.OK);
     }
     public static boolean verifyGame(String gameId, String gamePassword) {
-        String query = "SELECT id FROM games WHERE id = ? AND password = ?;";
+        String query = "SELECT id FROM games WHERE id = ? AND password = digest(?, 'sha512');";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
