@@ -44,7 +44,7 @@ public class PlayerController {
     }
     @RequestMapping(value = "/player", method = PUT)
     public ResponseEntity<?> updatePlayer(HttpServletRequest headers, @RequestBody Player player) {
-        String query = "UPDATE players SET email = ?, password = digest(?, 'sha512'), name = ? WHERE email = ? RETURNING *;";
+        String query = "UPDATE players SET email = ?, password = text(digest(?, 'sha512')), name = ? WHERE email = ? RETURNING *;";
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -249,7 +249,7 @@ public class PlayerController {
         return new ResponseEntity<>(verifyUser(headers.getHeader("email"), headers.getHeader("password")), new HttpHeaders(), HttpStatus.OK);
     }
     public static boolean verifyUser(String email, String password) {
-        String query = "SELECT email FROM players WHERE email = ? AND password = digest(?, 'sha512');"; //TODO: encrypt password
+        String query = "SELECT email FROM players WHERE email = ? AND password = text(digest(?, 'sha512'));"; //TODO: encrypt password
         try {
             Connection connection = Application.getDataSource().getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
