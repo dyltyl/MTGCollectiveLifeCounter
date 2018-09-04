@@ -27,35 +27,47 @@ public class PlayerController {
     @RequestMapping(value="/player", method = POST)
     public ResponseEntity<?> createPlayer(@RequestBody Player player) {
         String query = "INSERT INTO players (email, password, name) VALUES(?, digest(?, 'sha512'), ?) RETURNING email";
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, player.getEmail());
             statement.setString(2, player.getPassword());
             statement.setString(3, player.getName());
             String[][] result = Application.query(statement);
             statement.close();
             connection.close();
-            System.out.println(statement.isClosed());
-            System.out.println(connection.isClosed());
             String email = result[0][0];
             return new ResponseEntity<>(email,new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
+            try {
+                if(statement != null && !statement.isClosed())
+                    return new ResponseEntity<>("statement not closed on error", HttpStatus.BAD_REQUEST);
+                if(connection != null && !connection.isClosed())
+                    return new ResponseEntity<>("connection not closed on error", HttpStatus.BAD_REQUEST);
+            }
+            catch (SQLException e1) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     @RequestMapping(value = "/player", method = PUT)
     public ResponseEntity<?> updatePlayer(HttpServletRequest headers, @RequestBody Player player) {
         String query = "UPDATE players SET email = ?, password = text(digest(?, 'sha512')), name = ? WHERE email = ? RETURNING *;";
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, player.getEmail());
             statement.setString(2, player.getPassword());
             statement.setString(3, player.getName());
             statement.setString(4, headers.getHeader("email"));
             String[][] result = Application.query(statement);
+            statement.close();
             connection.close();
             if(result.length < 1)
                 return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
@@ -75,11 +87,14 @@ public class PlayerController {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
         String query = "DELETE FROM players WHERE email = ? RETURNING email;";
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("email"));
             String[][] result = Application.query(statement);
+            statement.close();
             connection.close();
             if(result.length == 0) {
                 return new ResponseEntity<>("Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND);
@@ -94,11 +109,14 @@ public class PlayerController {
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
         String query = "SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = ?;";
         Player[] players;
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
+            statement.close();
             connection.close();
             players = new Player[result.length];
             for(int i = 0; i < result.length; i++) {
