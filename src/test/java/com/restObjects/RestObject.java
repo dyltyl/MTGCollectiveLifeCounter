@@ -1,7 +1,5 @@
 package com.restObjects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.net.httpserver.Headers;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -20,7 +18,6 @@ import java.util.List;
 public class RestObject {
     public static final String BASE_URL = "https://magic-database.herokuapp.com";
     private List<Header> headers;
-    private ObjectMapper mapper;
     public RestObject() {
         headers = new ArrayList<>();
         headers.add(new BasicHeader("Content-type", "application/json"));
@@ -71,7 +68,7 @@ public class RestObject {
         return sendRequest(request);
     }
     public Response sendDeleteRequest(String url) {
-        HttpDelete request = new HttpDelete();
+        HttpDelete request = new HttpDelete(url);
         request.setHeaders(headers.toArray(new Header[headers.size()]));
         return sendRequest(request);
     }
@@ -87,15 +84,5 @@ public class RestObject {
             e.printStackTrace();
         }
         return response;
-    }
-    public <T> T mapJSONToObject(String json, Class<T> type) {
-        T map = null;
-        try {
-            map = mapper.readValue(json, type);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return map;
     }
 }

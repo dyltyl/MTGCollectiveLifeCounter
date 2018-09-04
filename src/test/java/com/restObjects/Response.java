@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Response {
     private HttpUriRequest request;
     private HttpResponse response;
-    private String requestBody, url, method;
+    private String requestBody, url, method, stringResponse;
     private int statusCode;
     private ObjectMapper mapper = new ObjectMapper();
     public Response(HttpUriRequest request, HttpResponse httpResponse) {
@@ -28,12 +28,21 @@ public class Response {
                 }
             }
         }
+
         url = request.getURI().toString();
         method = request.getMethod();
         response = httpResponse;
+        if(response.getEntity() != null) {
+            try {
+                stringResponse = EntityUtils.toString(response.getEntity());
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         statusCode = response.getStatusLine().getStatusCode();
     }
-    public<T> T mapJSONToObject(String stringResponse, Class<T> type) {
+    public<T> T mapJSONToObject(Class<T> type) {
         T map = null;
         try {
             map = mapper.readValue(stringResponse, type);
@@ -42,6 +51,9 @@ public class Response {
             e.printStackTrace();
         }
         return map;
+    }
+    public String getStringResponse() {
+        return stringResponse;
     }
 
     public HttpUriRequest getRequest() {

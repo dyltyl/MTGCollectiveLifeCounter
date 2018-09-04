@@ -27,8 +27,50 @@ public class Player extends RestObject {
         player.setEmail(email);
         player.setName(name);
         player.setPassword(password);
-        player.rest.setHeader("email", currentEmail);
+        player.rest().setHeader("email", currentEmail);
         return player.rest().sendPutRequest(RestObject.BASE_URL + "/player", Application.getJson(player, true));
+    }
+    public static Response deletePlayer(String email, String password) {
+        Player player = new Player();
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("password", password);
+        return player.rest().sendDeleteRequest(RestObject.BASE_URL + "/player");
+    }
+    public static Response byEmail(String email, String gameId) {
+        Player player = new Player();
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("gameId", gameId);
+        return player.rest().sendGetRequest(RestObject.BASE_URL + "/player");
+    }
+    public static Response all(String gameId) {
+        Player player = new Player();
+        player.rest().setHeader("gameId", gameId);
+        return player.rest().sendGetRequest(RestObject.BASE_URL + "/players");
+    }
+    public static Response allGames(String email) {
+        Player player = new Player();
+        player.rest().setHeader("email", email);
+        return player.rest().sendGetRequest(RestObject.BASE_URL + "/gamesPlayerIsIn");
+    }
+    public static Response joinGame(String email, String password, String gameId, String gamePassword, String[] commanders) {
+        Player player = new Player();
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("password", password);
+        player.rest().setHeader("gameId", gameId);
+        player.rest().setHeader("gamePassword", gamePassword);
+        return player.rest.sendPostRequest(RestObject.BASE_URL + "/joinGame", Application.getJson(commanders, true));
+    }
+    public static Response leaveGame(String email, String gameId) {
+        Player player = new Player();
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("gameId", gameId);
+        return player.rest().sendDeleteRequest(RestObject.BASE_URL + "/leaveGame");
+    }
+    public static Response login(String email, String password) {
+        Player player = new Player();
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("password", password);
+        return player.rest().sendGetRequest(RestObject.BASE_URL + "/login");
     }
     public RestObject rest() {
         return rest;
