@@ -22,6 +22,14 @@ public class Player extends RestObject {
     public static Response createPlayer(Player player) {
         return createPlayer(player.getEmail(), player.getName(), player.getPassword());
     }
+    public static Response updatePlayer(String currentEmail, String email, String name, String password) {
+        Player player = new Player();
+        player.setEmail(email);
+        player.setName(name);
+        player.setPassword(password);
+        player.rest.setHeader("email", currentEmail);
+        return player.rest().sendPutRequest(RestObject.BASE_URL + "/player", Application.getJson(player, true));
+    }
     public RestObject rest() {
         return rest;
     }
