@@ -54,39 +54,9 @@ public class Application {
     public static BasicDataSource getDataSource() {
         return dataSource;
     }
-    public static String[][]query(String query) throws SQLException {
-        String pattern = "text\\(digest\\('.*'\\)\\)";
-        String printableQuery = query.replaceAll(pattern, "'*******'");
-        pattern = "digest\\('.*'\\)";
-        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
-        System.out.println(printableQuery);
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.prepareStatement(query);
-            ResultSet result = statement.executeQuery();
-            List<String[]> myList = new ArrayList<>();
-            while(result.next()) {
-                String[] arr = new String[result.getMetaData().getColumnCount()];
-                for(int i = 0; i < arr.length; i++) {
-                    arr[i] = result.getString(i+1);
-                }
-                myList.add(arr);
-            }
-            return myList.toArray(new String[myList.size()][result.getMetaData().getColumnCount()]);
-        }
-        catch(SQLException exception) {
-            throw exception;
-        }
-        finally {
-            if(statement != null)
-                statement.close();
-            if(connection != null)
-                connection.close();
-        }
-    }
     public static String[][] query(PreparedStatement statement) throws SQLException {
+        String[][] resultArray = null;
+        SQLException exception = null;
         try {
             String pattern = "text\\(digest\\('.*'\\)\\)";
             String printableQuery = statement.toString().replaceAll(pattern, "'*******'");
@@ -102,27 +72,20 @@ public class Application {
                 }
                 myList.add(arr);
             }
-            return myList.toArray(new String[myList.size()][result.getMetaData().getColumnCount()]);
+            resultArray = myList.toArray(new String[myList.size()][result.getMetaData().getColumnCount()]);
         }
-        catch(SQLException exception) {
-            throw exception;
+        catch(SQLException e) {
+            exception = e;
         }
         finally {
-            if(statement != null)
+            if(statement != null && !statement.isClosed())
                 statement.close();
+            if(statement != null && statement.getConnection() != null && !statement.getConnection().isClosed())
+                statement.getConnection().close();
         }
-    }
-    public static void queryNoResults(String query) throws SQLException {
-        String pattern = "text\\(digest\\('.*'\\)\\)";
-        String printableQuery = query.replaceAll(pattern, "'*******'");
-        pattern = "digest\\('.*'\\)";
-        printableQuery = printableQuery.replaceAll(pattern, "'*******'");
-        System.out.println(printableQuery);
-        Connection connection = dataSource.getConnection();
-        Statement statement = connection.createStatement();
-        statement.execute(query);
-        statement.close();
-        connection.close();
+        if(exception != null)
+            throw exception;
+        return resultArray;
     }
     public static void queryNoResults(PreparedStatement statement) throws SQLException {
         String pattern = "text\\(digest\\('.*'\\)\\)";
