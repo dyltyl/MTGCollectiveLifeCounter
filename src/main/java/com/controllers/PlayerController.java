@@ -34,7 +34,10 @@ public class PlayerController {
             statement.setString(2, player.getPassword());
             statement.setString(3, player.getName());
             String[][] result = Application.query(statement);
+            statement.close();
             connection.close();
+            System.out.println(statement.isClosed());
+            System.out.println(connection.isClosed());
             String email = result[0][0];
             return new ResponseEntity<>(email,new HttpHeaders(), HttpStatus.OK);
         }
