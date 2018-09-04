@@ -139,29 +139,3 @@ button:hover{
     padding:0.5em 0;
   }
 
-@keyframes wave {
-    0% {
-      transform: translateY(0px);
-    }
-    25% {
-      transform: translateY(5px);
-    }
-    50%{
-      transform: translateY(0px);
-    }
-    75% {
-      transform: translateY(-5px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-}
-
-
-
-div {
-    overflow:hidden;
-    padding:0.5em 0;
-    -webkit-animation: wave 1s infinite;
-    animation: wave 1s infinite;
-}

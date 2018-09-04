@@ -20,10 +20,6 @@ function checkLocalLog(){
     console.log('Game_Pass of ' + localStorage.getItem('gamePass') + ' stored locally');
 }
 
-
-
-
-
 function dbCreateGame(){
     const Data={
         gameId : document.getElementById('gameName').value,

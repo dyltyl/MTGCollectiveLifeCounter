@@ -1,5 +1,6 @@
 //TODO: Store Partner Commanders locally
-const url = 'https://magic-database.herokuapp.com/getAllPlayers';
+const jGURL = 'https://magic-database.herokuapp.com/joinGame';
+const pCURL = 'https://magic-database.herokuapp.com/player';
 
 function createInputField(){
     var root = document.getElementById('root'); //Root located within HTML body
@@ -13,6 +14,9 @@ function createInputField(){
     }
 }
 
+/**
+ * create the localStorage for a player
+ */
 function createEntranceStorage(){
     localStorage.setItem('playerName', document.getElementById('playerName').value);
     localStorage.setItem('commanderName', document.getElementById('commanderName').value);
@@ -24,19 +28,32 @@ function createEntranceStorage(){
 function checkLocalLog(){
     console.log('Player ' + localStorage.getItem('playerName') + ' locally stored.')
     console.log('Commander ' + localStorage.getItem('commanderName') + ' locally stored.');
+    console.log('Base_Life_Total of ' + localStorage.getItem('baseLife') + ' stored locally');
+    console.log('Game_Name of ' + localStorage.getItem('gameName') + ' stored locally.');
 }
 
-const otherParam={
-    headers:{
-       'content-type':'application/json; charset=UTF-8',
-       'gameId': 'newGame'
+
+function createPlayer(){
+    const playerObject ={
+        name : document.getElementById('playerName').value,
+        email : document.getElementById('playerEmail').value,
+        password : document.getElementById('playerPass').value,
     }
-};
-function dbCreatePlayer(){
-    fetch(url,otherParam)
-    .then(response => response.json())
-    .then(data=>{
-        console.log(data)
+    console.log(JSON.stringify(playerObject));
+    const requestBody={
+        method: 'POST',
+        body: JSON.stringify(playerObject),
+        headers:{
+            "content-type": "application/json; charset=UTF-8"
+        }
+    };
+    fetch(pCURL, requestBody)
+    .then(function(response){
+        console.log(response.text())
     })
+    .then(res=>{console.log(res)})
+    .catch(error=>console.log(error))
 }
-dbCreatePlayer();
+
+function joinGame(){
+}
