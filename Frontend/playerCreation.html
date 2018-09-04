@@ -21,10 +21,10 @@
     Password
     <input type = 'text' id = 'playerPass'>
 
-    <input type= 'checkbox' id ='partnerBool' name = 'partner' value ='false' onClick = 'createInputField()'> Partner?
+    <input type= 'checkbox' id ='partnerBool' name = 'partner' value ='false' onClick = 'togglePartner()'> Partner?
     <div id='root'></div>
-    <button onclick="createPlayer()">Create Player</button>
-    <button onclick= 'createEntranceStorage()'><a href = 'waitingLobby.html'>Enter Match</a></button>
+    <button onclick="createPlayer(); joinGame()">Create Player</button>
+    <button><a href = 'waitingLobby.html'>Enter Match</a></button>
     <button onClick = 'checkLocalLog()'>checkLocalLog</button>
 </body>
 <footer>
