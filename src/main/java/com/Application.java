@@ -57,13 +57,14 @@ public class Application {
     public static String[][] query(PreparedStatement statement) throws SQLException {
         String[][] resultArray = null;
         SQLException exception = null;
+        ResultSet result = null;
         try {
             String pattern = "text\\(digest\\('.*'\\)\\)";
             String printableQuery = statement.toString().replaceAll(pattern, "'*******'");
             pattern = "digest\\('.*'\\)";
             printableQuery = printableQuery.replaceAll(pattern, "'*******'");
             System.out.println(printableQuery);
-            ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
             List<String[]> myList = new ArrayList<>();
             while(result.next()) {
                 String[] arr = new String[result.getMetaData().getColumnCount()];
@@ -78,10 +79,10 @@ public class Application {
             exception = e;
         }
         finally {
+            if(result != null && !result.isClosed())
+                result.close();
             if(statement != null && !statement.isClosed())
                 statement.close();
-            if(statement != null && statement.getConnection() != null && !statement.getConnection().isClosed())
-                statement.getConnection().close();
         }
         if(exception != null)
             throw exception;

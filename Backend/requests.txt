@@ -12,7 +12,6 @@ GET /verifyGame HEADERS: {gameId, gamePassword}
 GET /login HEADERS: {email, password}
 
 POST /game (Game) - inserts the game object into the database
-POST /createPlayer (Player) - inserts the player object into the database
 POST /joinGame HEADERS: {gameId, gamePassword, email, password} BODY: ["commander1", "commander2"] - adds the player to the game
 POST /player HEADERS: {email} (Player) - createPlayer
 POST /life HEADERS {gameId} (Player) - updateLife
