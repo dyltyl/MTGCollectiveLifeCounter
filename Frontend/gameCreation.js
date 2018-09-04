@@ -7,11 +7,8 @@ function createLocalGameStorage(){
     localStorage.setItem('baseLife', document.getElementById('baseLife').value);
     localStorage.setItem('gameName', document.getElementById('gameName').value);
     localStorage.setItem('gamePass', document.getElementById('gamePass').value);
-    
     console.log('Game_Size of ' + localStorage.getItem('gameSize') + ' locally.');
     console.log('Base_Life_Total of ' + localStorage.getItem('baseLife') + ' stored locally');
-    
-
 }
 function checkLocalLog(){
     console.log('Game_Size of ' + localStorage.getItem('gameSize') + ' stored locally.');
@@ -49,10 +46,10 @@ function insertLink(){
         var entrance = document.createElement('button');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','playerCreation.html');
-        entranceLink.appendChild(document.createTextNode('Enter Match'));
+        entranceLink.appendChild(document.createTextNode('Create User'));
         entrance.appendChild(entranceLink);
         dbInsert.appendChild(entrance);
-        // document.getElementById('cG').style.display = 'none';
+        document.getElementById('cG').style.display = 'none';
     }
 }
 

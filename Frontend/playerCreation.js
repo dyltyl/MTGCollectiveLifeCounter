@@ -14,6 +14,17 @@ function togglePartner(){
     }
 }
 
+function insertLink(){
+    if (document.getElementById('joinLink').childElementCount == 0){
+        var entrance = document.createElement('button');
+        var entranceLink = document.createElement('a');
+        entranceLink.setAttribute('href','waitingLobby.html');
+        entranceLink.appendChild(document.createTextNode('Enter Match'));
+        entrance.appendChild(entranceLink);
+        cP.appendChild(entrance);
+        document.getElementById('cP').style.display = 'none';
+    }
+}
 /**
  * create the localStorage for a player
  */
@@ -25,14 +36,12 @@ function createLocalLog(){
     localStorage.setItem('playerEmail',  document.getElementById('playerEmail').value);
     localStorage.setItem('playerPass',  document.getElementById('playerPass').value);
     if(root.childElementCount >0){
-        localStorage.setItem('partnerName', doucment.getElementById('partnerName').value);
+        var root = document.getElementById('root'); //Root located within HTML body
+        localStorage.setItem('partnerName', document.getElementById('partnerName').value);
     }
-    console.log('Player ' + localStorage.getItem('playerName') + ' locally stored.')
-    console.log('Commander ' + localStorage.getItem('commanderName') + ' locally stored.');
 }
 function checkLocalLog(){
     console.log('Player: ' + localStorage.getItem('playerName') + ' locally stored.');
-    console.log('Player Email: ' + localStorage.getItem('playerEmail') + ' locally stored.');
     console.log('Player Email: ' + localStorage.getItem('playerEmail') + ' locally stored.');
     console.log('Commander" ' + localStorage.getItem('commanderName') + ' locally stored.');
     console.log('Partner_Name: ' + localStorage.getItem('partnerName') + ' stored locally.');
@@ -91,4 +100,9 @@ function joinGame(){
     })
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
+}
+
+function pcWrapped(){
+    createPlayer();
+    joinGame();
 }
