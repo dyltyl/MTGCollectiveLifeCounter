@@ -133,60 +133,20 @@ public class PlayerController {
     @RequestMapping(value = "/players", method = GET) //TODO: errors when there are none
     public ResponseEntity<?> getAllPlayers(HttpServletRequest headers) {
         String query = "SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = ?;";
-        Player[] players;
+        Player[] players = new Player[0];
         Connection connection = null;
         PreparedStatement statement = null;
         ResponseEntity<?> response = null;
+        String[][] result = new String[0][];
         try {
-            connection = Application.getDataSource().getConnection();
-            statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection(); //Open connection1
+            statement = connection.prepareStatement(query); //open statement1
             statement.setString(1, headers.getHeader("gameId"));
-            String[][] result = Application.query(statement);
+            result = Application.query(statement);
             players = new Player[result.length];
-            for(int i = 0; i < result.length; i++) {
-                players[i] = new Player();
-                players[i].setEmail(result[i][0]);
-                players[i].setPassword("**********");
-                players[i].setLife(Integer.parseInt(result[i][1]));
-                players[i].setPoison(Integer.parseInt(result[i][2]));
-                players[i].setExperience(Integer.parseInt(result[i][3]));
-                players[i].setName(result[i][4]);
-                HashMap<String, HashMap<String, Integer>> map = new HashMap<>();
-                query = "SELECT enemy_player, commander, damage FROM commander_damage WHERE game = ? AND player = ?;";
-                try {
-                    connection = Application.getDataSource().getConnection();
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, headers.getHeader("gameId"));
-                    statement.setString(2, players[i].getEmail());
-                    String[][] result2 = Application.query(statement);
-                    for(String[] arr : result2) {
-                        if(!map.containsKey(arr[0])) {
-                            HashMap<String, Integer> commanderDamage = new HashMap<>();
-                            map.put(arr[0], commanderDamage);
-                        }
-                        map.get(arr[0]).put(arr[1], Integer.parseInt(arr[2]));
-                    }
-                }
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    try {
-                        if(statement != null && !statement.isClosed())
-                            statement.close();
-                        if(connection != null && !connection.isClosed())
-                            connection.close();
-                    }
-                    catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                players[i].setCommanderDamage(map);
-
-            }
-            response = new ResponseEntity<>(players, new HttpHeaders(), HttpStatus.OK);
         }
-        catch (SQLException e) {
+        catch(SQLException e) {
+            e.printStackTrace();
             response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         finally {
@@ -197,8 +157,52 @@ public class PlayerController {
                     connection.close();
             }
             catch (SQLException e1) {
+                e1.printStackTrace();
             }
         }
+        for(int i = 0; i < result.length; i++) {
+            players[i] = new Player();
+            players[i].setEmail(result[i][0]);
+            players[i].setPassword("**********");
+            players[i].setLife(Integer.parseInt(result[i][1]));
+            players[i].setPoison(Integer.parseInt(result[i][2]));
+            players[i].setExperience(Integer.parseInt(result[i][3]));
+            players[i].setName(result[i][4]);
+            HashMap<String, HashMap<String, Integer>> map = new HashMap<>();
+            query = "SELECT enemy_player, commander, damage FROM commander_damage WHERE game = ? AND player = ?;";
+            try {
+                connection = Application.getDataSource().getConnection();
+                statement = connection.prepareStatement(query);
+                statement.setString(1, headers.getHeader("gameId"));
+                statement.setString(2, players[i].getEmail());
+                String[][] result2 = Application.query(statement);
+                for(String[] arr : result2) {
+                    if(!map.containsKey(arr[0])) {
+                        HashMap<String, Integer> commanderDamage = new HashMap<>();
+                        map.put(arr[0], commanderDamage);
+                    }
+                    map.get(arr[0]).put(arr[1], Integer.parseInt(arr[2]));
+                }
+            }
+            catch (SQLException e) {
+               e.printStackTrace();
+                response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+            finally {
+               try {
+                   if(statement != null && !statement.isClosed())
+                       statement.close();
+                   if(connection != null && !connection.isClosed())
+                       connection.close();
+               }
+               catch (SQLException e1) {
+                   e1.printStackTrace();
+               }
+            }
+            players[i].setCommanderDamage(map);
+        }
+        if(response == null)
+            response = new ResponseEntity<>(players, new HttpHeaders(), HttpStatus.OK);
         return response;
     }
     @RequestMapping(value = "/player", method = GET)
