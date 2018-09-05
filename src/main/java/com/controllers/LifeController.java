@@ -36,7 +36,10 @@ public class LifeController {
             statement.setString(3, commander);
             statement.setString(4, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+            if(result.length > 0 && result[0].length > 0)
+                response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+            else
+                response = new ResponseEntity<>(0, new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
             response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
