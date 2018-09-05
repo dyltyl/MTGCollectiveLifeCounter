@@ -1,4 +1,3 @@
-//TODO: Store Partner Commanders locally
 const jGURL = 'https://magic-database.herokuapp.com/joinGame';
 const pCURL = 'https://magic-database.herokuapp.com/player';
 
@@ -8,6 +7,9 @@ function togglePartner(){
         var input = document.createElement('input');
         input.setAttribute('id','partnerName');
         input.appendChild(document.createTextNode('Partner Name'));
+        if (localStorage.getItem('partnerName') != null){
+            input.value = localStorage.getItem('partnerName');
+        }
         root.appendChild(input); 
     } else{
         root.removeChild(document.getElementById('partnerName'));
@@ -30,7 +32,6 @@ function insertLink(){
  */
 function createLocalLog(){
     var root = document.getElementById('root'); //Root located within HTML body
-
     localStorage.setItem('playerName', document.getElementById('playerName').value);
     localStorage.setItem('commanderName', document.getElementById('commanderName').value);
     localStorage.setItem('playerEmail',  document.getElementById('playerEmail').value);
@@ -102,7 +103,17 @@ function joinGame(){
     .catch(error=>console.log(error))
 }
 
+function loadLocal_Storage(){
+        if(localStorage.getItem('playerEmail')!= null){
+            document.getElementById('playerName').value = localStorage.getItem('playerName');
+            document.getElementById('commanderName').value = localStorage.getItem('commanderName');
+            document.getElementById('playerEmail').value = localStorage.getItem('playerEmail');
+            document.getElementById('playerPass').value = localStorage.getItem('playerPass');
+        }
+}
+
 function pcWrapped(){
+    insertLink();
     createPlayer();
     joinGame();
 }
