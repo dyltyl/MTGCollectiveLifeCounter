@@ -47,10 +47,6 @@ h1{
     display: flex;
 }
 
-div.c3{
-    column-count: 3;
-}
-
 .randomizer{
     text-align: center;
 }
@@ -136,4 +132,10 @@ button:hover{
 
 .card{
     float: left;
-} 
+}
+
+.spanwrap{
+    overflow:hidden;
+    padding:0.5em 0;
+  }
+

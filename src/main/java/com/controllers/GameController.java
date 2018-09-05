@@ -51,7 +51,6 @@ public class GameController {
             }
         }
         return response;
-
     }
     @RequestMapping(value = "/game", method = PUT)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
