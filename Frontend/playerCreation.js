@@ -23,7 +23,7 @@ function insertLink(){
         entranceLink.setAttribute('href','waitingLobby.html');
         entranceLink.appendChild(document.createTextNode('Enter Match'));
         entrance.appendChild(entranceLink);
-        cP.appendChild(entrance);
+        joinLink.appendChild(entrance);
         document.getElementById('cP').style.display = 'none';
     }
 }

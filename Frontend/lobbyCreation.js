@@ -2,6 +2,7 @@
 
 var lSPlayerName = localStorage.getItem('playerName');
 var lSCommanderName = localStorage.getItem('commanderName');
+var lSCommanderTwo = localStorage.getItem('partnerName');
 var gameSize = localStorage.getItem('gameSize');
 var baseLife = localStorage.getItem('baseLife');
 var root = document.getElementById('root');
@@ -31,14 +32,12 @@ function createPlayerSlot(name, commanderOne, commanderTwo){
     var root = document.getElementById('root');
     var playerSlot = document.createElement('div');
     playerSlot.setAttribute('class','playerSlot');
-    var playerText = document.createTextNode(lSPlayerName + ' || ' + lSCommanderName);
-        
-/*
-    if (commanderTwo != undefined){
-        playerText += " || "  +
-    }
-*/
 
+    if (lSCommanderTwo === undefined){
+        var playerText = document.createTextNode(lSPlayerName + ' || ' + lSCommanderName);
+    }else{
+       var playerText = document.createTextNode(lSPlayerName + ' || ' + lSCommanderName + " || "  + lSCommanderTwo);
+    }
     playerSlot.appendChild(playerText);
     // playerSlot.appendChild(c1);
     // root.appendChild(playerSlot);
@@ -51,5 +50,5 @@ function createPlayerSlots(){
     }
 }
 
-root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName));
+root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
 createPlayerSlots();
