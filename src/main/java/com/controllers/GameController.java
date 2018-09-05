@@ -72,7 +72,7 @@ public class GameController {
             else {
                 Game newGame = game;
                 newGame.setGameId(result[0][0]);
-                newGame.setGamePassword(result[0][1]);
+                newGame.setGamePassword("*********");
                 newGame.setStartingLife(Integer.parseInt(result[0][2]));
                 response = new ResponseEntity<>(newGame, new HttpHeaders(), HttpStatus.OK);
             }
