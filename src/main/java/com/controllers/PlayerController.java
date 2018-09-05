@@ -178,6 +178,7 @@ public class PlayerController {
                             connection.close();
                     }
                     catch (SQLException e1) {
+                        e1.printStackTrace();
                     }
                 }
                 players[i].setCommanderDamage(map);
