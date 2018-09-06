@@ -11,13 +11,27 @@ import org.apache.http.message.BasicHeader;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 
 public class RestObject {
     public static final String BASE_URL = "https://magic-database.herokuapp.com";
     private List<Header> headers;
+    private static boolean ready = setUp();
+    public static boolean setUp() {
+        Set<String> loggers = new HashSet<>(Arrays.asList("org.apache.http", "groovyx.net.http"));
+
+        for(String log:loggers) {
+            Logger logger = (Logger) LoggerFactory.getLogger(log);
+            logger.setLevel(Level.INFO);
+            logger.setAdditive(false);
+        }
+        return true;
+    }
     public RestObject() {
         headers = new ArrayList<>();
         headers.add(new BasicHeader("Content-type", "application/json"));
