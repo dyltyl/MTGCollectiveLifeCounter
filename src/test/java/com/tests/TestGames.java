@@ -32,9 +32,16 @@ public class TestGames {
     }
     @Test
     public void testStartGame() {
+        System.out.println("Starting game: ");
+        System.out.println("gameId = "+gameId);
+        System.out.println("gamePassword = "+gamePassword);
+        System.out.println("startingLife = "+startingLife);
         Response response = Game.startGame(gameId);
+        System.out.println(response.getStringResponse());
         assertTrue("Validating the response code of startGame", response.getStatusCode() == 200);
         response = Game.hasGameStarted(gameId);
+        System.out.println("Checking if the game has started: ");
+        System.out.println(response.getStringResponse());
         assertTrue("Validating response code of hasGameStarted inside of startGame", response.getStatusCode() == 200);
         boolean result = response.mapJSONToObject(boolean.class);
         assertTrue("Validating that the game has started", result);
@@ -45,11 +52,22 @@ public class TestGames {
         String password = generateRandomString(rand.nextInt(10)+6);
         String name = generateRandomString(rand.nextInt(10) + 8);
         String commander = generateRandomString(rand.nextInt(10) + 8);
+        String commander2 = generateRandomString(rand.nextInt(10)+8);
+        System.out.println("Creating another player:");
+        System.out.println("email = " + email);
+        System.out.println("password = " + password);
+        System.out.println("name = " + name);
+        System.out.println("commander1 = "+commander);
+        System.out.println("commander2 = "+commander2);
         Response response = Player.createPlayer(email, name, password);
+        System.out.println(response.getStringResponse());
         assertTrue("Validating the response code of createPlayer during testGetAllCommanders", response.getStatusCode() == 200);
-        response = Player.joinGame(email, password, gameId, gamePassword, new String[] {commander}); //TODO: Also check with partner commanders
+        System.out.println("Adding the new player to the game");
+        response = Player.joinGame(email, password, gameId, gamePassword, new String[] {commander, commander2}); //TODO: Also check with partner commanders
+        System.out.println(response.getStringResponse()+"\n");
         assertTrue("Validating the response code of joinGame during testGetAllCommanders", response.getStatusCode() == 200);
         response = Game.allCommanders(gameId);
+        System.out.println("\n"+response.getStringResponse()+"\n");
         assertTrue("Validating the response code of getAllCommanders", response.getStatusCode() == 200);
         String[][] result = response.mapJSONToObject(String[][].class);
         assertTrue("Validating that the result contains at least one entry", result != null && result.length > 0 && result[0].length == 2);
@@ -61,9 +79,13 @@ public class TestGames {
             }
         }
         assertTrue("Validating that the commander is in the result", found);
+        System.out.println("Removing player from the game");
         response = Player.leaveGame(email, gameId);
+        System.out.println(response.getStringResponse());
         assertTrue("Validating response code for leaveGame during testGetAllPlayers", response.getStatusCode() == 200);
+        System.out.println("Deleting the player");
         response = Player.deletePlayer(email, password);
+        System.out.println(response.getStringResponse());
         assertTrue("Validating response code for deletePlayer during testGetAllPlayers", response.getStatusCode() == 200);
     }
     @Test
@@ -71,6 +93,8 @@ public class TestGames {
         String currentId = gameId;
         while(currentId.length() > 0) {
             Response response = Game.search(currentId);
+            System.out.println("Search for: "+currentId);
+            System.out.println(response.getStringResponse()+"\n");
             assertTrue("Validating response code for gameSearch('"+currentId+"')", response.getStatusCode() == 200);
             List<String> result = response.mapJSONToObject(List.class);
             assertTrue("Validating the gameId is in the result", result.contains(gameId));
@@ -83,7 +107,12 @@ public class TestGames {
         gameId = generateRandomString(rand.nextInt(10)+5);
         gamePassword = generateRandomString(rand.nextInt(10)+5);
         startingLife = rand.nextInt(20) + 20;
+        System.out.println("oldId: "+oldId);
+        System.out.println("gameId: "+gameId);
+        System.out.println("gamePassword: "+gamePassword);
+        System.out.println("startingLife: "+startingLife);
         Response response = Game.updateGame(oldId, gameId, gamePassword, startingLife);
+        System.out.println(response.getStringResponse());
         assertTrue("Validating response code of updateGame", response.getStatusCode() == 200);
         Game game = response.mapJSONToObject(Game.class);
         assertTrue("Validating the gameId of the resulting game", game.getGameId().equals(gameId));
@@ -91,19 +120,33 @@ public class TestGames {
     }
     @Test
     public void testVerifyGame() {
+        System.out.println("Testing correct credentials");
+        System.out.println("gameId = "+ gameId);
+        System.out.println("gamePassword = "+gamePassword);
         Response response = Game.verify(gameId, gamePassword);
+        System.out.println(response.getStringResponse()+"\n");
         assertTrue("Validating the response code of verifyGame", response.getStatusCode() == 200);
         boolean result = response.mapJSONToObject(boolean.class);
         assertTrue("Validating the result of verifyGame", result);
 
         //Wrong password
-        response = Game.verify(gameId, generateRandomString(rand.nextInt(20)));
+        System.out.println("Testing incorrect password");
+        String value = generateRandomString(rand.nextInt(20));
+        System.out.println("gameId = "+gameId);
+        System.out.println("gamePassword = "+value);
+        response = Game.verify(gameId, value);
+        System.out.println(response.getStringResponse()+"\n");
         assertTrue("Validating the response code of verifyGame", response.getStatusCode() == 200);
         result = response.mapJSONToObject(boolean.class);
         assertTrue("Validating the result of verifyGame", !result);
 
-        //Wrong username
+        //Wrong gameId
+        System.out.println("Testing incorrect password");
+        value = generateRandomString(rand.nextInt(20));
+        System.out.println("gameId = "+value);
+        System.out.println("gamePassword = "+gamePassword);
         response = Game.verify(generateRandomString(rand.nextInt(20)), gamePassword);
+        System.out.println(response.getStringResponse());
         assertTrue("Validating the response code of verifyGame", response.getStatusCode() == 200);
         result = response.mapJSONToObject(boolean.class);
         assertTrue("Validating the result of verifyGame", !result);

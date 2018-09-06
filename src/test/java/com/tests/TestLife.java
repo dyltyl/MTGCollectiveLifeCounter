@@ -105,10 +105,12 @@ public class TestLife {
     }
     @Test
     public void testGetCommanderDamage() {
+        System.out.println("Player    ||    Enemy Player    ||    Commander");
         for(Player player : players) {
             for(String enemyPlayer : player.getCommanderDamage().keySet()) {
                 for(String commander : player.getCommanderDamage().get(enemyPlayer).keySet()) {
                     Response response = Player.commanderDamage(commander, game.getGameId(), player.getEmail(), enemyPlayer);
+                    System.out.println(player.getEmail() + "    ||    " + enemyPlayer + "    ||    " + commander);
                     System.out.println(response.getStringResponse());
                     assertTrue("Validating response code for getCommanderDamage", response.getStatusCode() == 200);
                     int amount = response.mapJSONToObject(int.class);
@@ -132,7 +134,9 @@ public class TestLife {
     @Test
     public void testGetPlayer() {
         for(Player player : players) {
+            System.out.println(player.getEmail());
             Response response = Player.byEmail(player.getEmail(), game.getGameId());
+            System.out.println(response.getStringResponse());
             assertTrue("Validating the response code of getPlayer", response.getStatusCode() == 200);
             Player dbPlayer = response.mapJSONToObject(Player.class);
             assertTrue("Validating the name of the player", player.getName().equals(dbPlayer.getName()));
