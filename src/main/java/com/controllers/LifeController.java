@@ -25,20 +25,36 @@ public class LifeController {
     @RequestMapping(value = "/commanderDamage/{commander}", method = GET)
     public ResponseEntity<?> getCommanderDamage(HttpServletRequest headers, @PathVariable String commander) {
         String query = "SELECT damage FROM commander_damage WHERE player = ? AND enemy_player = ? AND commander = ? AND game = ?;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("email"));
             statement.setString(2, headers.getHeader("enemyPlayer"));
             statement.setString(3, commander);
             statement.setString(4, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
-            return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+            if(result.length > 0 && result[0].length > 0)
+                response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+            else
+                response = new ResponseEntity<>(0, new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/commanderDamage", method = PUT)
     public ResponseEntity<?> setCommanderDamage(HttpServletRequest headers, @RequestBody CommanderDamage damage) {
@@ -50,63 +66,100 @@ public class LifeController {
         }
         String query = "INSERT INTO commander_damage (player, enemy_player, game, commander, damage) Values (?, ?, ?, ?, ?) " +
                 "ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage RETURNING damage;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, damage.getPlayer());
             statement.setString(2, damage.getEnemyPlayer());
             statement.setString(3, headers.getHeader("gameId"));
             statement.setString(4, damage.getCommander());
             statement.setInt(5, damage.getDamage());
             String[][] result = Application.query(statement);
-            connection.close();
             if(result.length > 0) {
-                return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+                response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
-            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+            else
+                response = new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
-        catch(SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        catch (SQLException e) {
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/life", method = POST)
     public ResponseEntity<?> updateLife(HttpServletRequest headers, @RequestBody Player player) {
         String query = "UPDATE life SET life = ?, poison = ?, experience = ? WHERE email = ? AND game = ?;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setInt(1, player.getLife());
             statement.setInt(2, player.getPoison());
             statement.setInt(3, player.getExperience());
             statement.setString(4, headers.getHeader("email"));
             statement.setString(5, headers.getHeader("gameId"));
             Application.queryNoResults(statement);
-            connection.close();
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
         }
         for(String enemyPlayer : player.getCommanderDamage().keySet()) {
             for(String commander : player.getCommanderDamage().get(enemyPlayer).keySet()) {
                 query = "INSERT INTO commander_damage (player, enemy_player, game, commander, damage) VALUES (?, ?, ?, ?, ?) " +
                         "ON CONFLICT ON CONSTRAINT commander_damage_pkey DO UPDATE SET damage = excluded.damage;";
                 try {
-                    Connection connection = Application.getDataSource().getConnection();
-                    PreparedStatement statement = connection.prepareStatement(query);
+                    connection = Application.getDataSource().getConnection();
+                    statement = connection.prepareStatement(query);
                     statement.setString(1, player.getEmail());
                     statement.setString(2, enemyPlayer);
                     statement.setString(3, headers.getHeader("gameId"));
                     statement.setString(4, commander);
                     statement.setInt(5, player.getCommanderDamage().get(enemyPlayer).get(commander));
                     Application.queryNoResults(statement);
-                    connection.close();
                 }
                 catch (SQLException e) {
-                    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                    response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                }
+                finally {
+                    try {
+                        if(statement != null && !statement.isClosed())
+                            statement.close();
+                        if(connection != null && !connection.isClosed())
+                            connection.close();
+                    }
+                    catch (SQLException e1) {
+                    }
                 }
             }
         }
-        return new ResponseEntity<>(player, new HttpHeaders(), HttpStatus.OK);
+        if(response == null)
+            return new ResponseEntity<>(player, new HttpHeaders(), HttpStatus.OK);
+        return response;
     }
     @RequestMapping(value = "/life/{life}", method = PUT)
     public ResponseEntity<?> setLife(HttpServletRequest headers, @PathVariable int life) {
@@ -117,22 +170,36 @@ public class LifeController {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
         String query = "UPDATE life SET life = ? WHERE email = ? AND game = ? RETURNING life";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setInt(1, life);
             statement.setString(2, headers.getHeader("email"));
             statement.setString(3, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
             if(result.length > 0) {
-                return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+                response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
-            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+            else
+                response = new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/poison/{poison}", method = PUT)
     public ResponseEntity<?> setPoison(HttpServletRequest headers, @PathVariable int poison) {
@@ -143,22 +210,36 @@ public class LifeController {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
         String query = "UPDATE life SET poison = ? WHERE email = ? AND game = ? RETURNING poison";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setInt(1, poison);
             statement.setString(2, headers.getHeader("email"));
             statement.setString(3, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
             if(result.length > 0) {
-                return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+                response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
-            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+            else
+                response = new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/experience/{experience}", method = PUT)
     public ResponseEntity<?> setExperience(HttpServletRequest headers, @PathVariable int experience) {
@@ -169,22 +250,36 @@ public class LifeController {
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
         String query = "UPDATE life SET experience = ? WHERE email = ? AND game = ? RETURNING experience";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setInt(1, experience);
             statement.setString(2, headers.getHeader("email"));
             statement.setString(3, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
             if(result.length > 0) {
-                return new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+                response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
             }
-            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+            else
+                response = new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
 
 }
