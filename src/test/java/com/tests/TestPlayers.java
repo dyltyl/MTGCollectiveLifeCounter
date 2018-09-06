@@ -9,31 +9,26 @@ import org.junit.Test;
 
 import java.util.Random;
 
+import static com.tests.TestSuite.generateRandomString;
 import static junit.framework.TestCase.assertTrue;
 
 public class TestPlayers {
     private static String email, password, name, gameId, gamePassword;
-    private static final String ALPHA = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`!@#$%^&*()-_=+[]{}|\\;:'\"/?.>,<";
-    public static String generateRandomString(int length) {
-        Random rand = new Random();
-        StringBuilder builder = new StringBuilder(length);
-        for(int i = 0; i < length; i++)
-            builder.append(ALPHA.charAt(rand.nextInt(ALPHA.length())));
-        return builder.toString();
-    }
+    private static Random rand = new Random();
+
     @BeforeClass
     public static void setUp() {
-        email = generateRandomString(new Random().nextInt(20)+ 7) + "@gmail.com";
-        password = generateRandomString(new Random().nextInt(10)+6);
-        name = generateRandomString(new Random().nextInt(10) + 8);
-        gameId = generateRandomString(new Random().nextInt(13) + 10);
-        gamePassword = generateRandomString(new Random().nextInt(15) + 10);
+        email = generateRandomString(rand.nextInt(20)+ 7) + "@gmail.com";
+        password = generateRandomString(rand.nextInt(10)+6);
+        name = generateRandomString(rand.nextInt(10) + 8);
+        gameId = generateRandomString(rand.nextInt(13) + 10);
+        gamePassword = generateRandomString(rand.nextInt(15) + 10);
         System.out.println("email = " + email);
         System.out.println("password = " + password);
         System.out.println("name = " + name);
         Response response = Player.createPlayer(email, name, password);
         assertTrue("Validating response code for createPlayer during setup", response.getStatusCode() == 200);
-        response = Game.createGame(gameId, gamePassword, new Random().nextInt(20)+20);
+        response = Game.createGame(gameId, gamePassword, rand.nextInt(20)+20);
         assertTrue("Validating response code for createGame during player setup", response.getStatusCode() == 200);
         response = Player.joinGame(email, password, gameId, gamePassword, new String[] {"Narset", "Muldrotha"});
         assertTrue("Validating response code for joinGame during setup", response.getStatusCode() == 200);
@@ -46,9 +41,9 @@ public class TestPlayers {
     @Test
     public void testUpdatePlayer() {
         String prevEmail = email;
-        email = generateRandomString(new Random().nextInt(20)+ 7) + "@gmail.com";
-        password = generateRandomString(new Random().nextInt(10)+6);
-        name = generateRandomString(new Random().nextInt(10) + 8);
+        email = generateRandomString(rand.nextInt(20)+ 7) + "@gmail.com";
+        password = generateRandomString(rand.nextInt(10)+6);
+        name = generateRandomString(rand.nextInt(10) + 8);
         System.out.println("email = " + email);
         System.out.println("password = " + password);
         System.out.println("name = " + name);

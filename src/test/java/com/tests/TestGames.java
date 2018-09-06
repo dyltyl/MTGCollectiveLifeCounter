@@ -10,16 +10,18 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Random;
 
+import static com.tests.TestSuite.generateRandomString;
 import static junit.framework.TestCase.assertTrue;
 
 public class TestGames {
     private static String gameId, gamePassword;
     private static int startingLife;
+    private static Random rand = new Random();
 
     @BeforeClass
     public static void setup() {
-        gameId = TestPlayers.generateRandomString(new Random().nextInt(10)+5);
-        gamePassword = TestPlayers.generateRandomString(new Random().nextInt(10)+5);
+        gameId = generateRandomString(rand.nextInt(10)+5);
+        gamePassword = generateRandomString(rand.nextInt(10)+5);
         startingLife = new Random().nextInt(20) + 20;
         Response response = Game.createGame(gameId, gamePassword, startingLife);
         assertTrue("Validating response code of createGame during setup", response.getStatusCode() == 200);
@@ -39,10 +41,10 @@ public class TestGames {
     }
     @Test
     public void testGetAllCommanders() {
-        String email = TestPlayers.generateRandomString(new Random().nextInt(20)+ 7) + "@gmail.com";
-        String password = TestPlayers.generateRandomString(new Random().nextInt(10)+6);
-        String name = TestPlayers.generateRandomString(new Random().nextInt(10) + 8);
-        String commander = TestPlayers.generateRandomString(new Random().nextInt(10) + 8);
+        String email = generateRandomString(rand.nextInt(20)+ 7) + "@gmail.com";
+        String password = generateRandomString(rand.nextInt(10)+6);
+        String name = generateRandomString(rand.nextInt(10) + 8);
+        String commander = generateRandomString(rand.nextInt(10) + 8);
         Response response = Player.createPlayer(email, name, password);
         assertTrue("Validating the response code of createPlayer during testGetAllCommanders", response.getStatusCode() == 200);
         response = Player.joinGame(email, password, gameId, gamePassword, new String[] {commander}); //TODO: Also check with partner commanders
@@ -78,9 +80,9 @@ public class TestGames {
     @Test
     public void testUpdateGame() {
         String oldId = gameId;
-        gameId = TestPlayers.generateRandomString(new Random().nextInt(10)+5);
-        gamePassword = TestPlayers.generateRandomString(new Random().nextInt(10)+5);
-        startingLife = new Random().nextInt(20) + 20;
+        gameId = generateRandomString(rand.nextInt(10)+5);
+        gamePassword = generateRandomString(rand.nextInt(10)+5);
+        startingLife = rand.nextInt(20) + 20;
         Response response = Game.updateGame(oldId, gameId, gamePassword, startingLife);
         assertTrue("Validating response code of updateGame", response.getStatusCode() == 200);
         Game game = response.mapJSONToObject(Game.class);
@@ -95,13 +97,13 @@ public class TestGames {
         assertTrue("Validating the result of verifyGame", result);
 
         //Wrong password
-        response = Game.verify(gameId, TestPlayers.generateRandomString(new Random().nextInt(20)));
+        response = Game.verify(gameId, generateRandomString(rand.nextInt(20)));
         assertTrue("Validating the response code of verifyGame", response.getStatusCode() == 200);
         result = response.mapJSONToObject(boolean.class);
         assertTrue("Validating the result of verifyGame", !result);
 
         //Wrong username
-        response = Game.verify(TestPlayers.generateRandomString(new Random().nextInt(20)), gamePassword);
+        response = Game.verify(generateRandomString(rand.nextInt(20)), gamePassword);
         assertTrue("Validating the response code of verifyGame", response.getStatusCode() == 200);
         result = response.mapJSONToObject(boolean.class);
         assertTrue("Validating the result of verifyGame", !result);

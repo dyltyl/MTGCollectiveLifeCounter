@@ -12,22 +12,17 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Random;
 
+import static com.tests.TestSuite.generateRandomString;
 import static junit.framework.TestCase.assertTrue;
 
 public class TestLife {
-    private static final String ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static Player[] players;
     private static String[] passwords;
     private static String[][] commanders;
     private static Game game;
+    private static Random rand = new Random();
 
-    private static String generateRandomString(int length) {
-        Random rand = new Random();
-        StringBuilder builder = new StringBuilder(length);
-        for(int i = 0; i < length; i++)
-            builder.append(ALPHA.charAt(rand.nextInt(ALPHA.length())));
-        return builder.toString();
-    }
+
     @BeforeClass
     public static void setup() {
         players = new Player[5];
@@ -35,29 +30,29 @@ public class TestLife {
         passwords = new String[5];
         //Game Creation
         game = new Game();
-        game.setGameId(TestPlayers.generateRandomString(new Random().nextInt(10)+5));
-        game.setGamePassword(TestPlayers.generateRandomString(new Random().nextInt(10)+5));
-        game.setStartingLife(new Random().nextInt(20) + 20);
+        game.setGameId(generateRandomString(rand.nextInt(10)+5));
+        game.setGamePassword(generateRandomString(rand.nextInt(10)+5));
+        game.setStartingLife(rand.nextInt(20) + 20);
         Response response = Game.createGame(game);
         assertTrue("Verifying response code for createGame in setup", response.getStatusCode() == 200);
         //Player Creation
         for(int i = 0; i < players.length; i++) {
             players[i] = new Player();
-            players[i].setEmail(TestPlayers.generateRandomString(new Random().nextInt(20)+ 7) + "@gmail.com");
-            players[i].setPassword(TestPlayers.generateRandomString(new Random().nextInt(10)+6));
+            players[i].setEmail(generateRandomString(rand.nextInt(20)+ 7) + "@gmail.com");
+            players[i].setPassword(generateRandomString(rand.nextInt(10)+6));
             passwords[i] = players[i].getPassword();
-            players[i].setName(TestPlayers.generateRandomString(new Random().nextInt(10) + 8));
+            players[i].setName(generateRandomString(rand.nextInt(10) + 8));
             response = Player.createPlayer(players[i]);
             assertTrue("Verifying response code for createPlayer in setup", response.getStatusCode() == 200);
             String[] playersCommanders;
-            if(new Random().nextBoolean()) {
+            if(rand.nextBoolean()) {
                 playersCommanders = new String[2];
-                playersCommanders[0] = generateRandomString(new Random().nextInt(10) + 4);
-                playersCommanders[1] = generateRandomString(new Random().nextInt(10) + 4);
+                playersCommanders[0] = generateRandomString(rand.nextInt(10) + 4, true);
+                playersCommanders[1] = generateRandomString(rand.nextInt(10) + 4, true);
             }
             else {
                 playersCommanders = new String[1];
-                playersCommanders[0] = generateRandomString(new Random().nextInt(10) + 4);
+                playersCommanders[0] = generateRandomString(rand.nextInt(10) + 4, true);
             }
             commanders[i] = playersCommanders;
             response = Player.joinGame(players[i].getEmail(),players[i].getPassword(),game.getGameId(), game.getGamePassword(), playersCommanders);
@@ -68,12 +63,12 @@ public class TestLife {
         players = response.mapJSONToObject(Player[].class);
         //Damage
         for(int i = 0; i < 20; i++) {
-            int amount = new Random().nextInt(10);
-            int player = new Random().nextInt(players.length);
+            int amount = rand.nextInt(10);
+            int player = rand.nextInt(players.length);
             int life = players[player].getLife() - amount;
-            int enemyPlayer = new Random().nextInt(players.length);
+            int enemyPlayer = rand.nextInt(players.length);
             while(enemyPlayer == player)
-                enemyPlayer = new Random().nextInt(players.length);
+                enemyPlayer = rand.nextInt(players.length);
             CommanderDamage damage = new CommanderDamage();
             damage.setPlayer(players[player].getEmail());
             damage.setEnemyPlayer(players[enemyPlayer].getEmail());
@@ -95,14 +90,14 @@ public class TestLife {
             players[player].setLife(life);
 
             //Poison
-            int poison = new Random().nextInt(11);
+            int poison = rand.nextInt(11);
             response = Player.putPoison(game.getGameId(), game.getGamePassword(), players[player].getEmail(), passwords[player], poison);
             System.out.println(response.getStringResponse());
             assertTrue("Validating response code for setPoison during setup", response.getStatusCode() == 200);
             players[player].setPoison(poison);
 
             //Experience
-            int experience = new Random().nextInt(15);
+            int experience = rand.nextInt(15);
             response = Player.putExperience(game.getGameId(), game.getGamePassword(), players[player].getEmail(), passwords[player], poison);
             assertTrue("Validating response code for setExperience during setup", response.getStatusCode() == 200);
             players[player].setExperience(poison);
