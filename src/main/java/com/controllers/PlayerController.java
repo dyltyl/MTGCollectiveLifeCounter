@@ -279,7 +279,8 @@ public class PlayerController {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
         }
         if(!verifyUser(headers.getHeader("email"), headers.getHeader("password"))) {
-            System.out.println(Application.getJson(headers,true));
+            System.out.println(headers.getHeader("email"));
+            System.out.println(headers.getHeader("password"));
             return new ResponseEntity<>("Incorrect user credentials", HttpStatus.BAD_REQUEST);
         }
         int startingLife = getStartingLife(headers.getHeader("gameId"));
