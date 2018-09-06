@@ -6,6 +6,7 @@ var lSCommanderName = localStorage.getItem('commanderName');
 var lSCommanderTwo = localStorage.getItem('partnerName');
 var gameSize = localStorage.getItem('gameSize');
 var baseLife = localStorage.getItem('baseLife');
+var players = [];
 // var root = document.getElementById('root');
 
 function checkLog(){
@@ -74,26 +75,54 @@ function playerRefresh(){
     fetch(getAllUrl,requestBody)
     .then(function(response){ return response.json();})
     .then(function(data){
-        for(var i = 0; i<data.length; i++){
-            console.log(data);
-            console.log(JSON.stringify(data));
-            dbGAR.push(data[i]);
-            console.log('dbGAR size inside function: ' + dbGAR.length);
-        }
-        for(var i = 0; i<dbGAR.length;i++){
-            console.log('hello?');
-            console.log(dbGAR[i].name);
-            root.appendChild(createNameSlot(dbGAR[i].name));
-        }
-        if(dbGAR.length<localStorage.getItem('gameSize')){
-            for(var i =0; i<localStorage.getItem('gameSize')-dbGAR.length;i++){
-                root.appendChild(createEmptySlot());
+        console.log(data);
+        console.log(players);
+        //Determine if the arrays are equal
+        var equal = true;
+        if(data.length !== players.length)
+            equal = false;
+        for(let i = 0; i < data.length && equal; i++) {
+            if(data[i].email !== players[i].email) {
+                equal = false;
             }
+        }   
+        //If not equal
+        if(!equal) {
+            players = data;
+
+            for(let i = 0; i < data.length; i++) {
+                var found = false;
+                for(let j = 0; j < players.length; j++) {
+                    if(data[i].email === players[j].email) {
+                        found = true;
+                        break;
+                    }
+                }
+                //player in data but not players
+                if(!found) {
+                    //TODO: fill player slot
+                }
+            }
+
+            for(let i = 0; i < players.length; i++) {
+                var found = false;
+                for(let j = 0; j < data.length; j++) {
+                    if(data[i].email === players[j].email) {
+                        found = true;
+                        break;
+                    }
+                }
+                //player in players but not data
+                if(!found) {
+                    //TODO: remove player slot
+                }
+            }
+            
         }
     })
-    .then(res=>{console.log(res)})
+    //.then(res=>{console.log(res)})
     .catch(error=>console.log(error))
-    .then(_=>setInterval(playerRefresh(), 1000))
+    //.then(_=>setInterval(playerRefresh(), 100000))
 }
 
 // root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
