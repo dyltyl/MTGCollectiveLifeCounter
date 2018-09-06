@@ -219,6 +219,7 @@ public class PlayerController {
             String[][] result = Application.query(statement);
             Player player = new Player();
             player.setEmail(result[0][0]);
+            player.setPassword("*********");
             player.setLife(Integer.parseInt(result[0][1]));
             player.setPoison(Integer.parseInt(result[0][2]));
             player.setExperience(Integer.parseInt(result[0][3]));
