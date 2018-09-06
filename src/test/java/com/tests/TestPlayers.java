@@ -1,5 +1,6 @@
 package com.tests;
 
+import com.restObjects.Game;
 import com.restObjects.Player;
 import com.restObjects.Response;
 import org.junit.AfterClass;
@@ -11,8 +12,8 @@ import java.util.Random;
 import static junit.framework.TestCase.assertTrue;
 
 public class TestPlayers {
-    private static String email, password, name, gameId = "newGame", gamePassword = "password";
-    private static final String ALPHA = "1234567890qwertyuiopasdfghjklzxcvbnm`!@#$%^&*()-_=+[]{}|\\;:'\"/?.>,<";
+    private static String email, password, name, gameId, gamePassword;
+    private static final String ALPHA = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`!@#$%^&*()-_=+[]{}|\\;:'\"/?.>,<";
     public static String generateRandomString(int length) {
         Random rand = new Random();
         StringBuilder builder = new StringBuilder(length);
@@ -25,11 +26,15 @@ public class TestPlayers {
         email = generateRandomString(new Random().nextInt(20)+ 7) + "@gmail.com";
         password = generateRandomString(new Random().nextInt(10)+6);
         name = generateRandomString(new Random().nextInt(10) + 8);
+        gameId = generateRandomString(new Random().nextInt(13) + 10);
+        gamePassword = generateRandomString(new Random().nextInt(15) + 10);
         System.out.println("email = " + email);
         System.out.println("password = " + password);
         System.out.println("name = " + name);
         Response response = Player.createPlayer(email, name, password);
         assertTrue("Validating response code for createPlayer during setup", response.getStatusCode() == 200);
+        response = Game.createGame(gameId, gamePassword, new Random().nextInt(20)+20);
+        assertTrue("Validating response code for createGame during player setup", response.getStatusCode() == 200);
         response = Player.joinGame(email, password, gameId, gamePassword, new String[] {"Narset", "Muldrotha"});
         assertTrue("Validating response code for joinGame during setup", response.getStatusCode() == 200);
     }
@@ -58,6 +63,7 @@ public class TestPlayers {
         assertTrue("Validating resulting player is not null", player != null);
         assertTrue("Validating name of resulting player", player.getName().equals(name));
         assertTrue("Validating email of resulting player", player.getEmail().equals(email));
+        System.out.println(response.getStringResponse());
     }
     @Test
     public void testGetGamesPlayerIsIn() {
@@ -99,6 +105,8 @@ public class TestPlayers {
         assertTrue("Validating response code for leaveGame during teardown", response.getStatusCode() == 200);
         response = Player.deletePlayer(email, password);
         assertTrue("Validating response code for deletePlayer during tearDown", response.getStatusCode() == 200);
+        response = Game.deleteGame(gameId);
+        assertTrue("Validating the response code for deleteGame during tearDown", response.getStatusCode() == 200);
 
     }
 }

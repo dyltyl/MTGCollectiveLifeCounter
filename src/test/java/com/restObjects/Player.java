@@ -1,6 +1,7 @@
 package com.restObjects;
 
 import com.Application;
+import com.objects.CommanderDamage;
 
 import java.util.HashMap;
 
@@ -71,6 +72,51 @@ public class Player extends RestObject {
         player.rest().setHeader("email", email);
         player.rest().setHeader("password", password);
         return player.rest().sendGetRequest(RestObject.BASE_URL + "/login");
+    }
+    public static Response commanderDamage(String commander, String gameId, String email, String enemyPlayer) {
+        Player player = new Player();
+        player.rest().setHeader("gameId", gameId);
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("enemyPlayer", enemyPlayer);
+        return player.rest().sendGetRequest(RestObject.BASE_URL + "/commanderDamage/"+commander);
+    }
+    public static Response putCommanderDamage(String gameId, String gamePassword, String password, CommanderDamage damage) {
+        Player player = new Player();
+        player.rest().setHeader("gameId", gameId);
+        player.rest().setHeader("gamePassword", gamePassword);
+        player.rest().setHeader("email", damage.getPlayer());
+        player.rest().setHeader("password", password);
+        return player.rest().sendPutRequest(RestObject.BASE_URL + "/commanderDamage", Application.getJson(damage, true));
+    }
+    public static Response putLife(String gameId, String gamePassword, String email, String password, int amount) {
+        Player player = new Player();
+        player.rest().setHeader("gameId", gameId);
+        player.rest().setHeader("gamePassword", gamePassword);
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("password", password);
+        return player.rest().sendPutRequest(RestObject.BASE_URL + "/life/"+amount, "");
+    }
+    public static Response putPoison(String gameId, String gamePassword, String email, String password, int amount) {
+        Player player = new Player();
+        player.rest().setHeader("gameId", gameId);
+        player.rest().setHeader("gamePassword", gamePassword);
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("password", password);
+        return player.rest().sendPutRequest(RestObject.BASE_URL + "/poison/"+amount, "");
+    }
+    public static Response putExperience(String gameId, String gamePassword, String email, String password, int amount) {
+        Player player = new Player();
+        player.rest().setHeader("gameId", gameId);
+        player.rest().setHeader("gamePassword", gamePassword);
+        player.rest().setHeader("email", email);
+        player.rest().setHeader("password", password);
+        return player.rest().sendPutRequest(RestObject.BASE_URL + "/experience/"+amount, "");
+    }
+    public static Response player(String gameId, String email) {
+        Player player = new Player();
+        player.rest().setHeader("gameId", gameId);
+        player.rest().setHeader("email", email);
+        return player.rest().sendGetRequest(RestObject.BASE_URL + "/player");
     }
     public RestObject rest() {
         return rest;

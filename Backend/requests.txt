@@ -2,10 +2,10 @@ REQUESTS:
 GET /status - checks if the server is online
 GET /commanders HEADERS: {gameId} -Gets all commanders with their associated players in the game
 GET /players HEADERS: {gameId} -Gets all players in the game
-GET /player HEADERS: {gameId, email} -Gets the player in the game, with life stats
+GET /player HEADERS: {gameId, email} -Gets the player in the game, with life stats (not commander damage)
 GET /commanderDamage/{commander} HEADERS: {gameId, email, enemyPlayer} 
 GET /gamesPlayerIsIn HEADERS: {email}
-GET /game HEADERS: {gameId}
+GET /game HEADERS: {gameId} - searches for a game
 GET /startGame HEADERS: {gameId}
 GET /hasGameStarted HEADERS: {gameId}
 GET /verifyGame HEADERS: {gameId, gamePassword}
