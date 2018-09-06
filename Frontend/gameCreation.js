@@ -35,7 +35,8 @@ function dbCreateGame(){
     console.log('dbCreateGame() called');
     fetch(url, otherParam)
     .then(function(response){
-        console.log(response.text())
+        console.log(response);
+        console.log(response.text());
     })
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))

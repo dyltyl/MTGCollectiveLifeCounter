@@ -93,6 +93,7 @@ function playerRefresh(){
     })
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
+    .then(_=>setInterval(playerRefresh(), 1000))
 }
 
 // root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
