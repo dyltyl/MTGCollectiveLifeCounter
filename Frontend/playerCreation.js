@@ -72,6 +72,9 @@ function createPlayer(){
     })
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
+    .then(function() {
+        joinGame();
+    })
 }
 
 function joinGame(){
@@ -115,5 +118,5 @@ function loadLocal_Storage(){
 function pcWrapped(){
     insertLink();
     createPlayer();
-    joinGame();
+    //joinGame();
 }
