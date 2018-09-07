@@ -18,13 +18,14 @@ function togglePartner(){
 
 function insertLink(){
     if (document.getElementById('joinLink').childElementCount == 0){
-        var entrance = document.createElement('button');
+        var entrance = document.createElement('div');
+        entrance.setAttribute('class','divButton');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','waitingLobby.html');
         entranceLink.appendChild(document.createTextNode('Enter Match'));
         entrance.appendChild(entranceLink);
         joinLink.appendChild(entrance);
-        document.getElementById('cP').style.display = 'none';
+        // document.getElementById('cP').style.display = 'none';
     }
 }
 /**
@@ -114,7 +115,7 @@ function loadLocal_Storage(){
 
 function pcWrapped(){
     insertLink();
-    loadLocal_Storage();
+    // loadLocal_Storage();
     createPlayer();
     //joinGame();
 }

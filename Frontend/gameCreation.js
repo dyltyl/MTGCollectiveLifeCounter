@@ -1,4 +1,5 @@
 const url = 'https://magic-database.herokuapp.com/game';
+var created = false;
 
 
 
@@ -34,14 +35,21 @@ function dbCreateGame(){
 
     console.log('dbCreateGame() called');
     fetch(url, otherParam)
-    .then(res=>{console.log(res)})
-    .catch(error=>console.log(error))
-    .then(insertLink());
+    .then(res=>{
+        console.log(res); 
+        if(res.status == 200) 
+            insertLink();
+        else {
+            console.log('sorry about that'); //TODO: More detailed error messages
+        }
+    })
+    .catch(error=>console.log('pls')) //Not sure if this is ever called
 }
 
 function insertLink(){
     if (document.getElementById('dbInsert').childElementCount == 0){
-        var entrance = document.createElement('button');
+        var entrance = document.createElement('div');
+        entrance.setAttribute('class','divButton');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','playerCreation.html');
         entranceLink.text = 'Create User';
@@ -53,12 +61,12 @@ function insertLink(){
 }
 
 function createGame(){
-    if(document.getElementById('gameSize').value < 8 && document.getElementById('gameSize').value > 1 && document.getElementById('baseLife').value > 0 && document.getElementById('gameName').value) {
+    if(document.getElementById('gameSize').value < 9 && document.getElementById('gameSize').value > 1 && document.getElementById('baseLife').value > 0 && document.getElementById('gameName').value) {
         createLocalGameStorage();
         dbCreateGame();
     }
     else {
-        console.log('missing some fields')
+        console.log('missing some fields') //TODO: More detailed error messages
     }
 }
 
