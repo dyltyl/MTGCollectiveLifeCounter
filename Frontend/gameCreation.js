@@ -40,10 +40,11 @@ function dbCreateGame(){
 
 function insertLink(){
     if (document.getElementById('dbInsert').childElementCount == 0){
-        var entrance = document.createElement('button');
+        var entrance = document.createElement('div');
+        entrance.setAttribute('class','divButton');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','playerCreation.html');
-        entranceLink.text = 'Create USer';
+        entranceLink.text = 'Create User';
         // entranceLink.appendChild(document.createTextNode('Create User'));
         entrance.appendChild(entranceLink);
         dbInsert.appendChild(entrance);

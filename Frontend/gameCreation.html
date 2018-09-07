@@ -9,8 +9,6 @@
 
 <h1>Game Creation</h1>
 <body style= 'text-align: center;color:white'>
-    <a href = 'playerCreation.html'>Manual playerCreation Entrance</a>
-
     <div>
             Number of players
         <input type="number" id="gameSize" name="gS" placeholder="2">
@@ -24,12 +22,10 @@
         <br/>
     </div>
     <div>
-        <div class = 'divButton'> <a href='playerCreation.html'>how about now?</a></div>
-        <button><a href='playerCreation.html'>Do Any button links work?</a></button>
         <!-- <button onload = 'getInputContent()' onclick="getInputContent()">getInputContent</button> -->
-        <button id = 'cG' onclick= "createGame(); insertLink()">Create Game</button>
+        <div id='cG' class = 'divButton' onclick='createGame();insertLink()'>CreateGame</div>
         <p id= 'dbInsert'></p>
-        <button onClick = 'checkLocalLog()'>Log_Test</button>
+        <!-- <button onClick = 'checkLocalLog()'>Log_Test</button> -->
     </div>
 </body>
 <script src="gameCreation.js"></script>
