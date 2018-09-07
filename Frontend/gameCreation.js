@@ -39,11 +39,11 @@ function dbCreateGame(){
 }
 
 function insertLink(){
-    if (document.getElementById('dbInsert').childElementCount == 0){
+    if (document.getElementById('dbInsert').childElementCount == 0 && false){
         var entrance = document.createElement('button');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','playerCreation.html');
-        entranceLink.text = 'Create USer';
+        entranceLink.text = 'Create User';
         // entranceLink.appendChild(document.createTextNode('Create User'));
         entrance.appendChild(entranceLink);
         dbInsert.appendChild(entrance);
@@ -52,8 +52,10 @@ function insertLink(){
 }
 
 function createGame(){
-    createLocalGameStorage();
-    dbCreateGame();
+    if(document.getElementById('gameSize').value < 8 && document.getElementById('gameSize').value > 1 && document.getElementById('baseLife').value > 0 && document.getElementById('gameName').value) {
+        createLocalGameStorage();
+        dbCreateGame();
+    }
 }
 
 function getInputContent(){
