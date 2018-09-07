@@ -25,7 +25,7 @@ function insertLink(){
         entranceLink.appendChild(document.createTextNode('Enter Match'));
         entrance.appendChild(entranceLink);
         joinLink.appendChild(entrance);
-        document.getElementById('cP').style.display = 'none';
+        // document.getElementById('cP').style.display = 'none';
     }
 }
 /**
@@ -115,7 +115,7 @@ function loadLocal_Storage(){
 
 function pcWrapped(){
     insertLink();
-    loadLocal_Storage();
+    // loadLocal_Storage();
     createPlayer();
     //joinGame();
 }
