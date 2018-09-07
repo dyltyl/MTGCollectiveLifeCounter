@@ -16,18 +16,6 @@ function togglePartner(){
     }
 }
 
-function insertLink(){
-    if (document.getElementById('joinLink').childElementCount == 0){
-        var entrance = document.createElement('div');
-        entrance.setAttribute('class','divButton');
-        var entranceLink = document.createElement('a');
-        entranceLink.setAttribute('href','waitingLobby.html');
-        entranceLink.appendChild(document.createTextNode('Enter Match'));
-        entrance.appendChild(entranceLink);
-        joinLink.appendChild(entrance);
-        document.getElementById('cP').style.display = 'none';
-    }
-}
 /**
  * create the localStorage for a player
  */
@@ -53,26 +41,36 @@ function checkLocalLog(){
 
 
 function createPlayer(){
-    createLocalLog();
-    const playerObject ={
-        name : document.getElementById('playerName').value,
-        email : document.getElementById('playerEmail').value,
-        password : document.getElementById('playerPass').value,
-    }
-    console.log(JSON.stringify(playerObject));
-    const requestBody={
-        method: 'POST',
-        body: JSON.stringify(playerObject),
-        headers:{
-            "content-type": "application/json; charset=UTF-8"
+    if(document.getElementById('playerName').value && document.getElementById('playerEmail').value) {
+        createLocalLog();
+        const playerObject ={
+            name : document.getElementById('playerName').value,
+            email : document.getElementById('playerEmail').value,
+            password : document.getElementById('playerPass').value,
         }
-    };
-    fetch(pCURL, requestBody)
-    .then(res=>{console.log(res)})
-    .catch(error=>console.log(error))
-    .then(function() {
-        joinGame();
-    })
+        console.log(JSON.stringify(playerObject));
+        const requestBody={
+            method: 'POST',
+            body: JSON.stringify(playerObject),
+            headers:{
+                "content-type": "application/json; charset=UTF-8"
+            }
+        };
+        fetch(pCURL, requestBody)
+        .then(res=>{
+            console.log(res);
+            if(res.status == 200) {
+                joinGame();
+            }
+            else {
+                console.log('woops'); //TODO: Actual error message
+            }
+        })
+        .catch(error=>console.log(error))
+    }
+    else {
+        console.log('oof'); //TODO: actual error message
+    }
 }
 
 function joinGame(){
@@ -98,9 +96,10 @@ function joinGame(){
     console.log(JSON.stringify(requestBody));
     fetch(jGURL, requestBody)
     .then(function(response){
-        console.log(response.text())
+        console.log(response.text());
+        if(response.status === 200)
+            window.location.href = 'waitingLobby.html';
     })
-    .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
 }
 
@@ -113,9 +112,3 @@ function loadLocal_Storage(){
         }
 }
 
-function pcWrapped(){
-    insertLink();
-    // loadLocal_Storage();
-    createPlayer();
-    //joinGame();
-}

@@ -11,8 +11,8 @@
 <body style= 'text-align: center;color:white'>
     <div>
             Number of players
-        <input type="number" id="gameSize" name="gS" placeholder="2">
-        <input type='number' id='baseLife' name='lifeTotal' value='40'>
+        <input type="number" id="gameSize" name="gS" value="2" max="8" min="2"> <!-- Min and Max for gameSize here -->
+        <input type='number' id='baseLife' name='lifeTotal' value='40' min="1">
             LifeTotal
         <br/>
             Game Name
@@ -23,7 +23,7 @@
     </div>
     <div>
         <!-- <button onload = 'getInputContent()' onclick="getInputContent()">getInputContent</button> -->
-        <div id='cG' class = 'divButton' onclick='createGame();insertLink()'>CreateGame</div>
+        <div id='cG' class = 'divButton' onclick='createGame()'>CreateGame</div>
         <p id= 'dbInsert'></p>
         <!-- <button onClick = 'checkLocalLog()'>Log_Test</button> -->
     </div>
