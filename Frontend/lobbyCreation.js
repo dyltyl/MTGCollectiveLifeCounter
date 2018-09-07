@@ -22,6 +22,7 @@ function createEmptySlot(){
     var root = document.getElementById('root');
     var emptySlot = document.createElement('div');
     emptySlot.setAttribute('class','playerSlot');
+    emptySlot.setAttribute('email', 'empty');
     var txtNode = document.createTextNode('...Waiting for player...');
     emptySlot.appendChild(txtNode);
 
@@ -98,8 +99,9 @@ function playerRefresh(){
                     if(index === -1) {
                         console.log('no more room :('); //TODO: Actual error message
                     }
-                    else {
-                        document.getElementById('root').children[index].textContent = data[i].email;
+                    else { //Add in player
+                        document.getElementById('root').children[index].textContent = data[i].name;
+                        document.getElementById('root').children[index].setAttribute('email', data[i].email);
                         players.push(data[i]);
                     }
 
@@ -120,8 +122,9 @@ function playerRefresh(){
                     if(index === -1) {
                         console.log('uhhhh.....that\'s not supposed to happen');
                     }
-                    else {
+                    else { //Remove player
                         document.getElementById('root').children[index].textContent = '...Waiting for player...';
+                        document.getElementById('root').children[index].setAttribute('email', 'empty');
                         players.splice(i, 1);
                         i--;
                     }
@@ -136,7 +139,7 @@ function playerRefresh(){
 function findEmptySlot() {
     var slots = document.getElementById('root').children;
     for(let i = 0; i < slots.length; i++) {
-        if(slots[i].textContent === '...Waiting for player...') {
+        if(slots[i].getAttribute('email') === 'empty') {
             return i;
         }
     }
@@ -145,7 +148,7 @@ function findEmptySlot() {
 function findSlot(player) {
     var slots = document.getElementById('root').children;
     for(let i = 0; i < slots.length; i++) {
-        if(slots[i].textContent === player.email) {
+        if(slots[i].getAttribute('email') === player.email) {
             return i;
         }
     }
