@@ -7,7 +7,6 @@ var lSCommanderTwo = localStorage.getItem('partnerName');
 var gameSize = localStorage.getItem('gameSize');
 var baseLife = localStorage.getItem('baseLife');
 var players = [];
-// var root = document.getElementById('root');
 
 function checkLog(){
     console.log('Creator Name: ' + lSPlayerName);
@@ -54,8 +53,8 @@ function createNameSlot(name){
     return nameSlot;
 }
 
-function createWaitingSlots(){
-    for(i=0; i<gameSize-1; i++){
+function createWaitingSlots(){ //TODO: Should load in player slots already in game before adding waiting slots
+    for(i=0; i<gameSize; i++){
         root.appendChild(createEmptySlot());
     }
 }
@@ -64,7 +63,6 @@ function createWaitingSlots(){
  * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
  */
 function playerRefresh(){
-    var dbGAR = new Array();
     const requestBody={
         method: 'GET',
         headers:{
@@ -75,10 +73,8 @@ function playerRefresh(){
     fetch(getAllUrl,requestBody)
     .then(function(response){ return response.json();})
     .then(function(data){
-        console.log(data);
-        console.log(players);
         //Determine if the arrays are equal
-        var equal = true;
+        let equal = true;
         if(data.length !== players.length)
             equal = false;
         for(let i = 0; i < data.length && equal; i++) {
@@ -88,10 +84,8 @@ function playerRefresh(){
         }   
         //If not equal
         if(!equal) {
-            players = data;
-
             for(let i = 0; i < data.length; i++) {
-                var found = false;
+                let found = false;
                 for(let j = 0; j < players.length; j++) {
                     if(data[i].email === players[j].email) {
                         found = true;
@@ -100,31 +94,64 @@ function playerRefresh(){
                 }
                 //player in data but not players
                 if(!found) {
-                    //TODO: fill player slot
+                    let index = findEmptySlot();
+                    if(index === -1) {
+                        console.log('no more room :('); //TODO: Actual error message
+                    }
+                    else {
+                        document.getElementById('root').children[index].textContent = data[i].email;
+                        players.push(data[i]);
+                    }
+
                 }
             }
 
             for(let i = 0; i < players.length; i++) {
-                var found = false;
+                let found = false;
                 for(let j = 0; j < data.length; j++) {
-                    if(data[i].email === players[j].email) {
+                    if(data[j].email === players[i].email) {
                         found = true;
                         break;
                     }
                 }
                 //player in players but not data
                 if(!found) {
-                    //TODO: remove player slot
+                    let index = findSlot(players[i]);
+                    if(index === -1) {
+                        console.log('uhhhh.....that\'s not supposed to happen');
+                    }
+                    else {
+                        document.getElementById('root').children[index].textContent = '...Waiting for player...';
+                        players.splice(i, 1);
+                        i--;
+                    }
                 }
             }
             
         }
     })
-    //.then(res=>{console.log(res)})
     .catch(error=>console.log(error))
-    //.then(_=>setInterval(playerRefresh(), 100000))
+    .then(_=>setTimeout(playerRefresh, 5000))
+}
+function findEmptySlot() {
+    var slots = document.getElementById('root').children;
+    for(let i = 0; i < slots.length; i++) {
+        if(slots[i].textContent === '...Waiting for player...') {
+            return i;
+        }
+    }
+    return -1;
+}
+function findSlot(player) {
+    var slots = document.getElementById('root').children;
+    for(let i = 0; i < slots.length; i++) {
+        if(slots[i].textContent === player.email) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 // root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
-// createWaitingSlots();
+createWaitingSlots();
 playerRefresh();
