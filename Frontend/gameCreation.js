@@ -36,10 +36,11 @@ function dbCreateGame(){
     fetch(url, otherParam)
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
+    .then(insertLink());
 }
 
 function insertLink(){
-    if (document.getElementById('dbInsert').childElementCount == 0 && false){
+    if (document.getElementById('dbInsert').childElementCount == 0){
         var entrance = document.createElement('button');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','playerCreation.html');
@@ -55,6 +56,9 @@ function createGame(){
     if(document.getElementById('gameSize').value < 8 && document.getElementById('gameSize').value > 1 && document.getElementById('baseLife').value > 0 && document.getElementById('gameName').value) {
         createLocalGameStorage();
         dbCreateGame();
+    }
+    else {
+        console.log('missing some fields')
     }
 }
 
