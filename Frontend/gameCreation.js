@@ -43,7 +43,8 @@ function insertLink(){
         var entrance = document.createElement('button');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','playerCreation.html');
-        entranceLink.appendChild(document.createTextNode('Create User'));
+        entranceLink.text = 'Create USer';
+        // entranceLink.appendChild(document.createTextNode('Create User'));
         entrance.appendChild(entranceLink);
         dbInsert.appendChild(entrance);
         document.getElementById('cG').style.display = 'none';
