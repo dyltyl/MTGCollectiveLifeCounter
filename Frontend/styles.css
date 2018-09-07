@@ -104,7 +104,7 @@ a{
     text-decoration: none;
     display:block;
     visibility: visible;
-    color: rgb(147, 171, 202);
+    color:rgb(220,220,220);
     -webkit-transition-duration: 0.7s;
     transition-duration: 0.7s;
 }
@@ -144,17 +144,20 @@ button:hover{
 
 .divButton{
     display:inline-block;
-    color:#444;
-    border:1px solid #CCC;
-    background:#DDD;
+    color:rgb(220,220,220);
+    border:5px solid #CCC;
+    background:rgb(100, 100, 100, 0.3);;
     box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
     cursor:pointer;
     vertical-align:middle;
     max-width: 100px;
     padding: 5px;
     text-align: center;
+    -webkit-transition-duration: 0.7s;
+    transition-duration: 0.7s;
 }
-.divButton:active{
-    color:red;
+.divButton:hover{
+    color:rgb(220,220,220);
     box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
+    background-color: rgb(133, 98, 98);
 }
