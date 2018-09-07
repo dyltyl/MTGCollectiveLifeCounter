@@ -34,10 +34,6 @@ function dbCreateGame(){
 
     console.log('dbCreateGame() called');
     fetch(url, otherParam)
-    .then(function(response){
-        console.log(response);
-        console.log(response.text());
-    })
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
 }
@@ -47,7 +43,8 @@ function insertLink(){
         var entrance = document.createElement('button');
         var entranceLink = document.createElement('a');
         entranceLink.setAttribute('href','playerCreation.html');
-        entranceLink.appendChild(document.createTextNode('Create User'));
+        entranceLink.text = 'Create USer';
+        // entranceLink.appendChild(document.createTextNode('Create User'));
         entrance.appendChild(entranceLink);
         dbInsert.appendChild(entrance);
         document.getElementById('cG').style.display = 'none';

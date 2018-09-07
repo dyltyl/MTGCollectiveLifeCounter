@@ -101,6 +101,9 @@ section{
     color:rgb(220,220,220);
 }
 a{
+    text-decoration: none;
+    display:block;
+    visibility: visible;
     color: rgb(147, 171, 202);
     -webkit-transition-duration: 0.7s;
     transition-duration: 0.7s;
@@ -139,3 +142,19 @@ button:hover{
     padding:0.5em 0;
   }
 
+.divButton{
+    display:inline-block;
+    color:#444;
+    border:1px solid #CCC;
+    background:#DDD;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+    cursor:pointer;
+    vertical-align:middle;
+    max-width: 100px;
+    padding: 5px;
+    text-align: center;
+}
+.divButton:active{
+    color:red;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
+}

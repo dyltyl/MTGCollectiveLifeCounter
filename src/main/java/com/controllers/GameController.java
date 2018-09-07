@@ -25,126 +25,223 @@ public class GameController {
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
         String query = "INSERT INTO games (id, password, starting_life) VALUES (?, digest(?, 'sha512'), ?);";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, game.getGameId());
             statement.setString(2, game.getGamePassword());
             statement.setInt(3, game.getStartingLife());
             Application.queryNoResults(statement);
-            connection.close();
+            response = new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/game", method = PUT)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
         String query = "UPDATE games SET id = ?, password = text(digest(?, 'sha512')), starting_life = ? WHERE id = ? RETURNING *;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, game.getGameId());
             statement.setString(2, game.getGamePassword());
             statement.setInt(3, game.getStartingLife());
             statement.setString(4, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
             if(result.length < 1)
-                return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
-            Game newGame = game;
-            newGame.setGameId(result[0][0]);
-            newGame.setGamePassword(result[0][1]);
-            newGame.setStartingLife(Integer.parseInt(result[0][2]));
-            return new ResponseEntity<>(newGame, new HttpHeaders(), HttpStatus.OK);
+                response = new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+            else {
+                Game newGame = game;
+                newGame.setGameId(result[0][0]);
+                newGame.setGamePassword("*********");
+                newGame.setStartingLife(Integer.parseInt(result[0][2]));
+                response = new ResponseEntity<>(newGame, new HttpHeaders(), HttpStatus.OK);
+            }
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/game", method = DELETE)
     public ResponseEntity<?> deleteGame(HttpServletRequest headers) {
         String query = "DELETE FROM games WHERE id = ? RETURNING id;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
             if(result.length == 0) {
-                return new ResponseEntity<>("Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND);
+                response = new ResponseEntity<>("Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>("Deleted game: " + result[0][0],new HttpHeaders(), HttpStatus.OK);
-        } catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            else
+                response = new ResponseEntity<>("Deleted game: " + result[0][0],new HttpHeaders(), HttpStatus.OK);
         }
+        catch (SQLException e) {
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/commanders", method = GET)
     public ResponseEntity<?> getAllCommanders(HttpServletRequest headers) {
         String query = "SELECT commander, player FROM commanders WHERE game = ?;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
             System.out.println(Application.getJson(result, true));
-            return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
+            response = new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
         }
-        catch(SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        catch (SQLException e) {
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/game", method = GET)
     public ResponseEntity<?> searchForGame(HttpServletRequest headers) {
         String query = "SELECT * FROM games WHERE UPPER(id) LIKE UPPER(?);";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, "%"+headers.getHeader("gameId")+"%");
             String[][] result = Application.query(statement);
-            connection.close();
             String[] games = new String[result.length];
             for(int i = 0; i < result.length; i++) {
                 games[i] = result[i][0];
             }
-            return new ResponseEntity<>(games, new HttpHeaders(), HttpStatus.OK);
+            response = new ResponseEntity<>(games, new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/startGame", method = GET)
     public ResponseEntity<?> startGame(HttpServletRequest headers) {
         String query = "UPDATE games SET started = true WHERE id = ?";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("gameId"));
             Application.queryNoResults(statement);
-            return new ResponseEntity<>("Success", new HttpHeaders(), HttpStatus.OK);
+            response = new ResponseEntity<>("Success", new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/hasGameStarted", method = GET)
     public ResponseEntity<Boolean> hasGameStarted(HttpServletRequest headers) {
         String query = "SELECT started FROM games WHERE id = ?;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<Boolean> response = null;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
-            connection.close();
             if(result.length > 0 && result[0].length > 0)
-                return new ResponseEntity<>(result[0][0].equals("t"), new HttpHeaders(), HttpStatus.OK);
-            return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+                response = new ResponseEntity<>(result[0][0].equals("t"), new HttpHeaders(), HttpStatus.OK);
+            else
+                response = new ResponseEntity<>(false, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
+        catch (SQLException e) {
+            response = new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
     @RequestMapping(value = "/verifyGame", method = GET)
     public ResponseEntity<?> loginToGame(HttpServletRequest headers) {
@@ -152,36 +249,63 @@ public class GameController {
     }
     public static boolean verifyGame(String gameId, String gamePassword) {
         String query = "SELECT id FROM games WHERE id = ? AND password = text(digest(?, 'sha512'));";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        boolean response = false;
         try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
             statement.setString(1, gameId);
             statement.setString(2, gamePassword);
             String[][] result = Application.query(statement);
-            connection.close();
-            return result.length > 0;
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    public static int getStartingLife(String gameId) {
-        String query = "SELECT starting_life FROM games WHERE id = ?";
-        try {
-            Connection connection = Application.getDataSource().getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, gameId);
-            String[][] result = Application.query(statement);
-            connection.close();
-            if(result.length > 0) {
-                return Integer.parseInt(result[0][0]);
-            }
-            return -1;
+            response = result.length > 0;
         }
         catch (SQLException e) {
             e.printStackTrace();
-            return -1;
+            response = false;
         }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
+    }
+    public static int getStartingLife(String gameId) {
+        String query = "SELECT starting_life FROM games WHERE id = ?";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        int response = -1;
+        try {
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, gameId);
+            String[][] result = Application.query(statement);
+            if(result.length > 0) {
+                response = Integer.parseInt(result[0][0]);
+            }
+            else
+                response = -1;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            response = -1;
+        }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
     }
 }
