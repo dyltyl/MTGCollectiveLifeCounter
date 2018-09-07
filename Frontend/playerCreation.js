@@ -16,18 +16,6 @@ function togglePartner(){
     }
 }
 
-function insertLink(){
-    if (document.getElementById('joinLink').childElementCount == 0){
-        var entrance = document.createElement('div');
-        entrance.setAttribute('class','divButton');
-        var entranceLink = document.createElement('a');
-        entranceLink.setAttribute('href','waitingLobby.html');
-        entranceLink.appendChild(document.createTextNode('Enter Match'));
-        entrance.appendChild(entranceLink);
-        joinLink.appendChild(entrance);
-        // document.getElementById('cP').style.display = 'none';
-    }
-}
 /**
  * create the localStorage for a player
  */
@@ -68,11 +56,16 @@ function createPlayer(){
         }
     };
     fetch(pCURL, requestBody)
-    .then(res=>{console.log(res)})
-    .catch(error=>console.log(error))
-    .then(function() {
-        joinGame();
+    .then(res=>{
+        console.log(res);
+        if(res.status == 200) {
+            joinGame();
+        }
+        else {
+            console.log('woops'); //TODO: Actual error message
+        }
     })
+    .catch(error=>console.log(error))
 }
 
 function joinGame(){
@@ -98,7 +91,9 @@ function joinGame(){
     console.log(JSON.stringify(requestBody));
     fetch(jGURL, requestBody)
     .then(function(response){
-        console.log(response.text())
+        console.log(response.text());
+        if(response.status === 200)
+            window.location.href = 'waitingLobby.html';
     })
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
@@ -113,9 +108,3 @@ function loadLocal_Storage(){
         }
 }
 
-function pcWrapped(){
-    insertLink();
-    // loadLocal_Storage();
-    createPlayer();
-    //joinGame();
-}
