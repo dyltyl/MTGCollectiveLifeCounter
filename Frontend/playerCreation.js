@@ -41,31 +41,36 @@ function checkLocalLog(){
 
 
 function createPlayer(){
-    createLocalLog();
-    const playerObject ={
-        name : document.getElementById('playerName').value,
-        email : document.getElementById('playerEmail').value,
-        password : document.getElementById('playerPass').value,
+    if(document.getElementById('playerName').value && document.getElementById('playerEmail').value) {
+        createLocalLog();
+        const playerObject ={
+            name : document.getElementById('playerName').value,
+            email : document.getElementById('playerEmail').value,
+            password : document.getElementById('playerPass').value,
+        }
+        console.log(JSON.stringify(playerObject));
+        const requestBody={
+            method: 'POST',
+            body: JSON.stringify(playerObject),
+            headers:{
+                "content-type": "application/json; charset=UTF-8"
+            }
+        };
+        fetch(pCURL, requestBody)
+        .then(res=>{
+            console.log(res);
+            if(res.status == 200) {
+                joinGame();
+            }
+            else {
+                console.log('woops'); //TODO: Actual error message
+            }
+        })
+        .catch(error=>console.log(error))
     }
-    console.log(JSON.stringify(playerObject));
-    const requestBody={
-        method: 'POST',
-        body: JSON.stringify(playerObject),
-        headers:{
-            "content-type": "application/json; charset=UTF-8"
-        }
-    };
-    fetch(pCURL, requestBody)
-    .then(res=>{
-        console.log(res);
-        if(res.status == 200) {
-            joinGame();
-        }
-        else {
-            console.log('woops'); //TODO: Actual error message
-        }
-    })
-    .catch(error=>console.log(error))
+    else {
+        console.log('oof'); //TODO: actual error message
+    }
 }
 
 function joinGame(){
@@ -95,7 +100,6 @@ function joinGame(){
         if(response.status === 200)
             window.location.href = 'waitingLobby.html';
     })
-    .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
 }
 
