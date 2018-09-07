@@ -33,12 +33,12 @@ function dbCreateGame(){
         }
     };
 
-    console.log('dbCreateGame() called');
     fetch(url, otherParam)
     .then(res=>{
         console.log(res); 
-        if(res.status == 200) 
-            insertLink();
+        if(res.status == 200) { 
+            window.location.href= 'playerCreation.html';
+        }
         else {
             console.log('sorry about that'); //TODO: More detailed error messages
         }
