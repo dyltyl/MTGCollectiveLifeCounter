@@ -6,7 +6,7 @@ var lSCommanderName = localStorage.getItem('commanderName');
 var lSCommanderTwo = localStorage.getItem('partnerName');
 var gameSize = localStorage.getItem('gameSize');
 var baseLife = localStorage.getItem('baseLife');
-// var root = document.getElementById('root');
+var players = [];
 
 function checkLog(){
     console.log('Creator Name: ' + lSPlayerName);
@@ -22,6 +22,7 @@ function createEmptySlot(){
     var root = document.getElementById('root');
     var emptySlot = document.createElement('div');
     emptySlot.setAttribute('class','playerSlot');
+    emptySlot.setAttribute('email', 'empty');
     var txtNode = document.createTextNode('...Waiting for player...');
     emptySlot.appendChild(txtNode);
 
@@ -53,8 +54,8 @@ function createNameSlot(name){
     return nameSlot;
 }
 
-function createWaitingSlots(){
-    for(i=0; i<gameSize-1; i++){
+function createWaitingSlots(){ //TODO: Should load in player slots already in game before adding waiting slots
+    for(i=0; i<gameSize; i++){
         root.appendChild(createEmptySlot());
     }
 }
@@ -63,7 +64,6 @@ function createWaitingSlots(){
  * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
  */
 function playerRefresh(){
-    var dbGAR = new Array();
     const requestBody={
         method: 'GET',
         headers:{
@@ -74,27 +74,87 @@ function playerRefresh(){
     fetch(getAllUrl,requestBody)
     .then(function(response){ return response.json();})
     .then(function(data){
-        for(var i = 0; i<data.length; i++){
-            console.log(data);
-            console.log(JSON.stringify(data));
-            dbGAR.push(data[i]);
-            console.log('dbGAR size inside function: ' + dbGAR.length);
-        }
-        for(var i = 0; i<dbGAR.length;i++){
-            console.log('hello?');
-            console.log(dbGAR[i].name);
-            root.appendChild(createNameSlot(dbGAR[i].name));
-        }
-        if(dbGAR.length<localStorage.getItem('gameSize')){
-            for(var i =0; i<localStorage.getItem('gameSize')-dbGAR.length;i++){
-                root.appendChild(createEmptySlot());
+        //Determine if the arrays are equal
+        let equal = true;
+        if(data.length !== players.length)
+            equal = false;
+        for(let i = 0; i < data.length && equal; i++) {
+            if(data[i].email !== players[i].email) {
+                equal = false;
             }
+        }   
+        //If not equal
+        if(!equal) {
+            for(let i = 0; i < data.length; i++) {
+                let found = false;
+                for(let j = 0; j < players.length; j++) {
+                    if(data[i].email === players[j].email) {
+                        found = true;
+                        break;
+                    }
+                }
+                //player in data but not players
+                if(!found) {
+                    let index = findEmptySlot();
+                    if(index === -1) {
+                        console.log('no more room :('); //TODO: Actual error message
+                    }
+                    else { //Add in player
+                        document.getElementById('root').children[index].textContent = data[i].name;
+                        document.getElementById('root').children[index].setAttribute('email', data[i].email);
+                        players.push(data[i]);
+                    }
+
+                }
+            }
+
+            for(let i = 0; i < players.length; i++) {
+                let found = false;
+                for(let j = 0; j < data.length; j++) {
+                    if(data[j].email === players[i].email) {
+                        found = true;
+                        break;
+                    }
+                }
+                //player in players but not data
+                if(!found) {
+                    let index = findSlot(players[i]);
+                    if(index === -1) {
+                        console.log('uhhhh.....that\'s not supposed to happen');
+                    }
+                    else { //Remove player
+                        document.getElementById('root').children[index].textContent = '...Waiting for player...';
+                        document.getElementById('root').children[index].setAttribute('email', 'empty');
+                        players.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            
         }
     })
-    .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
+    .then(_=>setTimeout(playerRefresh, 5000))
+}
+function findEmptySlot() {
+    var slots = document.getElementById('root').children;
+    for(let i = 0; i < slots.length; i++) {
+        if(slots[i].getAttribute('email') === 'empty') {
+            return i;
+        }
+    }
+    return -1;
+}
+function findSlot(player) {
+    var slots = document.getElementById('root').children;
+    for(let i = 0; i < slots.length; i++) {
+        if(slots[i].getAttribute('email') === player.email) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 // root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
-// createWaitingSlots();
+createWaitingSlots();
 playerRefresh();

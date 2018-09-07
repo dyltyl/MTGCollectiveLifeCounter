@@ -69,6 +69,9 @@ function createPlayer(){
     fetch(pCURL, requestBody)
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
+    .then(function() {
+        joinGame();
+    })
 }
 
 function joinGame(){
@@ -113,5 +116,5 @@ function pcWrapped(){
     insertLink();
     loadLocal_Storage();
     createPlayer();
-    joinGame();
+    //joinGame();
 }
