@@ -1,5 +1,5 @@
 const root = document.getElementById('root');
-
+let gameStartedUrl = 'https://magic-database.herokuapp.com/hasGameStarted';
 var lSPlayerName = localStorage.getItem('playerName');
 var lSCommanderName = localStorage.getItem('commanderName');
 var lSCommanderTwo = localStorage.getItem('partnerName');
@@ -57,75 +57,93 @@ function createWaitingSlots(){ //TODO: Should load in player slots already in ga
  * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
  */
 function playerRefresh(){
-    getAllPlayers()
-    .then(function(response){ 
-        if(response.status !== 200) {
-            response.text().then(error => console.log(error));
+    const requestBody={
+        method: 'GET',
+        headers:{
+            "content-type": "application/json; charset=UTF-8",
+            gameId: localStorage.getItem('gameName')
         }
-        else
-            return response.json();
-    })
-    .then(function(data){
-        //Determine if the arrays are equal
-        let equal = true;
-        if(data.length !== players.length)
-            equal = false;
-        for(let i = 0; i < data.length && equal; i++) {
-            if(data[i].email !== players[i].email) {
-                equal = false;
-            }
-        }   
-        //If not equal
-        if(!equal) {
-            for(let i = 0; i < data.length; i++) {
-                let found = false;
-                for(let j = 0; j < players.length; j++) {
-                    if(data[i].email === players[j].email) {
-                        found = true;
-                        break;
-                    }
+    };
+    fetch(gameStartedUrl, requestBody)
+    .then(response => {
+        if(response.status === 200) {
+            response.text().then(result => {
+                if(result == 'true') {
+                    window.location.href = 'gameState.html';
                 }
-                //player in data but not players
-                if(!found) {
-                    let index = findEmptySlot();
-                    if(index === -1) {
-                        console.log('no more room :('); //TODO: Actual error message
-                    }
-                    else { //Add in player
-                        document.getElementById('root').children[index].textContent = data[i].name;
-                        document.getElementById('root').children[index].setAttribute('email', data[i].email);
-                        players.push(data[i]);
-                    }
-
+                else {
+                    getAllPlayers()
+                    .then(function(response){ 
+                        if(response.status !== 200) {
+                            response.text().then(error => console.log(error));
+                        }
+                        else
+                            return response.json();
+                    })
+                    .then(function(data){
+                        //Determine if the arrays are equal
+                        let equal = true;
+                        if(data.length !== players.length)
+                            equal = false;
+                        for(let i = 0; i < data.length && equal; i++) {
+                            if(data[i].email !== players[i].email) {
+                                equal = false;
+                            }
+                        }   
+                        //If not equal
+                        if(!equal) {
+                            for(let i = 0; i < data.length; i++) {
+                                let found = false;
+                                for(let j = 0; j < players.length; j++) {
+                                    if(data[i].email === players[j].email) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                //player in data but not players
+                                if(!found) {
+                                    let index = findEmptySlot();
+                                    if(index === -1) {
+                                        console.log('no more room :('); //TODO: Actual error message
+                                    }
+                                    else { //Add in player
+                                        document.getElementById('root').children[index].textContent = data[i].name;
+                                        document.getElementById('root').children[index].setAttribute('email', data[i].email);
+                                        players.push(data[i]);
+                                    }
+                
+                                }
+                            }
+                
+                            for(let i = 0; i < players.length; i++) {
+                                let found = false;
+                                for(let j = 0; j < data.length; j++) {
+                                    if(data[j].email === players[i].email) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                //player in players but not data
+                                if(!found) {
+                                    let index = findSlot(players[i]);
+                                    if(index === -1) {
+                                        console.log('uhhhh.....that\'s not supposed to happen');
+                                    }
+                                    else { //Remove player
+                                        document.getElementById('root').children[index].textContent = '...Waiting for player...';
+                                        document.getElementById('root').children[index].setAttribute('email', 'empty');
+                                        players.splice(i, 1);
+                                        i--;
+                                    }
+                                }
+                            }
+                            
+                        }
+                    })
                 }
-            }
-
-            for(let i = 0; i < players.length; i++) {
-                let found = false;
-                for(let j = 0; j < data.length; j++) {
-                    if(data[j].email === players[i].email) {
-                        found = true;
-                        break;
-                    }
-                }
-                //player in players but not data
-                if(!found) {
-                    let index = findSlot(players[i]);
-                    if(index === -1) {
-                        console.log('uhhhh.....that\'s not supposed to happen');
-                    }
-                    else { //Remove player
-                        document.getElementById('root').children[index].textContent = '...Waiting for player...';
-                        document.getElementById('root').children[index].setAttribute('email', 'empty');
-                        players.splice(i, 1);
-                        i--;
-                    }
-                }
-            }
-            
+            })
         }
     })
-    .catch(error=>console.log(error))
     .then(_=>setTimeout(playerRefresh, 5000))
 }
 function findEmptySlot() {
@@ -145,6 +163,30 @@ function findSlot(player) {
         }
     }
     return -1;
+}
+function startGame() {
+    if(localStorage.getItem('hostToggle') === 'true') {
+        const requestBody={
+            method: 'GET',
+            headers:{
+                "content-type": "application/json; charset=UTF-8",
+                gameId: localStorage.getItem('gameName')
+            }
+        };
+        fetch('https://magic-database.herokuapp.com/startGame', requestBody)
+        .then(response => {
+            if(response.status === 200) {
+                console.log('starting game');
+                window.location.href = 'gameState.html';
+            }
+            else {
+                response.text().then(error => { console.log(error); });
+            }
+        });
+    }
+    else {
+        alert('You must be the host to start the game');
+    }
 }
 
 // root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));

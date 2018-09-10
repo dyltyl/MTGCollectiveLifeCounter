@@ -4,8 +4,8 @@ function checkLocalLog(){
     console.log('Player_Name: ' + localStorage.getItem('playerName') + ' || Player_Email: ' + localStorage.getItem('playerEmail') + ' || Host_Toggle: ' + localStorage.getItem('hostToggle'));
     console.log('Commander: ' + localStorage.getItem('commanderName') + ' || Partner_Name: ' + localStorage.getItem('partnerName'));
 }
-const getAllUrl = 'https://magic-database.herokuapp.com/players';
-function getAllPlayers(){ //Gets all players and returns a promise
+let getAllUrl = 'https://magic-database.herokuapp.com/players';
+function getAllPlayers(){ //Gets all players and returns a promise containing the response
     const requestBody={
         method: 'GET',
         headers:{
