@@ -7,13 +7,6 @@ var lSCommanderTwo = localStorage.getItem('partnerName');
 var gameSize = localStorage.getItem('gameSize');
 var baseLife = localStorage.getItem('baseLife');
 var players = [];
-
-function checkLocalLog(){
-    console.log('Game_Size: ' + localStorage.getItem('gameSize') + ' || Base_Life: ' + localStorage.getItem('baseLife'));
-    console.log('Game_Name: ' + localStorage.getItem('gameName') + ' || Game_Pass: ' + localStorage.getItem('gamePass'));
-    console.log('Player_Name: ' + localStorage.getItem('playerName') + ' || Player_Email: ' + localStorage.getItem('playerEmail'));
-    console.log('Commander: ' + localStorage.getItem('commanderName') + ' || Partner_Name: ' + localStorage.getItem('partnerName'));
-}
 /**
  * Creates and emptySlot element within JS, intended to be replaced by a 
  * createPlayerSlot element
@@ -59,6 +52,7 @@ function createWaitingSlots(){ //TODO: Should load in player slots already in ga
         root.appendChild(createEmptySlot());
     }
 }
+
 
 /**
  * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots

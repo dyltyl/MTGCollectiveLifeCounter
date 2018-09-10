@@ -6,18 +6,14 @@ function checkLocalLog(){
 }
 function addInput(button){
     var root = document.getElementById('root'); //Root located within HTML body
-    
     console.log(root.childElementCount);
     if (root.childElementCount < 1){
         var input = document.createElement('input');
         var textNode = document.createTextNode('Game_ID ');
-
         var searchButton = document.createElement('button');
         var buttonText = document.createTextNode('Search!'); //onClick for this button will query the database for the respective game
         searchButton.setAttribute('style.text-align','center'); //This does nothing??
-
         searchButton.appendChild(buttonText);
-
     if(button.id === 'returnGame'){
         input.setAttribute('placeHolder','PreviousGameID');
         input.setAttribute('id','returnInput');
@@ -25,7 +21,6 @@ function addInput(button){
         input.setAttribute('placeHolder','WaitingLobbyID');
         input.setAttribute('id','searchInput');
     }
-
     root.appendChild(textNode);
     root.appendChild(input);
     root.appendChild(searchButton);
