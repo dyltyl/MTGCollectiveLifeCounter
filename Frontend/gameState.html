@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game State</title>        
+    <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
+    <script src="gameState.js"></script>
+</head>
+<body>
+    <div></div> <!--Enemy life things-->
+    <div class="lifeStats"> <!--My life things-->
+        <div class='lifeTotalWithButtons'>
+            <h2 id="lifeTotal">40</h2>
+            <button onclick="set(life+1, 'life');">+1</button>
+            <button onclick="set(life-1, 'life');">-1</button>
+            <button onclick="set(life+5, 'life');">+5</button>
+            <button onclick="set(life-5, 'life');">-5</button>
+        </div>
+        <button>Poison</button>
+        <button>Experience</button>
+
+    </div> 
+</body>
+</html>
