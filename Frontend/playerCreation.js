@@ -74,11 +74,15 @@ function createPlayer(){
 }
 
 function joinGame(){
+    if(document.getElementById('partnerName').value && document.getElementById('partnerName') === document.getElementById('commanderName')) {
+        console.log('Dylan stop making players with partner commanders with the same name');
+        return;
+    }
     var cmdrArr;
     if(root.childElementCount <1){
         cmdrArr = [document.getElementById('commanderName').value];
     }else{
-        cmdrArr = [document.getElementById('commanderName').value,document.getElementById('partnerName').value ]
+        cmdrArr = [document.getElementById('commanderName').value, document.getElementById('partnerName').value ]
     }
     const requestBody={
         method: 'POST',
