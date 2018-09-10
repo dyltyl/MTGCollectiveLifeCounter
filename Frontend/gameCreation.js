@@ -8,10 +8,6 @@ function createLocalGameStorage(){
     console.log('Game_Size of ' + localStorage.getItem('gameSize') + ' locally.');
     console.log('Base_Life_Total of ' + localStorage.getItem('baseLife') + ' stored locally');
 }
-function checkLocalLog(){
-    console.log('Game_Size: ' + localStorage.getItem('gameSize') + '|| Base_Life: ' + localStorage.getItem('baseLife'));
-    console.log('Game_Name: ' + localStorage.getItem('gameName') + '|| Game_Pass: ' + localStorage.getItem('gamePass'));
-}
 
 function createGame(){
     //TODO:Actual error messages

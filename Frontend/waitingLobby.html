@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Waiting Lobby</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
+        <script src="scripts.js"></script> <!--this script file is to be shared among all pages-->
 </head>
 <ul class = "navBar">
     <li><a href='index.html'>Home_Page</a></li>
@@ -13,15 +14,14 @@
     <li><a href='waitingLobby.html'>WL</a></li>
     <li><a href='gameState.html'>GS</a></li>
     <li><div class='divButton' onclick="checkLocalLog()">checkLocalLog</div></li>
+    <li style="float:right"><div style='padding:13px'>Developer_Bar</div></li>
+
 </ul>
 <h1>Lobby</h1>
 <body>
     <!-- <div><button onclick="checkLog()">Local Storage Check</button></div> -->
     <!-- <div><button onclick = 'createPlayerSlots()'>create_empty_slot </button></div> -->
     <div id='root'></div>
-    <button id='getAllTest' onclick ='playerRefresh()'>GetAllPlayersTest</button>
+    <!-- <button id='getAllTest' onclick ='playerRefresh()'>GetAllPlayersTest</button> -->
 </body>
-<script src="lobbyCreation.js"></script> 
-<footer>
-    <a href='index.html'>Home</a>
-</footer>
+<script src="waitingLobby.js"></script> 
