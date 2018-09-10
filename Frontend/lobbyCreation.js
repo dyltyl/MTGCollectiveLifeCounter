@@ -8,11 +8,11 @@ var gameSize = localStorage.getItem('gameSize');
 var baseLife = localStorage.getItem('baseLife');
 var players = [];
 
-function checkLog(){
-    console.log('Creator Name: ' + lSPlayerName);
-    console.log('Creator Commander: ' + lSCommanderName);
-    console.log('GameSize: ' + gameSize);
-    console.log('BaseLife: ' + baseLife );
+function checkLocalLog(){
+    console.log('Game_Size: ' + localStorage.getItem('gameSize') + ' || Base_Life: ' + localStorage.getItem('baseLife'));
+    console.log('Game_Name: ' + localStorage.getItem('gameName') + ' || Game_Pass: ' + localStorage.getItem('gamePass'));
+    console.log('Player_Name: ' + localStorage.getItem('playerName') + ' || Player_Email: ' + localStorage.getItem('playerEmail'));
+    console.log('Commander: ' + localStorage.getItem('commanderName') + ' || Partner_Name: ' + localStorage.getItem('partnerName'));
 }
 /**
  * Creates and emptySlot element within JS, intended to be replaced by a 

@@ -31,12 +31,10 @@ function createLocalLog(){
     }
 }
 function checkLocalLog(){
-    console.log('Player: ' + localStorage.getItem('playerName') + ' locally stored.');
-    console.log('Player Email: ' + localStorage.getItem('playerEmail') + ' locally stored.');
-    console.log('Commander" ' + localStorage.getItem('commanderName') + ' locally stored.');
-    console.log('Partner_Name: ' + localStorage.getItem('partnerName') + ' stored locally.');
-    console.log('Base_Life_Total: ' + localStorage.getItem('baseLife') + ' stored locally');
-    console.log('Game_Name: ' + localStorage.getItem('gameName') + ' stored locally.');
+    console.log('Game_Size: ' + localStorage.getItem('gameSize') + ' || Base_Life: ' + localStorage.getItem('baseLife'));
+    console.log('Game_Name: ' + localStorage.getItem('gameName') + ' || Game_Pass: ' + localStorage.getItem('gamePass'));
+    console.log('Player_Name: ' + localStorage.getItem('playerName') + ' || Player_Email: ' + localStorage.getItem('playerEmail'));
+    console.log('Commander: ' + localStorage.getItem('commanderName') + ' || Partner_Name: ' + localStorage.getItem('partnerName'));
 }
 
 
