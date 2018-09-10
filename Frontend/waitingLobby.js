@@ -1,4 +1,3 @@
-const getAllUrl = 'https://magic-database.herokuapp.com/players';
 const root = document.getElementById('root');
 
 var lSPlayerName = localStorage.getItem('playerName');
@@ -58,15 +57,14 @@ function createWaitingSlots(){ //TODO: Should load in player slots already in ga
  * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
  */
 function playerRefresh(){
-    const requestBody={
-        method: 'GET',
-        headers:{
-            "content-type": "application/json; charset=UTF-8",
-            gameId: localStorage.getItem('gameName')
+    getAllPlayers()
+    .then(function(response){ 
+        if(response.status !== 200) {
+            response.text().then(error => console.log(error));
         }
-    };
-    fetch(getAllUrl,requestBody)
-    .then(function(response){ return response.json();})
+        else
+            return response.json();
+    })
     .then(function(data){
         //Determine if the arrays are equal
         let equal = true;

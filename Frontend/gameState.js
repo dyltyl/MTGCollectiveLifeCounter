@@ -4,7 +4,6 @@ var urlEnum = Object.freeze({
     'experience':'https://magic-database.herokuapp.com/experience',
     'commander':'https://magic-database.herokuapp.com/commander'
 });
-const getAllUrl = 'https://magic-database.herokuapp.com/players';
 var life = 40; //get this from starting life in db
 var poison = 0;
 var experience = 0;
@@ -40,16 +39,16 @@ function set(amount, url) { //url = life, poison, experience, commander
         }
     })
 }
-function getAllPlayers(){
-    const requestBody={
-        method: 'GET',
-        headers:{
-            "content-type": "application/json; charset=UTF-8",
-            gameId: localStorage.getItem('gameName')
+function refresh(){
+    getAllPlayers()
+    .then(response => {
+        if(response.status !== 200) {
+            response.text().then(error => alert(error));
         }
-    };
-    fetch(getAllUrl,requestBody)
-    .then(response => {return response.json()})
+        else {
+            return response.json();
+        }
+    })
     .then(res => {
         console.log(res);
         console.log(getIndexOfMe(res));
@@ -63,4 +62,4 @@ function getIndexOfMe(players) {
     }
     return -1;
 }
-getAllPlayers();
+refresh();
