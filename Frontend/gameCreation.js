@@ -16,38 +16,46 @@ function checkLocalLog(){
 }
 
 function createGame(){
-    if(document.getElementById('gameSize').value < 9 && document.getElementById('gameSize').value > 1 && document.getElementById('baseLife').value > 0 && document.getElementById('gameName').value) {
-        createLocalGameStorage();
-        //Create Game
-        const Data={
-            gameId : document.getElementById('gameName').value,
-            gamePassword : document.getElementById('gamePass').value,
-            startingLife : document.getElementById('baseLife').value
+    //TODO:Actual error messages
+    if(document.getElementById('gameSize').value > 8 || document.getElementById('gameSize').value < 2) {
+        console.log('There must be between 2 and 8 players');
+        return;
+    }
+    if(document.getElementById('baseLife').value < 1) {
+        console.log('Life must start at a value above 0');
+        return;
+    }
+    if(!document.getElementById('gameName').value) {
+        console.log('Please name the game');
+        return;
+    }
+    createLocalGameStorage();
+    //Create Game
+    const Data={
+        gameId : document.getElementById('gameName').value,
+        gamePassword : document.getElementById('gamePass').value,
+        startingLife : document.getElementById('baseLife').value
+    }
+    console.log(JSON.stringify(Data));
+    const otherParam={
+        method: "POST",
+        body: JSON.stringify(Data),
+        headers:{
+            "content-type": "application/json; charset=UTF-8"
         }
-        console.log(JSON.stringify(Data));
-        const otherParam={
-            method: "POST",
-            body: JSON.stringify(Data),
-            headers:{
-                "content-type": "application/json; charset=UTF-8"
-            }
-        };
-    
-        fetch(url, otherParam)
-        .then(res=>{
-            console.log(res); 
-            if(res.status == 200) { //Game created successfully
-                window.location.href= 'playerCreation.html';
-            }
-            else {
-                console.log('sorry about that'); //TODO: More detailed error messages
-            }
-        })
-        .catch(error=>console.log('pls')) //Not sure if this is ever called
-    }
-    else {
-        console.log('missing some fields') //TODO: More detailed error messages
-    }
+    };
+
+    fetch(url, otherParam)
+    .then(res=>{
+        console.log(res); 
+        if(res.status == 200) { //Game created successfully
+            window.location.href= 'playerCreation.html';
+        }
+        else {
+            res.text().then(error => console.log(error));
+        }
+    })
+    .catch(error=>console.log(error)) //Not sure if this is ever called
 }
 
 function handleErrors(response) { //What this?

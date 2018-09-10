@@ -41,36 +41,38 @@ function checkLocalLog(){
 
 
 function createPlayer(){
-    if(document.getElementById('playerName').value && document.getElementById('playerEmail').value) {
-        createLocalLog();
-        const playerObject ={
-            name : document.getElementById('playerName').value,
-            email : document.getElementById('playerEmail').value,
-            password : document.getElementById('playerPass').value,
+    if(!document.getElementById('playerName').value) {
+        console.log('Player name must be set');
+        return;
+    }
+    if(!document.getElementById('playerEmail').value) {
+        console.log('Player email must be set');
+        return;
+    }
+    createLocalLog();
+    const playerObject ={
+        name : document.getElementById('playerName').value,
+        email : document.getElementById('playerEmail').value,
+        password : document.getElementById('playerPass').value,
+    }
+    console.log(JSON.stringify(playerObject));
+    const requestBody={
+        method: 'POST',
+        body: JSON.stringify(playerObject),
+        headers:{
+            "content-type": "application/json; charset=UTF-8"
         }
-        console.log(JSON.stringify(playerObject));
-        const requestBody={
-            method: 'POST',
-            body: JSON.stringify(playerObject),
-            headers:{
-                "content-type": "application/json; charset=UTF-8"
-            }
-        };
-        fetch(pCURL, requestBody)
-        .then(res=>{
-            console.log(res);
-            if(res.status == 200) {
-                joinGame();
-            }
-            else {
-                console.log('woops'); //TODO: Actual error message
-            }
-        })
-        .catch(error=>console.log(error))
-    }
-    else {
-        console.log('oof'); //TODO: actual error message
-    }
+    };
+    fetch(pCURL, requestBody)
+    .then(res=>{
+        if(res.status == 200) {
+            joinGame();
+        }
+        else {
+            res.text().then(error => console.log(error));
+        }
+    })
+    .catch(error=>console.log(error))
 }
 
 function joinGame(){
