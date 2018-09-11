@@ -12,15 +12,15 @@ function createLocalGameStorage(){
 function createGame(){
     //TODO:Actual error messages
     if(document.getElementById('gameSize').value > 8 || document.getElementById('gameSize').value < 2) {
-        console.log('There must be between 2 and 8 players');
+        alert('There must be between 2 and 8 players');
         return;
     }
     if(document.getElementById('baseLife').value < 1) {
-        console.log('Life must start at a value above 0');
+        alert('Life must start at a value above 0');
         return;
     }
     if(!document.getElementById('gameName').value) {
-        console.log('Please name the game');
+        alert('Please name the game');
         return;
     }
     createLocalGameStorage();
@@ -46,10 +46,10 @@ function createGame(){
             window.location.href= 'playerCreation.html';
         }
         else {
-            res.text().then(error => console.log(error));
+            res.text().then(error => alert(error));
         }
     })
-    .catch(error=>console.log(error)) //Not sure if this is ever called
+    .catch(error=>alert(error)) //Not sure if this is ever called
 }
 
 function handleErrors(response) { //What this?

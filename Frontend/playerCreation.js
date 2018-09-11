@@ -34,11 +34,11 @@ function createLocalLog(){
 
 function createPlayer(){
     if(!document.getElementById('playerName').value) {
-        console.log('Player name must be set');
+        alert('Player name must be set');
         return;
     }
     if(!document.getElementById('playerEmail').value) {
-        console.log('Player email must be set');
+        alert('Player email must be set');
         return;
     }
     createLocalLog();
@@ -61,40 +61,78 @@ function createPlayer(){
             joinGame();
         }
         else {
-            res.text().then(error => console.log(error));
+            res.text().then(error => alert(error));
         }
     })
-    .catch(error=>console.log(error))
+    .catch(error=>alert(error))
 }
 
 function joinGame(){
-    var cmdrArr;
-    if(root.childElementCount <1){
-        cmdrArr = [document.getElementById('commanderName').value];
-    }else{
-        cmdrArr = [document.getElementById('commanderName').value,document.getElementById('partnerName').value ]
+    console.log('join game called');
+    let failed = false;
+    if(root.childElementCount > 0 && document.getElementById('partnerName').value === document.getElementById('commanderName').value) {
+        alert('Dylan stop making players with partner commanders with the same name');
+        failed = true;
     }
-    const requestBody={
-        method: 'POST',
-        body: JSON.stringify(cmdrArr),
-        headers:{
-            "content-type": "application/json; charset=UTF-8",
-            gameId: localStorage.getItem('gameName'),
-            gamePassword: localStorage.getItem('gamePass'),
-            email: localStorage.getItem('playerEmail'),
-            password: localStorage.getItem('playerPass')
+    else {
+        var cmdrArr;
+        if(root.childElementCount <1){
+            cmdrArr = [document.getElementById('commanderName').value];
         }
-    };
+        else{
+            cmdrArr = [document.getElementById('commanderName').value, document.getElementById('partnerName').value ]
+        }
+        const requestBody={
+            method: 'POST',
+            body: JSON.stringify(cmdrArr),
+            headers:{
+                "content-type": "application/json; charset=UTF-8",
+                gameId: localStorage.getItem('gameName'),
+                gamePassword: localStorage.getItem('gamePass'),
+                email: localStorage.getItem('playerEmail'),
+                password: localStorage.getItem('playerPass')
+            }
+        };
 
-    console.log('joinGame Called');
-    console.log(JSON.stringify(requestBody));
-    fetch(jGURL, requestBody)
-    .then(function(response){
-        console.log(response.text());
-        if(response.status === 200)
-            window.location.href = 'waitingLobby.html';
-    })
-    .catch(error=>console.log(error))
+        console.log('joinGame Called');
+        console.log(JSON.stringify(requestBody));
+        fetch(jGURL, requestBody)
+        .then(function(response){
+            if(response.status === 200)
+                window.location.href = 'waitingLobby.html';
+            else {
+                res.text().then(error => {
+                    alert(error);
+                    failed = true;
+                });
+            }
+        })
+        .catch(error=>{
+            alert(error);
+            failed = true;
+        })
+    }
+    if(failed) {
+        const requestBody={
+            method: 'DELETE',
+            headers:{
+                "content-type": "application/json; charset=UTF-8",
+                gameId: localStorage.getItem('gameName'),
+                email: localStorage.getItem('playerEmail'),
+            }
+        };
+        fetch(pCURL, requestBody)
+        .then(res => {
+            if(res.status === 200) {
+                console.log('deleted player');
+            }
+            else {
+                res.text().then(error => {
+                    alert(error);
+                });
+            }
+        })
+    }
 }
 
 function loadLocal_Storage(){

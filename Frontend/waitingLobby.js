@@ -1,6 +1,6 @@
-const getAllUrl = 'https://magic-database.herokuapp.com/players';
-const leaveGameURL = 'https://magic-database.herokuapp.com/leaveGame';
 const root = document.getElementById('root');
+let gameStartedUrl = 'https://magic-database.herokuapp.com/hasGameStarted';
+const leaveGameURL = 'https://magic-database.herokuapp.com/leaveGame';
 const headerRoot = document.getElementById('headerRoot');
 
 var lSPlayerName = localStorage.getItem('playerName');
@@ -67,71 +67,90 @@ function playerRefresh(){
             gameId: localStorage.getItem('gameName')
         }
     };
-    fetch(getAllUrl,requestBody)
-    .then(function(response){ return response.json();})
-    .then(function(data){
-        //Determine if the arrays are equal
-        let equal = true;
-        if(data.length !== players.length)
-            equal = false;
-        for(let i = 0; i < data.length && equal; i++) {
-            if(data[i].email !== players[i].email) {
-                equal = false;
-            }
-        }   
-        //If not equal
-        if(!equal) {
-            for(let i = 0; i < data.length; i++) {
-                let found = false;
-                for(let j = 0; j < players.length; j++) {
-                    if(data[i].email === players[j].email) {
-                        found = true;
-                        break;
-                    }
+    fetch(gameStartedUrl, requestBody)
+    .then(response => {
+        if(response.status === 200) {
+            response.text().then(result => {
+                //If the game has started, join
+                if(result == 'true') {
+                    window.location.href = 'gameState.html';
                 }
-                //player in data but not players
-                if(!found) {
-                    let index = findEmptySlot();
-                    if(index === -1) {
-                        console.log('no more room :('); //TODO: Actual error message
-                    }
-                    else { //Add in player
-                        document.getElementById('root').children[index].textContent = data[i].name;
-                        document.getElementById('root').children[index].setAttribute('email', data[i].email);
-                        players.push(data[i]);
-                        insertKickButton(i);
-                    }
-
+                //Update the list of players
+                else {
+                    getAllPlayers()
+                    .then(function(response){ 
+                        if(response.status !== 200) {
+                            response.text().then(error => console.log(error));
+                        }
+                        else
+                            return response.json();
+                    })
+                    .then(function(data){
+                        //Determine if the arrays are equal
+                        let equal = true;
+                        if(data.length !== players.length)
+                            equal = false;
+                        for(let i = 0; i < data.length && equal; i++) {
+                            if(data[i].email !== players[i].email) {
+                                equal = false;
+                            }
+                        }   
+                        //If not equal
+                        if(!equal) {
+                            for(let i = 0; i < data.length; i++) {
+                                let found = false;
+                                for(let j = 0; j < players.length; j++) {
+                                    if(data[i].email === players[j].email) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                //player in data but not players
+                                if(!found) {
+                                    let index = findEmptySlot();
+                                    if(index === -1) {
+                                        console.log('no more room :('); //TODO: Actual error message
+                                    }
+                                    else { //Add in player
+                                        document.getElementById('root').children[index].textContent = data[i].name;
+                                        document.getElementById('root').children[index].setAttribute('email', data[i].email);
+                                        players.push(data[i]);
+                                        insertKickButton(i);
+                                    }
+                
+                                }
+                            }
+                
+                            for(let i = 0; i < players.length; i++) {
+                                let found = false;
+                                for(let j = 0; j < data.length; j++) {
+                                    if(data[j].email === players[i].email) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                //player in players but not data
+                                if(!found) {
+                                    let index = findSlot(players[i]);
+                                    if(index === -1) {
+                                        console.log('uhhhh.....that\'s not supposed to happen');
+                                    }
+                                    else { //Remove player
+                                        document.getElementById('root').children[index].textContent = '...Waiting for player...';
+                                        document.getElementById('root').children[index].setAttribute('email', 'empty');
+                                        players.splice(i, 1);
+                                        i--;
+                                    }
+                                }
+                            }
+                            
+                        }
+                    })
                 }
-            }
-
-            for(let i = 0; i < players.length; i++) {
-                let found = false;
-                for(let j = 0; j < data.length; j++) {
-                    if(data[j].email === players[i].email) {
-                        found = true;
-                        break;
-                    }
-                }
-                //player in players but not data
-                if(!found) {
-                    let index = findSlot(players[i]);
-                    if(index === -1) {
-                        console.log('uhhhh.....that\'s not supposed to happen');
-                    }
-                    else { //Remove player
-                        document.getElementById('root').children[index].textContent = '...Waiting for player...';
-                        document.getElementById('root').children[index].setAttribute('email', 'empty');
-                        players.splice(i, 1);
-                        i--;
-                    }
-                }
-            }
-            
+            })
         }
     })
-    .catch(error=>console.log(error))
-    .then(_=>setTimeout(playerRefresh, 5000))
+    .then(_=>setTimeout(playerRefresh, 5000));
 }
 function findEmptySlot() {
     var slots = document.getElementById('root').children;
@@ -151,6 +170,30 @@ function findSlot(player) {
     }
     return -1;
 }
+function startGame() {
+    if(localStorage.getItem('hostToggle') === 'true') {
+        const requestBody={
+            method: 'GET',
+            headers:{
+                "content-type": "application/json; charset=UTF-8",
+                gameId: localStorage.getItem('gameName')
+            }
+        };
+        fetch('https://magic-database.herokuapp.com/startGame', requestBody)
+        .then(response => {
+            if(response.status === 200) {
+                console.log('starting game');
+                window.location.href = 'gameState.html';
+            }
+            else {
+                response.text().then(error => { console.log(error); });
+            }
+        });
+    }
+    else {
+        alert('You must be the host to start the game');
+    }
+}
 
 function kickPlayer(playersEmail){
     const requestBody={
@@ -162,9 +205,12 @@ function kickPlayer(playersEmail){
         }
     };
     fetch(leaveGameURL,requestBody)
-    .then(res=> {res.text().then(error =>alert(error))})
-    .then(function(response){return response.json();})
-    .catch(error=>console.log(error))
+    .then(function(response){
+        if(response.status !== 200) {
+            response.text().then(res => {console.log(res)});
+        }
+    })
+    .catch(error=>console.log(error));
 }
 
 function insertKickButton(i){
@@ -175,7 +221,9 @@ function insertKickButton(i){
     // var buttonImage = document.createElement('img');
     // buttonImage.setAttribute('src','https://pastorhobbins.files.wordpress.com/2011/07/kickedout1.gif');
     // kickButton.appendChild(buttonImage);
+    console.log('hmmm?')
     if(slots[i].getAttribute('email') !== localStorage.getItem('playerEmail') && (slots[i].childElementCount == 0)){
+        console.log('ah');
         slots[i].appendChild(kickButton);
     }
 }
