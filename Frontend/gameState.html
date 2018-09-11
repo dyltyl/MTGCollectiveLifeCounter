@@ -12,14 +12,15 @@
     <div></div> <!--Enemy life things-->
     <div class="lifeStats"> <!--My life things-->
         <div class='lifeTotalWithButtons'>
+            <h2 id='name'>Life</h2>
             <h2 id="lifeTotal">40</h2>
-            <button onclick="set(life+1, 'life');">+1</button>
-            <button onclick="set(life-1, 'life');">-1</button>
-            <button onclick="set(life+5, 'life');">+5</button>
-            <button onclick="set(life-5, 'life');">-5</button>
+            <button onclick="set(displayedNumber+1, displayedStat);">+1</button>
+            <button onclick="set(displayedNumber-1, displayedStat);">-1</button>
+            <button onclick="set(displayedNumber+5, displayedStat);">+5</button>
+            <button onclick="set(displayedNumber-5, displayedStat);">-5</button>
         </div>
-        <button>Poison</button>
-        <button>Experience</button>
+        <button id='poisonButton' onclick="switchTo('Poison')">Poison</button>
+        <button id='experienceButton' onclick="switchTo('Experience')">Experience</button>
 
     </div> 
 </body>

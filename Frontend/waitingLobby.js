@@ -68,9 +68,11 @@ function playerRefresh(){
     .then(response => {
         if(response.status === 200) {
             response.text().then(result => {
+                //If the game has started, join
                 if(result == 'true') {
                     window.location.href = 'gameState.html';
                 }
+                //Update the list of players
                 else {
                     getAllPlayers()
                     .then(function(response){ 
@@ -144,7 +146,7 @@ function playerRefresh(){
             })
         }
     })
-    .then(_=>setTimeout(playerRefresh, 5000))
+    .then(_=>setTimeout(playerRefresh, 5000));
 }
 function findEmptySlot() {
     var slots = document.getElementById('root').children;
