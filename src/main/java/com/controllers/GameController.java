@@ -2,6 +2,7 @@ package com.controllers;
 
 import com.Application;
 import com.objects.Game;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class GameController {
     }
     @RequestMapping(value = "/game", method = PUT)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
-        String query = "UPDATE games SET id = ?, password = text(digest(?, 'sha512')), starting_life = ? WHERE id = ? RETURNING *;";
+        String query = "UPDATE games SET id = ?, password = text(digest(?, 'sha512')), starting_life = ?, host = ?, currentSize = ?, maxSize = ? WHERE id = ? RETURNING *;";
         Connection connection = null;
         PreparedStatement statement = null;
         ResponseEntity<?> response = null;
@@ -64,7 +65,10 @@ public class GameController {
             statement.setString(1, game.getGameId());
             statement.setString(2, game.getGamePassword());
             statement.setInt(3, game.getStartingLife());
-            statement.setString(4, headers.getHeader("gameId"));
+            statement.setString(4, game.getHost());
+            statement.setInt(5, game.getCurrentSize());
+            statement.setInt(6, game.getMaxSize());
+            statement.setString(7, headers.getHeader("gameId"));
             String[][] result = Application.query(statement);
             if(result.length < 1)
                 response = new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
@@ -163,9 +167,16 @@ public class GameController {
             statement = connection.prepareStatement(query);
             statement.setString(1, "%"+headers.getHeader("gameId")+"%");
             String[][] result = Application.query(statement);
-            String[] games = new String[result.length];
+            Game[] games = new Game[result.length];
             for(int i = 0; i < result.length; i++) {
-                games[i] = result[i][0];
+                games[i] = new Game();
+                games[i].setGameId(result[i][0]);
+                games[i].setGamePassword("*******");
+                games[i].setStartingLife(Integer.parseInt(result[i][2]));
+                games[i].setStarted(Boolean.parseBoolean(result[i][3]));
+                games[i].setHost(result[i][4]);
+                games[i].setCurrentSize(Integer.parseInt(result[i][5]));
+                games[i].setMaxSize(Integer.parseInt(result[i][6]));
             }
             response = new ResponseEntity<>(games, new HttpHeaders(), HttpStatus.OK);
         }
@@ -230,6 +241,38 @@ public class GameController {
         }
         catch (SQLException e) {
             response = new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
+    }
+    @RequestMapping(value = "/host", method = PUT)
+    public ResponseEntity<?> updateHost(HttpServletRequest headers) {
+        String query = "UPDATE games SET host = ? WHERE id = ? RETURNING host;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response;
+        try {
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, headers.getHeader("hostEmail"));
+            statement.setString(2, headers.getHeader("gameId"));
+            String[][] result = Application.query(statement);
+            if(result.length > 0)
+                response = new ResponseEntity<>(result[0][0], new HttpHeaders(), HttpStatus.OK);
+            else
+                response = new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
+        catch (SQLException e) {
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         finally {
             try {
