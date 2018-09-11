@@ -96,8 +96,15 @@ public class TestGames {
             System.out.println("Search for: "+currentId);
             System.out.println(response.getStringResponse()+"\n");
             assertTrue("Validating response code for gameSearch('"+currentId+"')", response.getStatusCode() == 200);
-            List<String> result = response.mapJSONToObject(List.class);
-            assertTrue("Validating the gameId is in the result", result.contains(gameId));
+            List<Game> result = response.mapJSONToObject(List.class);
+            boolean found = false;
+            for(Game game : result) {
+                if(game.getGameId().equals(currentId)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue("Validating the gameId is in the result", found);
             currentId = currentId.substring(0, currentId.length() - 1);
         }
     }

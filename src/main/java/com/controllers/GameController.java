@@ -55,7 +55,7 @@ public class GameController {
     }
     @RequestMapping(value = "/game", method = PUT)
     public ResponseEntity<?> updateGame(HttpServletRequest headers, @RequestBody Game game) {
-        String query = "UPDATE games SET id = ?, password = text(digest(?, 'sha512')), starting_life = ?, host = ?, currentSize = ?, maxSize = ? WHERE id = ? RETURNING *;";
+        String query = "UPDATE games SET id = ?, password = text(digest(?, 'sha512')), starting_life = ?, host = ?, current_size = ?, max_size = ? WHERE id = ? RETURNING *;";
         Connection connection = null;
         PreparedStatement statement = null;
         ResponseEntity<?> response = null;
