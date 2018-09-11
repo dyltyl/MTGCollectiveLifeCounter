@@ -114,8 +114,9 @@ function playerRefresh(){
                                     else { //Add in player
                                         document.getElementById('root').children[index].textContent = data[i].name;
                                         document.getElementById('root').children[index].setAttribute('email', data[i].email);
+                                        document.getElementById('root').children[index].id = data[i].email;
                                         players.push(data[i]);
-                                        insertKickButton(i);
+                                        insertKickButton(data[i].email);
                                     }
                 
                                 }
@@ -217,14 +218,14 @@ function insertKickButton(i){
     var slots = document.getElementById('root').children;
     var kickButton = document.createElement('button');
     kickButton.setAttribute('class','kickButton');
-    kickButton.setAttribute('onclick','kickPlayer("'+players[i].email+'")' );
+    kickButton.setAttribute('onclick','kickPlayer("'+i+'")' );
     // var buttonImage = document.createElement('img');
     // buttonImage.setAttribute('src','https://pastorhobbins.files.wordpress.com/2011/07/kickedout1.gif');
     // kickButton.appendChild(buttonImage);
     console.log('hmmm?')
-    if(slots[i].getAttribute('email') !== localStorage.getItem('playerEmail') && (slots[i].childElementCount == 0)){
+    if(i !== localStorage.getItem('playerEmail') && (document.getElementById(i))){
         console.log('ah');
-        slots[i].appendChild(kickButton);
+        document.getElementById(i).appendChild(kickButton);
     }
 }
 
