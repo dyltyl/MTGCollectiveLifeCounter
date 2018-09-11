@@ -1,5 +1,7 @@
 const getAllUrl = 'https://magic-database.herokuapp.com/players';
+const leaveGameURL = 'https://magic-database.herokuapp.com/leaveGame';
 const root = document.getElementById('root');
+const headerRoot = document.getElementById('headerRoot');
 
 var lSPlayerName = localStorage.getItem('playerName');
 var lSCommanderName = localStorage.getItem('commanderName');
@@ -97,6 +99,7 @@ function playerRefresh(){
                         document.getElementById('root').children[index].textContent = data[i].name;
                         document.getElementById('root').children[index].setAttribute('email', data[i].email);
                         players.push(data[i]);
+                        insertKickButton(i);
                     }
 
                 }
@@ -149,6 +152,52 @@ function findSlot(player) {
     return -1;
 }
 
+function kickPlayer(playersEmail){
+    const requestBody={
+        method: 'DELETE',
+        headers:{
+            "content-type": "application/json; charset=UTF-8",
+            email: playersEmail,
+            gameId: localStorage.getItem('gameName')
+        }
+    };
+    fetch(leaveGameURL,requestBody)
+    .then(res=> {res.text().then(error =>alert(error))})
+    .then(function(response){return response.json();})
+    .catch(error=>console.log(error))
+}
+
+function insertKickButton(i){
+    var slots = document.getElementById('root').children;
+    var kickButton = document.createElement('button');
+    kickButton.setAttribute('class','kickButton');
+    kickButton.setAttribute('onclick','kickPlayer("'+players[i].email+'")' );
+    // var buttonImage = document.createElement('img');
+    // buttonImage.setAttribute('src','https://pastorhobbins.files.wordpress.com/2011/07/kickedout1.gif');
+    // kickButton.appendChild(buttonImage);
+    if(slots[i].getAttribute('email') !== localStorage.getItem('playerEmail') && (slots[i].childElementCount == 0)){
+        slots[i].appendChild(kickButton);
+    }
+}
+
+function deletePlayer(){
+
+}
+function createHostControls(){
+
+}
+function addHeader(){
+    var headerTxt = document.createElement('div');
+    headerTxt.setAttribute('class','tooltip');
+    headerTxt.textContent = 'Welcome to: ' + localStorage.getItem('gameName');
+    var tooltipTxt = document.createElement('span');
+    tooltipTxt.textContent = 'This game name is the ID your friends need to join you!';
+    tooltipTxt.setAttribute('class', 'tooltiptext');
+    headerTxt.appendChild(tooltipTxt);
+    headerRoot.appendChild(headerTxt);
+
+}
 // root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
 createWaitingSlots();
 playerRefresh();
+addHeader();

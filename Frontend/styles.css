@@ -19,8 +19,10 @@ h1{
     padding:1%
 }
 
-.playerSlot{
-    text-align: center;
+div.playerSlot{
+    display:flex;
+    align-items: center;
+    justify-content: center;
     color:rgb(220,220,220);
     border:rgb(220,220,220) solid;
     padding: 1%;
@@ -117,7 +119,7 @@ button{
     background-color: rgb(100, 100, 100, 0.3);
     filter: alpha(opacity=30);
     padding: 1%;
-    border:rgb(220,220,220) solid;
+    /* border:rgb(220,220,220) solid; */
     border-radius: 5%;
     -webkit-transition-duration: 0.7s;
     transition-duration: 0.7s;
@@ -160,4 +162,37 @@ button:hover{
     color:rgb(220,220,220);
     box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
     background-color: rgb(133, 98, 98);
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 100%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 10px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+button.kickButton{
+    display:inline-block;
+    text-align: right;
+    align-self: center;
+    width:1px;
+    height:1px;
+    background-image: url('https://pastorhobbins.files.wordpress.com/2011/07/kickedout1.gif');
+    background-size: 100%;
 }
