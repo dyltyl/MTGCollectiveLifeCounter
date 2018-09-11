@@ -96,10 +96,10 @@ public class TestGames {
             System.out.println("Search for: "+currentId);
             System.out.println(response.getStringResponse()+"\n");
             assertTrue("Validating response code for gameSearch('"+currentId+"')", response.getStatusCode() == 200);
-            List<Game> result = response.mapJSONToObject(List.class);
+            Game[] result = response.mapJSONToObject(Game[].class);
             boolean found = false;
             for(Game game : result) {
-                if(game.getGameId().equals(currentId)) {
+                if(game.getGameId().equals(gameId)) {
                     found = true;
                     break;
                 }
