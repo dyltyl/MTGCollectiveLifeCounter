@@ -27,7 +27,18 @@ div.playerSlot{
     border:rgb(220,220,220) solid;
     padding: 1%;
 }
-
+div.waitingSlot{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color:rgb(220,220,220);
+    border:rgb(220,220,220) solid;
+    padding: 1%;
+}
+button.deletePlayer{
+    background-image: url('http://www.clker.com/cliparts/Z/u/b/a/j/i/big-red-x-md.png');
+    background-size: 100%;
+}
 .column {
     text-align: center;
     flex: 50%;

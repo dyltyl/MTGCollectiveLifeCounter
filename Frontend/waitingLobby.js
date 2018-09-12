@@ -13,19 +13,73 @@ let players = [];
  * createPlayerSlot element
  */
 function createEmptySlot(){ 
-    let emptySlot = document.createElement('div');
-    emptySlot.setAttribute('class','playerSlot');
+    var root = document.getElementById('root');
+    var emptySlot = document.createElement('div');
+    emptySlot.setAttribute('class','waitingSlot');
     emptySlot.setAttribute('email', 'empty');
     emptySlot.textContent = '...Waiting for player...';
+    insertDeleteButton(emptySlot);
     return emptySlot;
 }
 
-function createWaitingSlots(){ //TODO: Should load in player slots already in game before adding waiting slots
-    for(let i = 0; i < gameSize; i++){
-        root.appendChild(createEmptySlot());
-    }
+function insertDeleteButton(emptySlot){
+    var delButt = document.createElement('button');
+    delButt.setAttribute('class','deletePlayer');
+    delButt.setAttribute('onclick','deletePlayer()');
+    emptySlot.appendChild(delButt);
 }
 
+function deletePlayer(){
+    console.log(localStorage.getItem('gameSize'));
+    var currentGameSize = localStorage.getItem('gameSize');
+    localStorage.setItem('gameSize', (currentGameSize-1));
+}
+
+function increaseGameSize(){
+    console.log(localStorage.getItem('gameSize'));
+    var currentGameSize = localStorage.getItem('gameSize');
+    localStorage.setItem('gameSize', (currentGameSize*1+1));
+}
+
+function createPlayerSlot(name, commanderOne, commanderTwo){
+    var root = document.getElementById('root');
+    var playerSlot = document.createElement('div');
+    playerSlot.setAttribute('class','playerSlot');
+
+    if (lSCommanderTwo === undefined){
+        var playerText = document.createTextNode(name + ' || ' + commanderOne);
+    }else{
+       var playerText = document.createTextNode(name + ' || ' + commanderOne + " || "  + commanderTwo);
+    }
+    playerSlot.appendChild(playerText);
+    // playerSlot.appendChild(c1);
+    // root.appendChild(playerSlot);
+    return playerSlot;
+}
+
+function createNameSlot(name){
+    var nameSlot = document.createElement('div');
+    nameSlot.setAttribute('class','playerSlot');
+    var nameText = document.createTextNode(name);
+    nameSlot.appendChild(nameText);
+    return nameSlot;
+}
+
+function checkWaitingSlots(){ //TODO: Should load in player slots already in game before adding waiting slots
+    console.log('Current gameSize: ' + localStorage.getItem('gameSize'));
+    var rootChildArr = root.children;
+    for(var i = 0; i<rootChildArr.length; i++){
+        console.log(rootChildArr[i]);
+    }
+    while(root.childElementCount < localStorage.getItem('gameSize')){
+        console.log('..Appending new slot..');
+        root.appendChild(createEmptySlot());
+    }
+    if(root.childElementCount>localStorage.getItem('gameSize')){
+        let fEmptyIndex = findEmptySlot();
+        root.removeChild(rootChildArr[fEmptyIndex]);
+    }
+}
 /**
  * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
  */
@@ -123,7 +177,11 @@ function playerRefresh(){
         }
     })
     .then(_=>setTimeout(playerRefresh, 5000));
+    checkWaitingSlots();
 }
+/**
+ * Finds the next empty slot by root
+ */
 function findEmptySlot() {
     let slots = document.getElementById('root').children;
     for(let i = 0; i < slots.length; i++) {
@@ -186,9 +244,6 @@ function insertKickButton(i){
     }
 }
 
-function deletePlayer(){
-
-}
 function createHostControls(){
 
 }
@@ -203,6 +258,7 @@ function addHeader(){
     headerRoot.appendChild(headerTxt);
 
 }
-createWaitingSlots();
+// root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
+checkWaitingSlots();
 playerRefresh();
 addHeader();
