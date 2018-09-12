@@ -1,14 +1,12 @@
-const root = document.getElementById('root');
-let gameStartedUrl = 'https://magic-database.herokuapp.com/hasGameStarted';
+const gameStartedUrl = 'https://magic-database.herokuapp.com/hasGameStarted';
 const leaveGameURL = 'https://magic-database.herokuapp.com/leaveGame';
-const headerRoot = document.getElementById('headerRoot');
 
-var lSPlayerName = localStorage.getItem('playerName');
-var lSCommanderName = localStorage.getItem('commanderName');
-var lSCommanderTwo = localStorage.getItem('partnerName');
-var gameSize = localStorage.getItem('gameSize');
-var baseLife = localStorage.getItem('baseLife');
-var players = [];
+let lSPlayerName = localStorage.getItem('playerName');
+let lSCommanderName = localStorage.getItem('commanderName');
+let lSCommanderTwo = localStorage.getItem('partnerName');
+let gameSize = localStorage.getItem('gameSize');
+let baseLife = localStorage.getItem('baseLife');
+let players = [];
 
 /**
  * Creates and emptySlot element within JS, intended to be replaced by a 
@@ -19,10 +17,8 @@ function createEmptySlot(){
     var emptySlot = document.createElement('div');
     emptySlot.setAttribute('class','waitingSlot');
     emptySlot.setAttribute('email', 'empty');
-    var txtNode = document.createTextNode('...Waiting for player...');
-    emptySlot.appendChild(txtNode);
+    emptySlot.textContent = '...Waiting for player...';
     insertDeleteButton(emptySlot);
-    //root.appendChild(emptySlot);
     return emptySlot;
 }
 
@@ -160,13 +156,14 @@ function playerRefresh(){
                                 }
                                 //player in players but not data
                                 if(!found) {
-                                    let index = findSlot(players[i]);
-                                    if(index === -1) {
+                                    let slot = document.getElementById(players[i].email);
+                                    if(!slot) {
                                         console.log('uhhhh.....that\'s not supposed to happen');
                                     }
                                     else { //Remove player
-                                        document.getElementById('root').children[index].textContent = '...Waiting for player...';
-                                        document.getElementById('root').children[index].setAttribute('email', 'empty');
+                                        slot.textContent = '...Waiting for player...';
+                                        slot.setAttribute('email', 'empty');
+                                        slot.removeAttribute('id');
                                         players.splice(i, 1);
                                         i--;
                                     }
@@ -186,18 +183,9 @@ function playerRefresh(){
  * Finds the next empty slot by root
  */
 function findEmptySlot() {
-    var slots = document.getElementById('root').children;
+    let slots = document.getElementById('root').children;
     for(let i = 0; i < slots.length; i++) {
         if(slots[i].getAttribute('email') === 'empty') {
-            return i;
-        }
-    }
-    return -1;
-}
-function findSlot(player) {
-    var slots = document.getElementById('root').children;
-    for(let i = 0; i < slots.length; i++) {
-        if(slots[i].getAttribute('email') === player.email) {
             return i;
         }
     }
@@ -247,16 +235,11 @@ function kickPlayer(playersEmail){
 }
 
 function insertKickButton(i){
-    var slots = document.getElementById('root').children;
-    var kickButton = document.createElement('button');
+    let slots = document.getElementById('root').children;
+    let kickButton = document.createElement('button');
     kickButton.setAttribute('class','kickButton');
     kickButton.setAttribute('onclick','kickPlayer("'+i+'")' );
-    // var buttonImage = document.createElement('img');
-    // buttonImage.setAttribute('src','https://pastorhobbins.files.wordpress.com/2011/07/kickedout1.gif');
-    // kickButton.appendChild(buttonImage);
-    console.log('hmmm?')
     if(i !== localStorage.getItem('playerEmail') && (document.getElementById(i))){
-        console.log('ah');
         document.getElementById(i).appendChild(kickButton);
     }
 }
@@ -265,10 +248,10 @@ function createHostControls(){
 
 }
 function addHeader(){
-    var headerTxt = document.createElement('div');
+    let headerTxt = document.createElement('div');
     headerTxt.setAttribute('class','tooltip');
     headerTxt.textContent = 'Welcome to: ' + localStorage.getItem('gameName');
-    var tooltipTxt = document.createElement('span');
+    let tooltipTxt = document.createElement('span');
     tooltipTxt.textContent = 'This game name is the ID your friends need to join you!';
     tooltipTxt.setAttribute('class', 'tooltiptext');
     headerTxt.appendChild(tooltipTxt);
