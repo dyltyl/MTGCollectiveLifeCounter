@@ -275,6 +275,7 @@ public class PlayerController {
         return response;
     }
     public String adjustSize(String gameId, int amount) {
+        System.out.println("adjust size is here!");
         String query = "UPDATE games \n" +
                 "SET current_size = current_size + ?\n" +
                 "WHERE id = ?\n" +
@@ -339,6 +340,7 @@ public class PlayerController {
                 response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
             }
             finally {
+                System.out.println("\n\n\n\n----------------------------\n\n\n\nFINALLY:");
                 try {
                     if(statement != null && !statement.isClosed())
                         statement.close();
@@ -346,7 +348,7 @@ public class PlayerController {
                         connection.close();
                     String adjustResponse = adjustSize(headers.getHeader("gameId"), 1); //TODO
                     System.out.println(adjustResponse);
-                    if(adjustResponse.contains("Error"))
+                    if(adjustResponse.contains("Error") || adjustResponse.contains("Something went wrong"))
                         response = new ResponseEntity<>(adjustResponse, HttpStatus.BAD_REQUEST);
                     if(response != null)
                         return response;
