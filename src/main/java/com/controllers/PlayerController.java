@@ -311,6 +311,7 @@ public class PlayerController {
     }
     @RequestMapping(value = "/joinGame", method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody String[] commanders) {
+        ResponseEntity<?> response = null;
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
             return new ResponseEntity<>("Incorrect game credentials", HttpStatus.BAD_REQUEST);
         }
@@ -327,7 +328,7 @@ public class PlayerController {
             String query = "INSERT INTO commanders (game, player, commander) VALUES (?, ?, ?);";
             Connection connection = null;
             PreparedStatement statement = null;
-            ResponseEntity<?> response = null;
+
             try {
                 connection = Application.getDataSource().getConnection();
                 statement = connection.prepareStatement(query);
@@ -340,27 +341,29 @@ public class PlayerController {
                 response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
             }
             finally {
-                System.out.println("\n\n\n\n----------------------------\n\n\n\nFINALLY:");
                 try {
                     if(statement != null && !statement.isClosed())
                         statement.close();
                     if(connection != null && !connection.isClosed())
                         connection.close();
-                    String adjustResponse = adjustSize(headers.getHeader("gameId"), 1); //TODO
-                    System.out.println(adjustResponse);
-                    if(adjustResponse.contains("Error") || adjustResponse.contains("Something went wrong"))
-                        response = new ResponseEntity<>(adjustResponse, HttpStatus.BAD_REQUEST);
-                    if(response != null)
-                        return response;
                 }
                 catch (SQLException e1) {
                 }
+                if(response != null)
+                    return response;
             }
         }
+        System.out.println("Please\n\n\n\n\n\n---------");
+        String adjustResponse = adjustSize(headers.getHeader("gameId"), 1); //TODO
+        System.out.println(adjustResponse);
+        if(adjustResponse.contains("Error") || adjustResponse.contains("Something went wrong"))
+            response = new ResponseEntity<>(adjustResponse, HttpStatus.BAD_REQUEST);
+        if(response != null)
+            return response;
+
         String query = "INSERT INTO life (email, game, life) VALUES (?, ?, ?) RETURNING email;";
         Connection connection = null;
         PreparedStatement statement = null;
-        ResponseEntity<?> response = null;
         try {
             connection = Application.getDataSource().getConnection();
             statement = connection.prepareStatement(query);
