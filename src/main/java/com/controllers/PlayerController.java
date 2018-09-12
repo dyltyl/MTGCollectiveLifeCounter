@@ -345,6 +345,7 @@ public class PlayerController {
                     if(connection != null && !connection.isClosed())
                         connection.close();
                     String adjustResponse = adjustSize(headers.getHeader("gameId"), 1); //TODO
+                    System.out.println(adjustResponse);
                     if(adjustResponse.contains("Error"))
                         response = new ResponseEntity<>(adjustResponse, HttpStatus.BAD_REQUEST);
                     if(response != null)
