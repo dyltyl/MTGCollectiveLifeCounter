@@ -28,7 +28,9 @@ function createGame(){
     const Data={
         gameId : document.getElementById('gameName').value,
         gamePassword : document.getElementById('gamePass').value,
-        startingLife : document.getElementById('baseLife').value
+        startingLife : document.getElementById('baseLife').value,
+        maxSize: document.getElementById('gameSize').value,
+        host: 'TODO' //TODO
     }
     console.log(JSON.stringify(Data));
     const otherParam={

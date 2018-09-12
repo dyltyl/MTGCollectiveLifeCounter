@@ -16,3 +16,26 @@ function getAllPlayers(){ //Gets all players and returns a promise containing th
     return fetch(getAllUrl,requestBody)
     .then(response => {return response;});
 }
+function setHost(host) {
+    if(!localStorage.getItem('gameName')) {
+        alert('Cannot set host without a valid game');
+        return;
+    }
+    if(localStorage.getItem !== 'true') {
+        return;
+    }
+    const requestBody={
+        method: 'PUT',
+        headers:{
+            "content-type": "application/json; charset=UTF-8",
+            gameId: localStorage.getItem('gameName'),
+            hostEmail: host
+        }
+    };
+    return fetch('https://magic-database.herokuapp.com/host', requestBody)
+    .then(response => {
+        if(response.status !== 200) {
+            response.text().then(error => {alert(error)});
+        }
+    });
+}

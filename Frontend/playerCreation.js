@@ -98,8 +98,11 @@ function joinGame(){
         console.log(JSON.stringify(requestBody));
         fetch(jGURL, requestBody)
         .then(function(response){
-            if(response.status === 200)
-                window.location.href = 'waitingLobby.html';
+            if(response.status === 200) {
+                setHost(localStorage.getItem('playerEmail')).then(_ => {
+                    window.location.href = 'waitingLobby.html';
+                });
+            }
             else {
                 res.text().then(error => {
                     alert(error);
