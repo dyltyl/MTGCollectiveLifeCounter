@@ -1,9 +1,11 @@
-var life = 40; //get this from starting life in db
-var poison = 0;
-var experience = 0;
-var commanderDamage = {};
-var displayedStat = 'Life';
-var displayedNumber = life;
+let life = 40; //get this from starting life in db
+let poison = 0;
+let experience = 0;
+let commanderDamage = {};
+let displayedStat = 'Life';
+let displayedNumber = life;
+let players = [];
+let myIndex = -1;
 function set(amount, url) { //url = life, poison, experience
     if(url !== 'Life' && url !== 'Poison' && url !== 'Experience') {
         console.log('bad');
@@ -38,9 +40,11 @@ function set(amount, url) { //url = life, poison, experience
     });
     
 }
-function refresh(){
+function gameRefresh(){
+    console.log('refresh');
     getAllPlayers()
     .then(response => {
+        console.log(response.status);
         if(response.status !== 200) {
             response.text().then(error => alert(error));
         }
@@ -49,9 +53,37 @@ function refresh(){
         }
     })
     .then(res => {
-        console.log(res);
-        console.log(getIndexOfMe(res));
-    })
+        players = compareArrays(addPlayer, updatePlayer, removePlayer, players, res);
+        myIndex = getIndexOfMe();
+        console.log(players);
+        setTimeout(gameRefresh, 500);
+    });
+}
+function addPlayer(player) {
+    console.log('adding: '+player.email);
+    if(player.email !== localStorage.getItem('playerEmail')) {
+        let root = document.getElementById('enemyStats');
+        let playerSlot = document.createElement('div');
+        
+        let nameDisplay = document.createElement('h3');
+        nameDisplay.textContent = player.name;
+        
+        let lifeDisplay = document.createElement('h3');
+        lifeDisplay.setAttribute('id', localStorage.getItem('playerEmail')+'Life');
+        lifeDisplay.textContent = player.life;
+
+        playerSlot.appendChild(nameDisplay);
+        playerSlot.appendChild(lifeDisplay);
+        root.appendChild(playerSlot);
+    }
+    else 
+        console.log('thats the host');
+}
+function updatePlayer(updatedPlayer) {
+    document.getElementById(updatedPlayer.email+'Life').textContent = updatedPlayer.life;
+}
+function removePlayer(player) {
+//TODO
 }
 function initialize() { //Probably should move some of this into startGame, save stats in local storage
     const requestBody={
@@ -73,10 +105,6 @@ function initialize() { //Probably should move some of this into startGame, save
                 poison = result.poison;
                 experience = result.experience;
                 commanderDamage = result.commanderDamage;
-                console.log(life);
-                console.log(experience);
-                console.log(poison);
-                console.log(commanderDamage); //TODO: this method doesn't get the commander damage, I might need to modify for that or just update it during refresh
                 document.getElementById('lifeTotal').textContent = life;
             });
         }
@@ -108,7 +136,7 @@ function switchTo(stat) {
     else
     console.log(stat);
 }
-function getIndexOfMe(players) {
+function getIndexOfMe() {
     for(let i = 0; i < players.length; i++) {
         if(players[i].email === localStorage.getItem('playerEmail')) {
             return i;
@@ -117,4 +145,4 @@ function getIndexOfMe(players) {
     return -1;
 }
 initialize();
-refresh();
+gameRefresh();
