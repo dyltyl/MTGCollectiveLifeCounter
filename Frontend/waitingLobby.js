@@ -9,6 +9,7 @@ var lSCommanderTwo = localStorage.getItem('partnerName');
 var gameSize = localStorage.getItem('gameSize');
 var baseLife = localStorage.getItem('baseLife');
 var players = [];
+
 /**
  * Creates and emptySlot element within JS, intended to be replaced by a 
  * createPlayerSlot element
@@ -16,13 +17,32 @@ var players = [];
 function createEmptySlot(){ 
     var root = document.getElementById('root');
     var emptySlot = document.createElement('div');
-    emptySlot.setAttribute('class','playerSlot');
+    emptySlot.setAttribute('class','waitingSlot');
     emptySlot.setAttribute('email', 'empty');
     var txtNode = document.createTextNode('...Waiting for player...');
     emptySlot.appendChild(txtNode);
-
+    insertDeleteButton(emptySlot);
     //root.appendChild(emptySlot);
     return emptySlot;
+}
+
+function insertDeleteButton(emptySlot){
+    var delButt = document.createElement('button');
+    delButt.setAttribute('class','deletePlayer');
+    delButt.setAttribute('onclick','deletePlayer()');
+    emptySlot.appendChild(delButt);
+}
+
+function deletePlayer(){
+    console.log(localStorage.getItem('gameSize'));
+    var currentGameSize = localStorage.getItem('gameSize');
+    localStorage.setItem('gameSize', (currentGameSize-1));
+}
+
+function increaseGameSize(){
+    console.log(localStorage.getItem('gameSize'));
+    var currentGameSize = localStorage.getItem('gameSize');
+    localStorage.setItem('gameSize', (currentGameSize*1+1));
 }
 
 function createPlayerSlot(name, commanderOne, commanderTwo){
@@ -49,13 +69,21 @@ function createNameSlot(name){
     return nameSlot;
 }
 
-function createWaitingSlots(){ //TODO: Should load in player slots already in game before adding waiting slots
-    for(i=0; i<gameSize; i++){
+function checkWaitingSlots(){ //TODO: Should load in player slots already in game before adding waiting slots
+    console.log('Current gameSize: ' + localStorage.getItem('gameSize'));
+    var rootChildArr = root.children;
+    for(var i = 0; i<rootChildArr.length; i++){
+        console.log(rootChildArr[i]);
+    }
+    while(root.childElementCount < localStorage.getItem('gameSize')){
+        console.log('..Appending new slot..');
         root.appendChild(createEmptySlot());
     }
+    if(root.childElementCount>localStorage.getItem('gameSize')){
+        let fEmptyIndex = findEmptySlot();
+        root.removeChild(rootChildArr[fEmptyIndex]);
+    }
 }
-
-
 /**
  * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
  */
@@ -152,7 +180,11 @@ function playerRefresh(){
         }
     })
     .then(_=>setTimeout(playerRefresh, 5000));
+    checkWaitingSlots();
 }
+/**
+ * Finds the next empty slot by root
+ */
 function findEmptySlot() {
     var slots = document.getElementById('root').children;
     for(let i = 0; i < slots.length; i++) {
@@ -229,9 +261,6 @@ function insertKickButton(i){
     }
 }
 
-function deletePlayer(){
-
-}
 function createHostControls(){
 
 }
@@ -247,6 +276,6 @@ function addHeader(){
 
 }
 // root.appendChild(createPlayerSlot(lSPlayerName,lSCommanderName,lSCommanderTwo));
-createWaitingSlots();
+checkWaitingSlots();
 playerRefresh();
 addHeader();
