@@ -21,7 +21,8 @@ PUT /poison/{amount}  HEADERS: {gameId, gamePassword, email, password}
 PUT /experience/{amount}  HEADERS: {gameId, gamePassword, email, password} 
 PUT /commanderDamage HEADERS: {gameId, gamePassword, email, password} (commanderDamage)
 PUT /player HEADERS: {email} (Player) - updatePlayer
-PUT /game HEADERS: {gameId} (Game) - updateGameDELETE /game HEADERS: {gameId}
+PUT /game HEADERS: {gameId} (Game) - updateGame
+PUT /host HEADERS: {gameId, hostEmail} -update Host
 
 DELETE /player HEADERS: {email, password}
 DELETE /leaveGame HEADERS: {email, gameId}
@@ -31,7 +32,11 @@ GAME
 {
 	"gameId": "newGame",
 	"gamePassword": "password",
-	"startingLife": 40
+	"startingLife": 40,
+	"started": false,
+	"host": "Tyler@gmail.com,
+	"currentSize": 0,
+	"maxSize": 5
 }
 PLAYER
 {

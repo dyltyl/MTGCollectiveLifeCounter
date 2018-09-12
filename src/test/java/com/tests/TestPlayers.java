@@ -13,7 +13,8 @@ import static com.tests.TestSuite.generateRandomString;
 import static junit.framework.TestCase.assertTrue;
 
 public class TestPlayers {
-    private static String email, password, name, gameId, gamePassword;
+    private static String email, password, name, gameId, gamePassword, gameHost;
+    private static int maxSize;
     private static Random rand = new Random();
 
     @BeforeClass
@@ -23,9 +24,11 @@ public class TestPlayers {
         name = generateRandomString(rand.nextInt(10) + 8);
         gameId = generateRandomString(rand.nextInt(13) + 10);
         gamePassword = generateRandomString(rand.nextInt(15) + 10);
+        gameHost = generateRandomString(rand.nextInt(10)+5);
+        maxSize = new Random().nextInt(20) + 20;
         Response response = Player.createPlayer(email, name, password);
         assertTrue("Validating response code for createPlayer during setup", response.getStatusCode() == 200);
-        response = Game.createGame(gameId, gamePassword, rand.nextInt(20)+20);
+        response = Game.createGame(gameId, gamePassword, gameHost, rand.nextInt(20)+20, maxSize);
         assertTrue("Validating response code for createGame during player setup", response.getStatusCode() == 200);
         response = Player.joinGame(email, password, gameId, gamePassword, new String[] {"Narset", "Muldrotha"});
         assertTrue("Validating response code for joinGame during setup", response.getStatusCode() == 200);
