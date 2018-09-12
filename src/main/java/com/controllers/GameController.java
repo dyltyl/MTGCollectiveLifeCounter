@@ -25,7 +25,7 @@ public class GameController {
     @RequestMapping(value="/game", method = POST)
     public ResponseEntity<?> createGame(@RequestBody Game game) {
         System.out.println(Application.getJson(game, true));
-        String query = "INSERT INTO games (id, password, starting_life) VALUES (?, digest(?, 'sha512'), ?);";
+        String query = "INSERT INTO games (id, password, starting_life, host, max_size) VALUES (?, digest(?, 'sha512'), ?, ?, ?);";
         Connection connection = null;
         PreparedStatement statement = null;
         ResponseEntity<?> response = null;
@@ -35,6 +35,8 @@ public class GameController {
             statement.setString(1, game.getGameId());
             statement.setString(2, game.getGamePassword());
             statement.setInt(3, game.getStartingLife());
+            statement.setString(4, game.getHost());
+            statement.setInt(5, game.getMaxSize());
             Application.queryNoResults(statement);
             response = new ResponseEntity<>("Success",new HttpHeaders(), HttpStatus.OK);
         }

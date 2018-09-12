@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 import static com.controllers.GameController.getStartingLife;
@@ -273,6 +274,40 @@ public class PlayerController {
         }
         return response;
     }
+    public String adjustSize(String gameId, int amount) {
+        String query = "UPDATE games \n" +
+                "SET current_size = current_size + ?\n" +
+                "WHERE id = ?\n" +
+                "RETURNING current_size;";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String response;
+        try {
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, amount);
+            statement.setString(2, gameId);
+            String[][] result = Application.query(statement);
+            if(result.length > 0)
+                response = result[0][0];
+            else
+                response = "Something went wrong";
+        }
+        catch (SQLException e) {
+            response = e.getMessage();
+        }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
+    }
     @RequestMapping(value = "/joinGame", method = POST)
     public ResponseEntity<?> joinGame(HttpServletRequest headers, @RequestBody String[] commanders) {
         if(!verifyGame(headers.getHeader("gameId"), headers.getHeader("gamePassword"))) {
@@ -309,6 +344,9 @@ public class PlayerController {
                         statement.close();
                     if(connection != null && !connection.isClosed())
                         connection.close();
+                    String adjustResponse = adjustSize(headers.getHeader("gameId"), 1); //TODO
+                    if(adjustResponse.contains("Error"))
+                        response = new ResponseEntity<>(adjustResponse, HttpStatus.BAD_REQUEST);
                     if(response != null)
                         return response;
                 }
