@@ -52,7 +52,7 @@ function createPlayer(){
             "content-type": "application/json; charset=UTF-8"
         }
     };
-    fetch(pCURL, requestBody)
+    fetch(getUrl('player'), requestBody)
     .then(res=>{
         if(res.status == 200) {
             joinGame();

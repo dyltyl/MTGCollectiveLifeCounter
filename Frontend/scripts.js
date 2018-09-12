@@ -21,10 +21,10 @@ function getAllPlayers(){ //Gets all players and returns a promise containing th
 function setHost(host) {
     if(!localStorage.getItem('gameName')) {
         alert('Cannot set host without a valid game');
-        return;
+        return Error('Cannot set host without a valid game');
     }
-    if(localStorage.getItem !== 'true') {
-        return;
+    if(localStorage.getItem('hostToggle') !== 'true') {
+        return Error('You are not the host')
     }
     const requestBody={
         method: 'PUT',
