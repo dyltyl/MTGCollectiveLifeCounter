@@ -353,7 +353,6 @@ public class PlayerController {
                     return response;
             }
         }
-        System.out.println("Please\n\n\n\n\n\n---------");
         String adjustResponse = adjustSize(headers.getHeader("gameId"), 1); //TODO
         System.out.println(adjustResponse);
         if(adjustResponse.contains("Error") || adjustResponse.contains("Something went wrong"))
@@ -412,7 +411,6 @@ public class PlayerController {
             statement.setString(5, headers.getHeader("email"));
             statement.setString(6, headers.getHeader("gameId"));
             Application.queryNoResults(statement);
-            response = new ResponseEntity<>("Success", new HttpHeaders(), HttpStatus.OK);
         }
         catch (SQLException e) {
             response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -427,6 +425,13 @@ public class PlayerController {
             catch (SQLException e1) {
             }
         }
+        String adjustResponse = adjustSize(headers.getHeader("gameId"), -1); //TODO
+        System.out.println(adjustResponse);
+        if(adjustResponse.contains("Error") || adjustResponse.contains("Something went wrong"))
+            response = new ResponseEntity<>(adjustResponse, HttpStatus.BAD_REQUEST);
+        if(response != null)
+            return response;
+        response = new ResponseEntity<>("Success", new HttpHeaders(), HttpStatus.OK);
         return response;
     }
     @RequestMapping(value = "/login", method = GET)
