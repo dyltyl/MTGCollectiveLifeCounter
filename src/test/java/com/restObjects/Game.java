@@ -10,22 +10,26 @@ public class Game {
     public Game() {
         rest = new RestObject();
     }
-    public static Response createGame(String gameId, String gamePassword, int life) {
+    public static Response createGame(String gameId, String gamePassword, String host, int life, int maxSize) {
         Game game = new Game();
         game.setGameId(gameId);
         game.setGamePassword(gamePassword);
         game.setStartingLife(life);
+        game.setHost(host);
+        game.setMaxSize(maxSize);
         return game.rest().sendPostRequest(RestObject.BASE_URL + "/game", Application.getJson(game, true));
     }
     public static Response createGame(Game game) {
-        return createGame(game.getGameId(), game.getGamePassword(), game.getStartingLife());
+        return createGame(game.getGameId(), game.getGamePassword(), game.getHost(), game.getStartingLife(), game.getMaxSize());
     }
-    public static Response updateGame(String originalId, String gameId, String gamePassword, int life) {
+    public static Response updateGame(String originalId, String gameId, String gamePassword, String host, int life, int maxSize) {
         Game game = new Game();
         game.rest().setHeader("gameId", originalId);
         game.setGameId(gameId);
         game.setGamePassword(gamePassword);
         game.setStartingLife(life);
+        game.setMaxSize(maxSize);
+        game.setHost(host);
         return game.rest().sendPutRequest(RestObject.BASE_URL + "/game", Application.getJson(game, true));
     }
     public static Response hasGameStarted(String gameId) {
