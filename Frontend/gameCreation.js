@@ -1,4 +1,3 @@
-const url = 'https://magic-database.herokuapp.com/game';
 
 function createLocalGameStorage(){
     localStorage.setItem('gameSize', document.getElementById('gameSize').value);
@@ -41,7 +40,7 @@ function createGame(){
         }
     };
 
-    fetch(url, otherParam)
+    fetch(getUrl('game'), otherParam)
     .then(res=>{
         console.log(res); 
         if(res.status == 200) { //Game created successfully

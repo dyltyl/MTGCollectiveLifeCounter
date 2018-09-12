@@ -1,5 +1,3 @@
-const gameStartedUrl = 'https://magic-database.herokuapp.com/hasGameStarted';
-const leaveGameURL = 'https://magic-database.herokuapp.com/leaveGame';
 
 let lSPlayerName = localStorage.getItem('playerName');
 let lSCommanderName = localStorage.getItem('commanderName');
@@ -91,7 +89,7 @@ function playerRefresh(){
             gameId: localStorage.getItem('gameName')
         }
     };
-    fetch(gameStartedUrl, requestBody)
+    fetch(getUrl('hasGameStarted'), requestBody)
     .then(response => {
         if(response.status === 200) {
             response.text().then(result => {
@@ -200,7 +198,7 @@ function startGame() {
                 gameId: localStorage.getItem('gameName')
             }
         };
-        fetch('https://magic-database.herokuapp.com/startGame', requestBody)
+        fetch(getUrl('startGame'), requestBody)
         .then(response => {
             if(response.status === 200) {
                 console.log('starting game');
@@ -225,7 +223,7 @@ function kickPlayer(playersEmail){
             gameId: localStorage.getItem('gameName')
         }
     };
-    fetch(leaveGameURL,requestBody)
+    fetch(getUrl('leaveGame'),requestBody)
     .then(function(response){
         if(response.status !== 200) {
             response.text().then(res => {console.log(res)});
