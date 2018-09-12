@@ -12,10 +12,10 @@ import java.util.Random;
 
 import static com.tests.TestSuite.generateRandomString;
 import static junit.framework.TestCase.assertTrue;
-
+//TODO: Test things with the host/maxSize/currentSize and new method updateHost
 public class TestGames {
-    private static String gameId, gamePassword;
-    private static int startingLife;
+    private static String gameId, gamePassword, gameHost;
+    private static int startingLife, maxSize;
     private static Random rand = new Random();
 
     @BeforeClass
@@ -23,7 +23,9 @@ public class TestGames {
         gameId = generateRandomString(rand.nextInt(10)+5);
         gamePassword = generateRandomString(rand.nextInt(10)+5);
         startingLife = new Random().nextInt(20) + 20;
-        Response response = Game.createGame(gameId, gamePassword, startingLife);
+        gameHost = generateRandomString(rand.nextInt(10)+5);
+        maxSize = new Random().nextInt(20) + 20;
+        Response response = Game.createGame(gameId, gamePassword, gameHost, startingLife, maxSize);
         assertTrue("Validating response code of createGame during setup", response.getStatusCode() == 200);
         response = Game.hasGameStarted(gameId);
         assertTrue("Validating response code of hasGameStarted inside of setup", response.getStatusCode() == 200);
@@ -96,8 +98,15 @@ public class TestGames {
             System.out.println("Search for: "+currentId);
             System.out.println(response.getStringResponse()+"\n");
             assertTrue("Validating response code for gameSearch('"+currentId+"')", response.getStatusCode() == 200);
-            List<String> result = response.mapJSONToObject(List.class);
-            assertTrue("Validating the gameId is in the result", result.contains(gameId));
+            Game[] result = response.mapJSONToObject(Game[].class);
+            boolean found = false;
+            for(Game game : result) {
+                if(game.getGameId().equals(gameId)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue("Validating the gameId is in the result", found);
             currentId = currentId.substring(0, currentId.length() - 1);
         }
     }
@@ -107,11 +116,13 @@ public class TestGames {
         gameId = generateRandomString(rand.nextInt(10)+5);
         gamePassword = generateRandomString(rand.nextInt(10)+5);
         startingLife = rand.nextInt(20) + 20;
+        gameHost = generateRandomString(rand.nextInt(10)+5);
+        maxSize = new Random().nextInt(20) + 20;
         System.out.println("oldId: "+oldId);
         System.out.println("gameId: "+gameId);
         System.out.println("gamePassword: "+gamePassword);
         System.out.println("startingLife: "+startingLife);
-        Response response = Game.updateGame(oldId, gameId, gamePassword, startingLife);
+        Response response = Game.updateGame(oldId, gameId, gamePassword, gameHost, startingLife, maxSize);
         System.out.println(response.getStringResponse());
         assertTrue("Validating response code of updateGame", response.getStatusCode() == 200);
         Game game = response.mapJSONToObject(Game.class);
