@@ -1,10 +1,3 @@
-var urlEnum = Object.freeze({
-    'Life':'https://magic-database.herokuapp.com/life',
-    'Poison':'https://magic-database.herokuapp.com/poison',
-    'Experience':'https://magic-database.herokuapp.com/experience',
-    'Commander':'https://magic-database.herokuapp.com/commander',
-    'Player':'https://magic-database.herokuapp.com/player'
-});
 var life = 40; //get this from starting life in db
 var poison = 0;
 var experience = 0;
@@ -12,12 +5,10 @@ var commanderDamage = {};
 var displayedStat = 'Life';
 var displayedNumber = life;
 function set(amount, url) { //url = life, poison, experience
-    if(!url in urlEnum) {
+    if(url !== 'Life' && url !== 'Poison' && url !== 'Experience') {
         console.log('bad');
         return;
     }
-    let path = urlEnum[url];
-    //console.log(path+'/'+amount);
     const requestBody={
         method: 'PUT',
         body: '',
@@ -31,7 +22,7 @@ function set(amount, url) { //url = life, poison, experience
     };
     displayedNumber = amount;
     document.getElementById('lifeTotal').textContent = amount;
-    fetch(path+'/'+amount, requestBody)
+    fetch(getUrl(url)+'/'+amount, requestBody)
     .then(res => {
         if(res.status === 200) {
             if(url === 'Life') 
@@ -73,7 +64,7 @@ function initialize() { //Probably should move some of this into startGame, save
             password: localStorage.getItem('playerPass')
         }
     };
-    fetch(urlEnum['Player'], requestBody)
+    fetch(getUrl('Player'), requestBody)
     .then(response => {
         if(response.status == 200) {
             response.json().then(result => {

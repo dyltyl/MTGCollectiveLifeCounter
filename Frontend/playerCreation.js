@@ -1,6 +1,3 @@
-const jGURL = 'https://magic-database.herokuapp.com/joinGame';
-const pCURL = 'https://magic-database.herokuapp.com/player';
-
 function togglePartner(){
     var root = document.getElementById('root'); //Root located within HTML body
     if(root.childElementCount <1){
@@ -55,7 +52,7 @@ function createPlayer(){
             "content-type": "application/json; charset=UTF-8"
         }
     };
-    fetch(pCURL, requestBody)
+    fetch(getUrl('player'), requestBody)
     .then(res=>{
         if(res.status == 200) {
             joinGame();
@@ -96,10 +93,13 @@ function joinGame(){
 
         console.log('joinGame Called');
         console.log(JSON.stringify(requestBody));
-        fetch(jGURL, requestBody)
+        fetch(getUrl('joinGame'), requestBody)
         .then(function(response){
-            if(response.status === 200)
-                window.location.href = 'waitingLobby.html';
+            if(response.status === 200) {
+                setHost(localStorage.getItem('playerEmail')).then(_ => {
+                    window.location.href = 'waitingLobby.html';
+                });
+            }
             else {
                 res.text().then(error => {
                     alert(error);
@@ -121,7 +121,7 @@ function joinGame(){
                 email: localStorage.getItem('playerEmail'),
             }
         };
-        fetch(pCURL, requestBody)
+        fetch(getUrl('player'), requestBody)
         .then(res => {
             if(res.status === 200) {
                 console.log('deleted player');
