@@ -108,67 +108,7 @@ function playerRefresh(){
                             return response.json();
                     })
                     .then(function(data){
-                        //Determine if the arrays are equal
-                        let equal = true;
-                        if(data.length !== players.length)
-                            equal = false;
-                        for(let i = 0; i < data.length && equal; i++) {
-                            if(data[i].email !== players[i].email) {
-                                equal = false;
-                            }
-                        }   
-                        //If not equal
-                        if(!equal) {
-                            for(let i = 0; i < data.length; i++) {
-                                let found = false;
-                                for(let j = 0; j < players.length; j++) {
-                                    if(data[i].email === players[j].email) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                //player in data but not players
-                                if(!found) {
-                                    let index = findEmptySlot();
-                                    if(index === -1) {
-                                        console.log('no more room :('); //TODO: Actual error message
-                                    }
-                                    else { //Add in player
-                                        document.getElementById('root').children[index].textContent = data[i].name;
-                                        document.getElementById('root').children[index].setAttribute('email', data[i].email);
-                                        document.getElementById('root').children[index].id = data[i].email;
-                                        players.push(data[i]);
-                                        insertKickButton(data[i].email);
-                                    }
-                
-                                }
-                            }
-                
-                            for(let i = 0; i < players.length; i++) {
-                                let found = false;
-                                for(let j = 0; j < data.length; j++) {
-                                    if(data[j].email === players[i].email) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                //player in players but not data
-                                if(!found) {
-                                    let slot = document.getElementById(players[i].email);
-                                    if(!slot) {
-                                        console.log('uhhhh.....that\'s not supposed to happen');
-                                    }
-                                    else { //Remove player
-                                        slot.textContent = '...Waiting for player...';
-                                        slot.setAttribute('email', 'empty');
-                                        slot.removeAttribute('id');
-                                        players.splice(i, 1);
-                                        i--;
-                                    }
-                                }
-                            }
-                            
-                        }
+                        compareArrays(addPlayer, null, removePlayer, players, data);
                     })
                 }
             })
@@ -176,6 +116,30 @@ function playerRefresh(){
     })
     .then(_=>setTimeout(playerRefresh, 5000));
     checkWaitingSlots();
+}
+function addPlayer(player) {
+    let index = findEmptySlot();
+    if(index === -1) {
+        console.log('no more room :('); //TODO: Actual error message
+    }
+    else { //Add in player
+        document.getElementById('root').children[index].textContent = player.name;
+        document.getElementById('root').children[index].setAttribute('email', player.email);
+        document.getElementById('root').children[index].id = player.email;
+        players.push(player);
+        insertKickButton(player.email);
+    }
+}
+function removePlayer(player) {
+    let slot = document.getElementById(player.email);
+    if(!slot) {
+        console.log('uhhhh.....that\'s not supposed to happen');
+    }
+    else { //Remove player
+        slot.textContent = '...Waiting for player...';
+        slot.setAttribute('email', 'empty');
+        slot.removeAttribute('id');
+    }
 }
 /**
  * Finds the next empty slot by root
