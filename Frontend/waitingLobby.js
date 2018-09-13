@@ -91,9 +91,9 @@ function checkWaitingSlots(){ //TODO: Should load in player slots already in gam
     }
 }
 /**
- * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
+ * Checks if the game has started
  */
-function playerRefresh(){
+function hasGameStarted() {
     const requestBody={
         method: 'GET',
         headers:{
@@ -101,29 +101,46 @@ function playerRefresh(){
             gameId: localStorage.getItem('gameName')
         }
     };
-    fetch(getUrl('hasGameStarted'), requestBody)
+    return fetch(getUrl('hasGameStarted'), requestBody)
     .then(response => {
         if(response.status === 200) {
             response.text().then(result => {
-                //If the game has started, join
                 if(result == 'true') {
-                    window.location.href = 'gameState.html';
+                    return true;
                 }
-                //Update the list of players
-                else {
-                    getAllPlayers()
-                    .then(function(response){ 
-                        if(response.status !== 200) {
-                            response.text().then(error => console.log(error));
-                        }
-                        else
-                            return response.json();
-                    })
-                    .then(function(data){
-                        compareArrays(addPlayer, null, removePlayer, players, data);
-                    })
+                else
+                    return false;
+            });
+        }
+        else {
+            response.text().then(error => {alert(error);});
+            return false;
+        }
+    });
+}
+/**
+ * fetches getAllPlayers() and for each inserts them into the empty waiting lobby slots
+ */
+function playerRefresh(){
+    hasGameStarted()
+    .then(result => {
+        //If the game has started, join
+        if(result) {
+            window.location.href = 'gameState.html';
+        }
+        //Update the list of players
+        else {
+            getAllPlayers()
+            .then(function(response){ 
+                if(response.status !== 200) {
+                    response.text().then(error => console.log(error));
                 }
+                else
+                    return response.json();
             })
+            .then(function(data){
+                compareArrays(addPlayer, null, removePlayer, players, data);
+            });
         }
     })
     .then(_=>setTimeout(playerRefresh, 5000));
