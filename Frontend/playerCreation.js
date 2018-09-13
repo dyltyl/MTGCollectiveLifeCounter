@@ -1,3 +1,6 @@
+/**
+ * Toggles the Partner commander field
+ */
 function togglePartner(){
     var root = document.getElementById('root'); //Root located within HTML body
     if(root.childElementCount <1){
@@ -27,8 +30,9 @@ function createLocalLog(){
         localStorage.setItem('partnerName', document.getElementById('partnerName').value);
     }
 }
-
-
+/**
+ * Creates the Player in the database and joins the game stored locally
+ */
 function createPlayer(){
     if(!document.getElementById('playerName').value) {
         alert('Player name must be set');
@@ -63,7 +67,9 @@ function createPlayer(){
     })
     .catch(error=>alert(error))
 }
-
+/**
+ * Sends a request to have the Player join the Game stored locally
+ */
 function joinGame(){
     console.log('join game called');
     let failed = false;

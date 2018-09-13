@@ -19,26 +19,38 @@ function createEmptySlot(){
     insertDeleteButton(emptySlot);
     return emptySlot;
 }
-
+/**
+ * Inserts a delete button into the waiting slot
+ * @param {HTMLDivElement} emptySlot The waiting slot
+ */
 function insertDeleteButton(emptySlot){
     var delButt = document.createElement('button');
     delButt.setAttribute('class','deletePlayer');
     delButt.setAttribute('onclick','deletePlayer()');
     emptySlot.appendChild(delButt);
 }
-
-function deletePlayer(){
+/**
+ * Decriments the game size
+ */
+function deletePlayer(){ //Rename to decreaseGameSize? TODO: Have this affect the db?
     console.log(localStorage.getItem('gameSize'));
     var currentGameSize = localStorage.getItem('gameSize');
     localStorage.setItem('gameSize', (currentGameSize-1));
 }
-
-function increaseGameSize(){
+/**
+ * Increments the game size
+ */
+function increaseGameSize(){ //TODO: Have this affect the db?
     console.log(localStorage.getItem('gameSize'));
     var currentGameSize = localStorage.getItem('gameSize');
     localStorage.setItem('gameSize', (currentGameSize*1+1));
 }
-
+/**
+ * Displays the player on the screen
+ * @param {string} name The name of the player
+ * @param {string} commanderOne The first commander
+ * @param {string} commanderTwo The second (optional) commander
+ */
 function createPlayerSlot(name, commanderOne, commanderTwo){
     var root = document.getElementById('root');
     var playerSlot = document.createElement('div');
@@ -117,6 +129,10 @@ function playerRefresh(){
     .then(_=>setTimeout(playerRefresh, 5000));
     checkWaitingSlots();
 }
+/**
+ * Adds the Player to the lobby
+ * @param {Player} player The Player being added
+ */
 function addPlayer(player) {
     let index = findEmptySlot();
     if(index === -1) {
@@ -130,6 +146,10 @@ function addPlayer(player) {
         insertKickButton(player.email);
     }
 }
+/**
+ * Removes the Player from the lobby
+ * @param {Player} player The Player being removed
+ */
 function removePlayer(player) {
     let slot = document.getElementById(player.email);
     if(!slot) {
@@ -153,6 +173,9 @@ function findEmptySlot() {
     }
     return -1;
 }
+/**
+ * Sends the request to the database to start the game for all players
+ */
 function startGame() {
     if(localStorage.getItem('hostToggle') === 'true') {
         const requestBody={
@@ -177,7 +200,10 @@ function startGame() {
         alert('You must be the host to start the game');
     }
 }
-
+/**
+ * Removes the player from the game
+ * @param {string} playersEmail 
+ */
 function kickPlayer(playersEmail){
     const requestBody={
         method: 'DELETE',
@@ -195,7 +221,10 @@ function kickPlayer(playersEmail){
     })
     .catch(error=>console.log(error));
 }
-
+/**
+ * Adds the button next the player to kick them
+ * @param {number} i The index of the slot the player is in
+ */
 function insertKickButton(i){
     let slots = document.getElementById('root').children;
     let kickButton = document.createElement('button');
@@ -209,6 +238,9 @@ function insertKickButton(i){
 function createHostControls(){
 
 }
+/**
+ * Adds the header for the game
+ */
 function addHeader(){
     let headerTxt = document.createElement('div');
     headerTxt.setAttribute('class','tooltip');

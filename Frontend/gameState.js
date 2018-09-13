@@ -6,6 +6,11 @@ let displayedStat = 'Life';
 let displayedNumber = life;
 let players = [];
 let myIndex = -1;
+/**
+ * Sets the displayed number and the db for the specified stat
+ * @param {number} amount The amount to set 
+ * @param {string} url Either Life, Poison, or Experience depending on which you're setting
+ */
 function set(amount, url) { //url = life, poison, experience
     if(url !== 'Life' && url !== 'Poison' && url !== 'Experience') {
         console.log('bad');
@@ -38,8 +43,10 @@ function set(amount, url) { //url = life, poison, experience
             res.text().then(error => alert(error));
         }
     });
-    
 }
+/**
+ * Refreshes the game from the database, updating lifetotals
+ */
 function gameRefresh(){
     getAllPlayers()
     .then(response => {
@@ -57,6 +64,10 @@ function gameRefresh(){
         setTimeout(gameRefresh, 500);
     });
 }
+/**
+ * Adds the player to the game and displays them
+ * @param {Player} player The player being added
+ */
 function addPlayer(player) {
     if(player.email !== localStorage.getItem('playerEmail')) {
         let root = document.getElementById('enemyStats');
@@ -74,14 +85,25 @@ function addPlayer(player) {
         root.appendChild(playerSlot);
     }
 }
+/**
+ * Updates the player's life total
+ * @param {Player} updatedPlayer The updated Player from the database
+ */
 function updatePlayer(updatedPlayer) {
     if(updatedPlayer.email !== localStorage.getItem('playerEmail')) {
         document.getElementById(updatedPlayer.email+'Life').textContent = updatedPlayer.life;
     }
 }
+/**
+ * Removes the player from the game
+ * @param {Player} player The player being removed
+ */
 function removePlayer(player) {
 //TODO
 }
+/**
+ * Initializes the page, setting the stats based off of the database
+ */
 function initialize() { //Probably should move some of this into startGame, save stats in local storage
     const requestBody={
         method: 'GET',
@@ -110,6 +132,10 @@ function initialize() { //Probably should move some of this into startGame, save
         }
     }).catch(err => {console.log(err)});
 }
+/**
+ * Changes the currently displayed stat with the one passed in
+ * @param {String} stat The stat to display, either Poison, Life, or Experience
+ */
 function switchTo(stat) {
     if(stat !== displayedStat) {
         document.getElementById(stat.toLowerCase()+'Button').setAttribute('onclick', 'switchTo("'+displayedStat+'")');
@@ -131,6 +157,9 @@ function switchTo(stat) {
         }
     }
 }
+/**
+ * Finds the index in the players array of the current player
+ */
 function getIndexOfMe() {
     for(let i = 0; i < players.length; i++) {
         if(players[i].email === localStorage.getItem('playerEmail')) {

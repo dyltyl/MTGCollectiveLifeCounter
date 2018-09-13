@@ -1,4 +1,6 @@
-
+/**
+ * Puts the information about the current game into local storage
+ */
 function createLocalGameStorage(){
     localStorage.setItem('gameSize', document.getElementById('gameSize').value);
     localStorage.setItem('baseLife', document.getElementById('baseLife').value);
@@ -7,7 +9,9 @@ function createLocalGameStorage(){
     console.log('Game_Size of ' + localStorage.getItem('gameSize') + ' locally.');
     console.log('Base_Life_Total of ' + localStorage.getItem('baseLife') + ' stored locally');
 }
-
+/**
+ * Creates the game in the database and navigates to the next page
+ */
 function createGame(){
     //TODO:Actual error messages
     if(document.getElementById('gameSize').value > 8 || document.getElementById('gameSize').value < 2) {
@@ -51,11 +55,4 @@ function createGame(){
         }
     })
     .catch(error=>alert(error)) //Not sure if this is ever called
-}
-
-function handleErrors(response) { //What this?
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
 }
