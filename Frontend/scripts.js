@@ -50,7 +50,6 @@ function setHost(host) {
  * @param {Player[]} data 
  */
 function compareArrays(addFunction, updateFunction, removeFunction, players, data) {
-    console.log('comparing');
     //Comparing the 2 arrays
     let equal = players.length === data.length;
     for(let i = 0; i < data.length && equal; i++) {
@@ -61,28 +60,20 @@ function compareArrays(addFunction, updateFunction, removeFunction, players, dat
     }
     //If not equal
     if(!equal) {
-        console.log(data);
         for(let i = 0; i < data.length; i++) {
             let found = false;
-            console.log(i);
             for(let j = 0; j < players.length; j++) {
-                console.log('why');
                 if(data[i].email === players[j].email) {
                     found = true;
-                    console.log('hmmm');
                     break;
                 }
             }
-            console.log('?');
             //player in data but not players
             if(!found) {
                 addFunction(data[i]);
                 players.push(data[i]);
-                console.log(players);
             }
-            console.log(i < data.length);
         }
-        console.log('what');
         for(let i = 0; i < players.length; i++) {
             let found = false;
             for(let j = 0; j < data.length; j++) {
@@ -100,15 +91,15 @@ function compareArrays(addFunction, updateFunction, removeFunction, players, dat
         }
     }
     //Updating stats
-    console.log(updateFunction !== null);
     for(let i = 0; i < players.length && updateFunction !== null; i++) {
         if(players[i].email === data[i].email) {
-            if(players[i].life !== data[i].life)
+            if(players[i].life !== data[i].life) {
                 updateFunction(data[i]);
+            }
             else if(players[i].poison !== data[i].poison)
                 updateFunction(data[i]);
             else if(players[i].experience !== data[i].experience)
-                pdateFunction(data[i]);
+                updateFunction(data[i]);
             else if(players[i].commanderDamage !== data[i].commanderDamage)
                 updateFunction(data[i]);
             players[i] = data[i];

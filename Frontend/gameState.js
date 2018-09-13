@@ -41,12 +41,11 @@ function set(amount, url) { //url = life, poison, experience
     
 }
 function gameRefresh(){
-    console.log('refresh');
     getAllPlayers()
     .then(response => {
-        console.log(response.status);
         if(response.status !== 200) {
             response.text().then(error => alert(error));
+            return Error(response.text().then(error => {return error;}));
         }
         else {
             return response.json();
@@ -55,12 +54,10 @@ function gameRefresh(){
     .then(res => {
         players = compareArrays(addPlayer, updatePlayer, removePlayer, players, res);
         myIndex = getIndexOfMe();
-        console.log(players);
         setTimeout(gameRefresh, 500);
     });
 }
 function addPlayer(player) {
-    console.log('adding: '+player.email);
     if(player.email !== localStorage.getItem('playerEmail')) {
         let root = document.getElementById('enemyStats');
         let playerSlot = document.createElement('div');
@@ -69,18 +66,18 @@ function addPlayer(player) {
         nameDisplay.textContent = player.name;
         
         let lifeDisplay = document.createElement('h3');
-        lifeDisplay.setAttribute('id', localStorage.getItem('playerEmail')+'Life');
+        lifeDisplay.setAttribute('id', player.email+'Life');
         lifeDisplay.textContent = player.life;
 
         playerSlot.appendChild(nameDisplay);
         playerSlot.appendChild(lifeDisplay);
         root.appendChild(playerSlot);
     }
-    else 
-        console.log('thats the host');
 }
 function updatePlayer(updatedPlayer) {
-    document.getElementById(updatedPlayer.email+'Life').textContent = updatedPlayer.life;
+    if(updatedPlayer.email !== localStorage.getItem('playerEmail')) {
+        document.getElementById(updatedPlayer.email+'Life').textContent = updatedPlayer.life;
+    }
 }
 function removePlayer(player) {
 //TODO
@@ -133,8 +130,6 @@ function switchTo(stat) {
             displayedNumber = experience;
         }
     }
-    else
-    console.log(stat);
 }
 function getIndexOfMe() {
     for(let i = 0; i < players.length; i++) {
