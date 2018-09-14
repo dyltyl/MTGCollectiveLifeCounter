@@ -6,10 +6,7 @@ import com.objects.SmallPlayer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -17,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Random;
 
 import static com.controllers.GameController.getStartingLife;
 import static com.controllers.GameController.verifyGame;
@@ -41,6 +39,44 @@ public class PlayerController {
             String[][] result = Application.query(statement);
             String email = result[0][0];
             response = new ResponseEntity<>(email,new HttpHeaders(), HttpStatus.OK);
+        }
+        catch (SQLException e) {
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        finally {
+            try {
+                if(statement != null && !statement.isClosed())
+                    statement.close();
+                if(connection != null && !connection.isClosed())
+                    connection.close();
+            }
+            catch (SQLException e1) {
+            }
+        }
+        return response;
+    }
+    @RequestMapping(value = "/player/{name}", method = POST)
+    public ResponseEntity<?> createGuest(@PathVariable String name) {
+        String alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder builder = new StringBuilder();
+        Random rand = new Random();
+        for(int i = 0; i < 20; i++) {
+            builder.append(alpha.charAt(rand.nextInt(alpha.length())));
+        }
+        String email = builder.toString();
+        String query = "INSERT INTO players (email, password, name) VALUES(?, digest('', 'sha512'), ?) RETURNING email";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResponseEntity<?> response = null;
+        try {
+            connection = Application.getDataSource().getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, name);
+            String[][] result = Application.query(statement);
+            if(result.length > 0) {
+                response = new ResponseEntity<>(email, new HttpHeaders(), HttpStatus.OK);
+            }
         }
         catch (SQLException e) {
             response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
