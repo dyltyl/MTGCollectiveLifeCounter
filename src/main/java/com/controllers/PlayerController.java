@@ -58,40 +58,43 @@ public class PlayerController {
     @RequestMapping(value = "/player/{name}", method = POST)
     public ResponseEntity<?> createGuest(@PathVariable String name) {
         String alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        StringBuilder builder = new StringBuilder();
-        Random rand = new Random();
-        for(int i = 0; i < 20; i++) {
-            builder.append(alpha.charAt(rand.nextInt(alpha.length())));
-        }
-        String email = builder.toString();
-        String query = "INSERT INTO players (email, password, name) VALUES(?, digest('', 'sha512'), ?) RETURNING email";
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResponseEntity<?> response = null;
-        try {
-            connection = Application.getDataSource().getConnection();
-            statement = connection.prepareStatement(query);
-            statement.setString(1, email);
-            statement.setString(2, name);
-            String[][] result = Application.query(statement);
-            if(result.length > 0) {
-                response = new ResponseEntity<>(email, new HttpHeaders(), HttpStatus.OK);
+        boolean done = false;
+        while(!done) {
+            StringBuilder builder = new StringBuilder();
+            Random rand = new Random();
+            for (int i = 0; i < 20; i++) {
+                builder.append(alpha.charAt(rand.nextInt(alpha.length())));
             }
-        }
-        catch (SQLException e) {
-            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        finally {
+            String email = builder.toString();
+            String query = "INSERT INTO players (email, password, name) VALUES(?, digest('', 'sha512'), ?) RETURNING email";
+            Connection connection = null;
+            PreparedStatement statement = null;
+            ResponseEntity<?> response = null;
             try {
-                if(statement != null && !statement.isClosed())
-                    statement.close();
-                if(connection != null && !connection.isClosed())
-                    connection.close();
+                connection = Application.getDataSource().getConnection();
+                statement = connection.prepareStatement(query);
+                statement.setString(1, email);
+                statement.setString(2, name);
+                String[][] result = Application.query(statement);
+                if (result.length > 0) {
+                    response = new ResponseEntity<>(email, new HttpHeaders(), HttpStatus.OK);
+                }
+                done = true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (statement != null && !statement.isClosed())
+                        statement.close();
+                    if (connection != null && !connection.isClosed())
+                        connection.close();
+                } catch (SQLException e1) {
+                }
             }
-            catch (SQLException e1) {
-            }
+            if(response != null)
+                return response;
         }
-        return response;
+        return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
     }
     @RequestMapping(value = "/player", method = PUT)
     public ResponseEntity<?> updatePlayer(HttpServletRequest headers, @RequestBody Player player) {
