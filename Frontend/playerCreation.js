@@ -102,9 +102,21 @@ function joinGame(){
         fetch(getUrl('joinGame'), requestBody)
         .then(function(response){
             if(response.status === 200) {
-                setHost(localStorage.getItem('playerEmail')).then(_ => {
-                    window.location.href = 'waitingLobby.html';
-                });
+                try {
+                    setHost(localStorage.getItem('playerEmail'))
+                    .then(function() {
+                        window.location.href = 'waitingLobby.html';
+                    });
+                }
+                catch(err) {
+                    console.log(err.message);
+                    if(err.message === 'You are not the host') {
+                        window.location.href = 'waitingLobby.html';
+                    }
+                    else {
+                        alert(err.message);
+                    }
+                }
             }
             else {
                 res.text().then(error => {
