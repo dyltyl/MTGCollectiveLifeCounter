@@ -85,7 +85,6 @@ function compareArrays(addFunction, updateFunction, removeFunction, players, dat
             //player in data but not players
             if(!found) {
                 addFunction(data[i]);
-                players.push(data[i]);
             }
         }
         for(let i = 0; i < players.length; i++) {
@@ -98,6 +97,7 @@ function compareArrays(addFunction, updateFunction, removeFunction, players, dat
             }
             //player in players but not in data
             if(!found) {
+                // console.log(players.length);
                 removeFunction(players[i]);
                 players.splice(i, 1);
                 i--;
