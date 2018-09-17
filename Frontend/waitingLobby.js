@@ -32,8 +32,7 @@ function insertDeleteButton(emptySlot){
 /**
  * Decriments the game size
  */
-function deletePlayer(){ //Rename to decreaseGameSize? TODO: Have this affect the db?
-    console.log(localStorage.getItem('gameSize'));
+function decreaseGameSize(){ //TODO: Have this affect the db?
     var currentGameSize = localStorage.getItem('gameSize');
     localStorage.setItem('gameSize', (currentGameSize-1));
 }
@@ -41,7 +40,6 @@ function deletePlayer(){ //Rename to decreaseGameSize? TODO: Have this affect th
  * Increments the game size
  */
 function increaseGameSize(){ //TODO: Have this affect the db?
-    console.log(localStorage.getItem('gameSize'));
     var currentGameSize = localStorage.getItem('gameSize');
     localStorage.setItem('gameSize', (currentGameSize*1+1));
 }
@@ -76,11 +74,7 @@ function createNameSlot(name){
 }
 
 function checkWaitingSlots(){ //TODO: Should load in player slots already in game before adding waiting slots
-    console.log('Current gameSize: ' + localStorage.getItem('gameSize'));
     var rootChildArr = root.children;
-    for(var i = 0; i<rootChildArr.length; i++){
-        console.log(rootChildArr[i]);
-    }
     while(root.childElementCount < localStorage.getItem('gameSize')){
         console.log('..Appending new slot..');
         root.appendChild(createEmptySlot());
@@ -170,12 +164,13 @@ function addPlayer(player) {
 function removePlayer(player) {
     let slot = document.getElementById(player.email);
     if(!slot) {
-        console.log('uhhhh.....that\'s not supposed to happen');
+        console.log('Error: Null Slot Object');
     }
     else { //Remove player
         slot.textContent = '...Waiting for player...';
         slot.setAttribute('email', 'empty');
         slot.removeAttribute('id');
+        insertDeleteButton(slot);
     }
 }
 /**
@@ -218,7 +213,7 @@ function startGame() {
     }
 }
 /**
- * Removes the player from the game
+ * Removes the player from the game(on both front and back-end)
  * @param {string} playersEmail 
  */
 function kickPlayer(playersEmail){
