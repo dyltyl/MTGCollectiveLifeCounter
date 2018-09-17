@@ -97,6 +97,10 @@ function addGame(game) {
     gameDiv.appendChild(button);
     document.getElementById('games').appendChild(gameDiv);
 }
+/**
+ * Prompts the user for the password to the game and begins the process of joining it
+ * @param {string} gameId The id of the game to join
+ */
 function joinGame(gameId) {
     console.log('joining: '+gameId);
     let password = prompt("Please enter the password for the game");
