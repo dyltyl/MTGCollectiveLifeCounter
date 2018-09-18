@@ -28,7 +28,7 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(appRoutes, {enableTracing: true})
+    RouterModule.forRoot(appRoutes, {enableTracing: false}) // Enable tracing for debug
   ],
   providers: [],
   bootstrap: [AppComponent]
