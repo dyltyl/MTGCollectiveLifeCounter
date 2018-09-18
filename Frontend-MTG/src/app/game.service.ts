@@ -35,7 +35,7 @@ export class GameService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId
+        'gameId': gameId
       })
     };
     return this.web.http.get<Game[]>(this.web.baseSite + 'game', httpOptions);

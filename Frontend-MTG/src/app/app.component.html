@@ -1,8 +1,8 @@
 <ul class = "navBar" style="text-align: center;color:white">
-  <li><a href='/'>Home_Page</a></li>
-  <li><a href='GameCreation'>GCP</a></li>
-  <li><a href='PlayerCreation'>PCP</a></li>
-  <li><a href='WaitingLobby'>WL</a></li>
+  <li><a [routerLink]="['/']" href='/'>Home_Page</a></li>
+  <li><a [routerLink]="['GameCreation']">GCP</a></li>
+  <li><a [routerLink]="['PlayerCreation']">PCP</a></li>
+  <li><a [routerLink]="['WaitingLobby']">WL</a></li>
   <li><a href='GameState'>GS</a></li>
   <!-- <li><div class='divButton' onclick="checkLocalLog()">checkLocalLog</div></li> -->
   <li style="float:right"><div style='padding:13px'>Developer_Bar</div></li>
@@ -11,5 +11,5 @@
 <router-outlet></router-outlet>
 
 <footer>
-    <a href='/'>Home</a>
+    <a [routerLink]="['/']">Home</a>
 </footer>

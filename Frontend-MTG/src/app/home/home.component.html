@@ -1,7 +1,23 @@
 <h1>
   Welcome!
   <br>
-  <div id="returnGame" class="divButton">Return to Game</div>
-  <div id="createGame" class="divButton"><a href="GameCreation">Create Game</a></div>
-  <div id="searchGame" class="divButton">Search Game</div>
+  <div id="returnGame" class="divButton" (click)="openSearchBar(false)">Return to Game</div>
+  <div id="createGame" class="divButton"><a (click)="dataService.setIsHost(true);" [routerLink]="['GameCreation']">Create Game</a></div>
+  <div id="searchGame" class="divButton" (click)="openSearchBar(true)">Search Game</div>
 </h1>
+<div style= 'text-align: center;color:white'>
+  
+  <div *ngIf="searchBarVisible" id="root">
+    Game_ID
+    <input [(ngModel)]="query" id="searchBar" placeholder="{{placeHolderText}}">
+    <button style.text-align="center" (click)="search()">Search!</button>
+  </div>
+  <div *ngFor="let game of games" id="games">
+      <div id="{{game.gameId}}">
+        <h3 style="display: inline-block; padding-right: 10px;">{{game.gameId}}</h3>
+        <h3 style="display: inline-block; padding-right: 10px;">{{game.host}}</h3>
+        <h3 style="display: inline-block; padding-right: 10px;">{{game.currentSize}}/{{game.maxSize}}</h3>
+        <button>Join Game</button>
+      </div>
+  </div>
+</div>
