@@ -1,3 +1,26 @@
-<p>
-  waiting-lobby works!
-</p>
+<!doctype html>
+<html lang="en">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Waiting Lobby</title>
+</head>
+<ul class = "navBar">
+    <li><a href='index.html'>Home_Page</a></li>
+    <li><a href='gameCreation.html'>GCP</a></li>
+    <li><a href='playerCreation.html'>PCP</a></li>
+    <li><a href='waitingLobby.html'>WL</a></li>
+    <li><a href='gameState.html'>GS</a></li>
+    <li><div class='divButton' onclick="checkLocalLog()">checkLocalLog</div></li>
+    <li><div class='divButton' onclick="increaseGameSize()">GS+</div></li>
+    <li style="float:right"><div style='padding:13px'>Developer_Bar</div></li>
+
+</ul>
+<h1 id='headerRoot'></h1>
+<body>
+    <!-- <div><button onclick="checkLog()">Local Storage Check</button></div> -->
+    <!-- <div><button onclick = 'createPlayerSlots()'>create_empty_slot </button></div> -->
+    <div id='root'></div>
+    <button onclick="startGame()">Start Game</button>
+    <!-- <button id='getAllTest' onclick ='playerRefresh()'>GetAllPlayersTest</button> -->
+</body>
