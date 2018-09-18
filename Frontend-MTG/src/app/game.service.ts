@@ -10,13 +10,6 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class GameService {
   public game: Game;
-  /*private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json; charset=UTF-8',
-      'gameId': this.game.gameId,
-      'gamePassword': this.game.gamePassword
-    })
-  };*/
   constructor(private web: WebService) { }
   getCommanders(): Observable<string[][]> {
     const httpOptions = {
