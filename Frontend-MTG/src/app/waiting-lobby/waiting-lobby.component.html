@@ -15,4 +15,4 @@
     </div>
 </div>
 <button *ngIf="currentPlayer.email === game.host" (click)="addSlot()">Add Slot</button>
-<button *ngIf="currentPlayer.email === game.host" onclick="startGame()">Start Game</button>
+<button *ngIf="currentPlayer.email === game.host" (click)="startGame()">Start Game</button>

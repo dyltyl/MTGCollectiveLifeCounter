@@ -4,6 +4,7 @@ import { DataService } from '../data.service';
 import { PlayerService } from '../player.service';
 import { GameService } from '../game.service';
 import { Game } from '../game';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-waiting-lobby',
@@ -14,7 +15,8 @@ export class WaitingLobbyComponent implements OnInit {
   public players: Player[] = [];
   public currentPlayer = this.dataService.getCurrentPlayer();
   public game: Game;
-  constructor(private gameService: GameService, private playerService: PlayerService, private dataService: DataService) { }
+  constructor(private gameService: GameService, private playerService: PlayerService,
+    private dataService: DataService, private router: Router) { }
 
   ngOnInit() {
     this.game = this.dataService.getGame();
@@ -30,9 +32,15 @@ export class WaitingLobbyComponent implements OnInit {
         console.log(err);
       }
     );
-    setTimeout(_ => {
-      this.refresh();
-    }, 5000);
+    if (!this.game.started) {
+      console.log(this.game.started);
+      setTimeout(_ => {
+        this.refresh();
+      }, 5000);
+    } else {
+      this.dataService.setCurrentPlayer(this.currentPlayer);
+      this.router.navigate(['GameState']);
+    }
   }
   adjustArray(data: Player[]) {
     const gameSize = this.game.maxSize;
@@ -42,6 +50,7 @@ export class WaitingLobbyComponent implements OnInit {
         this.players.push(data[i]);
         if (this.currentPlayer.email === data[i].email) {
           this.currentPlayer = data[i];
+          console.log(this.currentPlayer);
         }
       } else { // Waiting Slot
         this.players.push(null);
@@ -51,7 +60,10 @@ export class WaitingLobbyComponent implements OnInit {
   updateGame() {
     this.gameService.getGame(this.game.gameId).subscribe(
       result => {
+        const password = this.game.gamePassword;
         this.game = result[0];
+        console.log(this.game);
+        this.game.gamePassword = password;
       },
       err => {
         console.log(err);
@@ -89,6 +101,17 @@ export class WaitingLobbyComponent implements OnInit {
     this.game.maxSize--;
     this.gameService.updateGame(this.game).subscribe(
       result => {
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+  startGame() {
+    this.dataService.setCurrentPlayer(this.currentPlayer);
+    this.gameService.startGame(this.game).subscribe(
+      result => {
+        this.router.navigate(['GameState']);
       },
       err => {
         console.log(err);

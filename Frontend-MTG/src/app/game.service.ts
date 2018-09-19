@@ -40,15 +40,16 @@ export class GameService {
     };
     return this.web.http.get<Game[]>(this.web.baseSite + 'game', httpOptions);
   }
-  startGame(): Observable<string> {
+  startGame(game: Game): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
-      })
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
+      }),
+      responseType: 'text' as 'text'
     };
-    return this.web.http.get<string>(this.web.baseSite + 'startGame', httpOptions);
+    return this.web.http.get(this.web.baseSite + 'startGame', httpOptions);
   }
   hasGameStarted(): Observable<boolean> {
     const httpOptions = {

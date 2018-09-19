@@ -1,24 +1,29 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game State</title>        
-</head>
-<body>
-    <div id='enemyStats'></div> <!--Enemy life things-->
-    <div class="lifeStats"> <!--My life things-->
-        <div class='lifeTotalWithButtons'>
-            <h2 id='name'>Life</h2>
-            <h2 id="lifeTotal">40</h2>
-            <button>+1</button>
-            <button>-1</button>
-            <button>+5</button>
-            <button>-5</button>
-        </div>
-        <button id='poisonButton'>Poison</button>
-        <button id='experienceButton'>Experience</button>
+<div *ngFor="let player of players"> <!--Enemy life things-->
+    <div>{{player.name}}</div>
+    <div>{{player.life}}</div>
+</div> 
+<div class="lifeStats"> <!--My life things-->
+    <div *ngIf="currentStat === 0">
+        <h2>Life</h2>
+        <h2>{{currentPlayer.life}}</h2>
+    </div>
+    <div *ngIf="currentStat === 1">
+        <h2>Poison</h2>
+        <h2>{{currentPlayer.poison}}</h2>
+    </div>
+    <div *ngIf="currentStat === 2">
+        <h2>Experience</h2>
+        <h2>{{currentPlayer.experience}}</h2>
+    </div>
+    <div>
+    <button (click)="addStat(1)">+1</button>
+    <button (click)="addStat(-1)">-1</button>
+    <button (click)="addStat(5)">+5</button>
+    <button (click)="addStat(-5)">-5</button>
+    </div>
+    
+    <button *ngIf="currentStat !== 0" (click)="switchTo(0)">Life</button>
+    <button *ngIf="currentStat !== 1" (click)="switchTo(1)">Poison</button>
+    <button *ngIf="currentStat !== 2" (click)="switchTo(2)">Experience</button>
 
-    </div> 
-</body>
-</html>
+</div> 

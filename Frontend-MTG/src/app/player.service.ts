@@ -84,14 +84,15 @@ export class PlayerService {
     };
     return this.web.http.put<Player>(this.web.baseSite + 'player', player, httpOptions);
   }
-  updateLifeStats(gameId: string, player: Player): Observable<string> {
+  updateLifeStats(gameId: string, player: Player): Observable<Player> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': gameId
+        'gameId': gameId,
+        'email': player.email
       })
     };
-    return this.web.http.post<string>(this.web.baseSite + 'life', player, httpOptions);
+    return this.web.http.post<Player>(this.web.baseSite + 'life', player, httpOptions);
   }
   updateLifeTotal(gameId: string, gamePassword: string, email: string, password: string, amount: number): Observable<string> {
     const httpOptions = {
