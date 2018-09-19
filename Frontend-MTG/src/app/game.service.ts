@@ -60,12 +60,12 @@ export class GameService {
     };
     return this.web.http.get<boolean>(this.web.baseSite + 'hasGameStarted', httpOptions);
   }
-  login(): Observable<string> {
+  login(gameId: string, gamePassword: string): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
+        'gameId': gameId,
+        'gamePassword': gamePassword
       })
     };
     return this.web.http.get<string>(this.web.baseSite + 'verifyGame', httpOptions);
