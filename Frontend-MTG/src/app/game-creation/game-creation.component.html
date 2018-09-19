@@ -2,19 +2,19 @@
 <div style= 'text-align: center;color:white'>
     <div>
             Number of players
-        <input type="number" id="gameSize" name="gS" value="2" max="8" min="2"> <!-- Min and Max for gameSize here -->
-        <input type='number' id='baseLife' name='lifeTotal' value='40' min="1">
+        <input [(ngModel)]="gameSize" type="number" id="gameSize" name="gS" max="8" min="2"> <!-- Min and Max for gameSize here -->
+        <input [(ngModel)]="baseLife" type='number' id='baseLife' name='lifeTotal' min="1">
             LifeTotal
         <br/>
             Game Name
-        <input type='text' id='gameName' name = 'gN' placeholder ='Name me for Later!'>
-        <input type='text' id='gamePass' name = 'gP' placeholder ='Hold your secrets Here'>
+        <input [(ngModel)]="gameName" type='text' id='gameName' name = 'gN' placeholder ='Name me for Later!'>
+        <input [(ngModel)]="gamePassword" type='text' id='gamePass' name = 'gP' placeholder ='Hold your secrets Here'>
             Password
         <br/>
     </div>
     <div>
         <!-- <button onload = 'getInputContent()' onclick="getInputContent()">getInputContent</button> -->
-        <div id='cG' class = 'divButton' onclick='createGame()'>CreateGame</div>
+        <div id='cG' class = 'divButton' (click)='createGame()'>CreateGame</div>
         <p id= 'dbInsert'></p>
         <!-- <button onClick = 'checkLocalLog()'>Log_Test</button> -->
     </div>

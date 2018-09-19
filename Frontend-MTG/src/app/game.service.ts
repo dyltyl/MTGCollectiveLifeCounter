@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { WebService } from './web.service';
 import { Game } from './game';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Player } from './player';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -70,16 +71,16 @@ export class GameService {
     };
     return this.web.http.get<string>(this.web.baseSite + 'verifyGame', httpOptions);
   }
-  createGame(gameId: string, gamePassword: string, startingLife: number, host: string, maxSize: number): Observable<string> {
-    const game =  new Game(gameId, gamePassword, startingLife, host, maxSize, false);
+  createGame(game: Game): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
-      })
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
+      }),
+      responseType: 'text' as 'text'
     };
-    return this.web.http.post<string>(this.web.baseSite + 'game', game, httpOptions);
+    return this.web.http.post(this.web.baseSite + 'game', game, httpOptions);
   }
   updateGame(gameId: string, gamePassword: string, startingLife: number, host: string, maxSize: number, started: boolean):
   Observable<Game> {
