@@ -4,15 +4,19 @@
 </h1>
 <div style= 'text-align: center;color:white'>
   Your Name
-  <input type ="text" id ='playerName'>
+  <input [(ngModel)]="playerName" type ="text" id ='playerName'>
   Commander's Name
-  <input type = 'text' id = 'commanderName'>
+  <input [(ngModel)]="commanderAName" type = 'text' id = 'commanderName'>
   E-Mail:
-  <input type = 'text' id = 'playerEmail'>
+  <input [(ngModel)]="email" type = 'text' id = 'playerEmail'>
   Password
-  <input type = 'text' id = 'playerPass'>
-  <input type= 'checkbox' id ='partnerBool' name = 'partner' value ='false'> Partner?
-  <div id='root'></div>
-  <div id='cP' class = 'divButton'>Create Yourself!</div>
+  <input [(ngModel)]="password" type = 'text' id = 'playerPass'>
+  <input [(ngModel)]="hasPartner" type= 'checkbox' id ='partnerBool' name = 'partner' value ='false'> Partner?
+  <div *ngIf="hasPartner">
+    <input [(ngModel)]="commanderBName" type = 'text' id = 'commanderName'>
+  </div>
+  <div>
+    <div id='cP' class = 'divButton' (click)="createPlayer()">Create Yourself!</div>
+  </div>
   <div id='joinLink'></div>
 </div>

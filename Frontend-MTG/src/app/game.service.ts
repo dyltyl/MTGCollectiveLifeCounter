@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { WebService } from './web.service';
 import { Game } from './game';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Player } from './player';
 import { HttpHeaders } from '@angular/common/http';
 
@@ -22,12 +21,12 @@ export class GameService {
     };
     return this.web.http.get<string[][]>(this.web.baseSite + 'commanders', httpOptions);
   }
-  getPlayers(): Observable<Player[]> {
+  getPlayers(game: Game): Observable<Player[]> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
       })
     };
     return this.web.http.get<Player[]>(this.web.baseSite + 'players', httpOptions);
@@ -82,27 +81,27 @@ export class GameService {
     };
     return this.web.http.post(this.web.baseSite + 'game', game, httpOptions);
   }
-  updateGame(gameId: string, gamePassword: string, startingLife: number, host: string, maxSize: number, started: boolean):
+  updateGame(game: Game):
   Observable<Game> {
-    const game =  new Game(gameId, gamePassword, startingLife, host, maxSize, started);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
       })
     };
     return this.web.http.put<Game>(this.web.baseSite + 'game', game, httpOptions);
   }
-  updateHost(newHost: string): Observable<string> {
+  updateHost(game: Game): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'hostEmail': newHost
-      })
+        'gameId': game.gameId,
+        'hostEmail': game.host
+      }),
+      responseType: 'text' as 'text'
     };
-    return this.web.http.put<string>(this.web.baseSite + 'host', null, httpOptions);
+    return this.web.http.put(this.web.baseSite + 'host', null, httpOptions);
   }
   deleteGame(): Observable<string> {
     const httpOptions = {

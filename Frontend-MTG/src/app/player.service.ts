@@ -51,27 +51,28 @@ export class PlayerService {
     };
     return this.web.http.get<string>(this.web.baseSite + 'login', httpOptions);
   }
-  joinGame(email: string, password: string, gameId: string, gamePassword: string, commanders: string[]): Observable<string> {
+  joinGame(player: Player, game: Game, commanders: string[]): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'email': email,
-        'password': password,
-        'gameId': gameId,
-        'gamePassword': gamePassword
-      })
+        'email': player.email,
+        'password': player.password,
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
+      }),
+      responseType: 'text' as 'text'
     };
-    return this.web.http.post<string>(this.web.baseSite + 'joinGame', commanders, httpOptions);
+    return this.web.http.post(this.web.baseSite + 'joinGame', commanders, httpOptions);
   }
-  createPlayer(name: string, email: string, password: string, life: number): Observable<string> {
+  createPlayer(player: Player): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'email': email
-      })
+        'email': player.email
+      }),
+      responseType: 'text' as 'text'
     };
-    const player = new Player(name, email, password, life);
-    return this.web.http.post<string>(this.web.baseSite + 'player', player, httpOptions);
+    return this.web.http.post(this.web.baseSite + 'player', player, httpOptions);
   }
   updatePlayer(originalEmail: string, email: string, password: string): Observable<Player> {
     const player = new Player(name, email, password, 40);
@@ -147,9 +148,10 @@ export class PlayerService {
         'Content-Type': 'application/json; charset=UTF-8',
         'email': email,
         'password': password
-      })
+      }),
+      responseType: 'text' as 'text'
     };
-    return this.web.http.delete<string>(this.web.baseSite + 'player', httpOptions);
+    return this.web.http.delete(this.web.baseSite + 'player', httpOptions);
   }
   leaveGame(email: string, gameId: string): Observable<string> {
     const httpOptions = {
@@ -157,8 +159,9 @@ export class PlayerService {
         'Content-Type': 'application/json; charset=UTF-8',
         'email': email,
         'gameId': gameId
-      })
+      }),
+      responseType: 'text' as 'text'
     };
-    return this.web.http.delete<string>(this.web.baseSite + 'leaveGame', httpOptions);
+    return this.web.http.delete(this.web.baseSite + 'leaveGame', httpOptions);
   }
 }
