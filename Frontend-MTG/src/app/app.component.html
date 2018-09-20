@@ -1,4 +1,4 @@
-<ul class = "navBar" style="text-align: center;color:white">
+<ul *ngIf="debug" class = "navBar" style="text-align: center;color:white">
   <li><a [routerLink]="['/']" href='/'>Home_Page</a></li>
   <li><a [routerLink]="['GameCreation']">GCP</a></li>
   <li><a [routerLink]="['PlayerCreation']">PCP</a></li>

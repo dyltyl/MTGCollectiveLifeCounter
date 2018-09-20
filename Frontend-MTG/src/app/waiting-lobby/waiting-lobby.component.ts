@@ -33,11 +33,11 @@ export class WaitingLobbyComponent implements OnInit {
       }
     );
     if (!this.game.started) {
-      console.log(this.game.started);
       setTimeout(_ => {
         this.refresh();
       }, 5000);
     } else {
+      console.log('game starting');
       this.dataService.setCurrentPlayer(this.currentPlayer);
       this.router.navigate(['GameState']);
     }
@@ -50,7 +50,6 @@ export class WaitingLobbyComponent implements OnInit {
         this.players.push(data[i]);
         if (this.currentPlayer.email === data[i].email) {
           this.currentPlayer = data[i];
-          console.log(this.currentPlayer);
         }
       } else { // Waiting Slot
         this.players.push(null);
@@ -62,7 +61,6 @@ export class WaitingLobbyComponent implements OnInit {
       result => {
         const password = this.game.gamePassword;
         this.game = result[0];
-        console.log(this.game);
         this.game.gamePassword = password;
       },
       err => {

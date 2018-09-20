@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Frontend-MTG';
+  public debug = true; // Turn on to show the developer nav bar
 }

@@ -26,7 +26,6 @@ export class GameStateComponent implements OnInit {
       this.currentPlayer.life += amount;
     } else if (this.currentStat === Stats.Poison) {
       this.currentPlayer.poison += amount;
-      console.log(this.currentPlayer.poison);
     } else if (this.currentStat === Stats.Experience) {
       this.currentPlayer.experience += amount;
     }
