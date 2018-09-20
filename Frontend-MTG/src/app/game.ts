@@ -10,7 +10,6 @@ export class Game {
         this.gameId = gameId;
         this.gamePassword = gamePassword;
         this.startingLife = startingLife;
-        this.started = false;
         this.currentSize = 0;
         this.host = host;
         this.maxSize = maxSize;
