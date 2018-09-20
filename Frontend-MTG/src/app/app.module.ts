@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -35,7 +35,7 @@ const appRoutes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(appRoutes, {enableTracing: false}) // Enable tracing for debug
   ],
-  providers: [DataService],
+  providers: [DataService, {provide: ErrorHandler, useClass: AppComponent}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

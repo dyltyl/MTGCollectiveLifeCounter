@@ -17,7 +17,6 @@ export class GameCreationComponent implements OnInit {
   constructor(public gameService: GameService, public dataService: DataService, private router: Router) { }
 
   ngOnInit() {
-    console.log(this.dataService.isHost());
   }
   createGame() {
     if (this.gameSize > 8 || this.gameSize < 2) {
