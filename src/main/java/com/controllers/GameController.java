@@ -175,11 +175,10 @@ public class GameController {
                 games[i].setGameId(result[i][0]);
                 games[i].setGamePassword("*******");
                 games[i].setStartingLife(Integer.parseInt(result[i][2]));
-                games[i].setStarted(result[0][0].equals("t"));
+                games[i].setStarted(result[0][3].equals("t"));
                 games[i].setHost(result[i][4]);
                 games[i].setCurrentSize(Integer.parseInt(result[i][5]));
                 games[i].setMaxSize(Integer.parseInt(result[i][6]));
-                System.out.println("Game started: "+games[i].getStarted());
             }
             response = new ResponseEntity<>(games, new HttpHeaders(), HttpStatus.OK);
         }
