@@ -16,6 +16,7 @@ export class GameStateComponent implements OnInit {
   constructor(private gameService: GameService, private playerService: PlayerService, private dataService: DataService) { }
 
   ngOnInit() {
+    this.refresh();
   }
   switchTo(stat: Stats) {
     this.currentStat = stat;
@@ -37,13 +38,22 @@ export class GameStateComponent implements OnInit {
     );
   }
   refresh() {
-
+    this.gameService.getPlayers(this.dataService.getGame()).subscribe(
+      result => {
+        this.adjustArrays(result);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
   adjustArrays(data: Player[]) {
     this.players = [];
     for (let i = 0; i < data.length; i++) {
       if (this.currentPlayer.email !== data[i].email) {
         this.players.push(data[i]);
+      } else {
+        this.currentPlayer = data[i];
       }
     }
   }
