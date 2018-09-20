@@ -31,9 +31,8 @@ export class GameStateComponent implements OnInit {
     }
     this.playerService.updateLifeStats(this.dataService.getGame().gameId, this.currentPlayer).subscribe(
       result => {
-      },
-      err => {
-      }
+      }, // TODO: ?
+      err => { throw err; }
     );
   }
   refresh() {
@@ -41,9 +40,7 @@ export class GameStateComponent implements OnInit {
       result => {
         this.adjustArrays(result);
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
   adjustArrays(data: Player[]) {

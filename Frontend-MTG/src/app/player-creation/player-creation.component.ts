@@ -26,17 +26,14 @@ export class PlayerCreationComponent implements OnInit {
   }
   createPlayer() {
     if (this.playerName.trim().length < 1) {
-      console.log('Player name must be set');
-      return;
+      throw new Error('Player name must be set');
     }
     if (this.email.trim().length < 1) {
-      console.log('Player email must be set');
-      return;
+      throw new Error('Player email must be set');
     }
     const game = this.dataService.getGame();
     if (game === null || game.gameId === null) {
-      console.log('The game must be set');
-      return;
+      throw new Error('The game must be set');
     }
     const commanders: string[] = [];
     if (this.commanderAName.trim().length > 0) {
@@ -51,9 +48,7 @@ export class PlayerCreationComponent implements OnInit {
       result => {
         this.joinGame(player, game, commanders);
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
   joinGame(player: Player, game: Game, commanders: string[]) { // TODO I think there are still some bugs involved with joining games
@@ -74,8 +69,8 @@ export class PlayerCreationComponent implements OnInit {
         this.router.navigate(['WaitingLobby']);
       },
       err => {
-        console.log(err);
         this.deletePlayer(player);
+        throw err;
       }
     );
   }
@@ -84,9 +79,7 @@ export class PlayerCreationComponent implements OnInit {
       result => {
         console.log('Deleted: ' + player.email);
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
 

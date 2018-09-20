@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   search() {
     this.gameService.getGame(this.query).subscribe(
       games => { this.games = games; },
-      err => { console.log(err); }
+      err => { throw err; }
     );
   }
   openSearchBar(joinGame: boolean) {
@@ -48,9 +48,7 @@ export class HomeComponent implements OnInit {
           console.log('Password incorrect');
         }
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
 

@@ -28,9 +28,7 @@ export class WaitingLobbyComponent implements OnInit {
       result => {
         this.adjustArray(result);
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
     if (!this.game.started) {
       setTimeout(_ => {
@@ -63,9 +61,7 @@ export class WaitingLobbyComponent implements OnInit {
         this.game = result[0];
         this.game.gamePassword = password;
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
   kickPlayer(player: Player) {
@@ -73,9 +69,7 @@ export class WaitingLobbyComponent implements OnInit {
     this.playerService.leaveGame(player.email, this.game.gameId).subscribe(
       result => {
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
     this.players[index] = null;
   }
@@ -86,12 +80,10 @@ export class WaitingLobbyComponent implements OnInit {
       this.gameService.updateGame(this.game).subscribe(
         result => {
         },
-        err => {
-          console.log(err);
-        }
+        err => { throw err; }
       );
     } else {
-      console.log('Cannot add any more players');
+      throw new Error('Cannot add any more players');
     }
   }
   removeSlot(index: number) {
@@ -100,9 +92,7 @@ export class WaitingLobbyComponent implements OnInit {
     this.gameService.updateGame(this.game).subscribe(
       result => {
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
   startGame() {
@@ -111,9 +101,7 @@ export class WaitingLobbyComponent implements OnInit {
       result => {
         this.router.navigate(['GameState']);
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
 

@@ -20,16 +20,13 @@ export class GameCreationComponent implements OnInit {
   }
   createGame() {
     if (this.gameSize > 8 || this.gameSize < 2) {
-      console.log('There must be between 2 and 8 players');
-      return;
+      throw new Error('There must be between 2 and 8 players');
     }
     if (this.baseLife < 1) {
-      console.log('Life must start at a value above 0');
-      return;
+      throw new Error('Life must start at a value above 0');
     }
     if (this.gameName.trim().length < 1) {
-      console.log('Please name the game');
-      return;
+      throw new Error('Please name the game');
     }
     const game = new Game(this.gameName, this.gamePassword, this.baseLife, null, this.gameSize, false);
     this.dataService.setGame(game);
@@ -37,9 +34,7 @@ export class GameCreationComponent implements OnInit {
       result => {
         this.router.navigate(['PlayerCreation']);
       },
-      err => {
-        console.log(err);
-      }
+      err => { throw err; }
     );
   }
 
