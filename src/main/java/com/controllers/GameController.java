@@ -175,6 +175,7 @@ public class GameController {
                 games[i].setGameId(result[i][0]);
                 games[i].setGamePassword("*******");
                 games[i].setStartingLife(Integer.parseInt(result[i][2]));
+                System.out.println(result[i][3]);
                 games[i].setStarted(Boolean.parseBoolean(result[i][3]));
                 games[i].setHost(result[i][4]);
                 games[i].setCurrentSize(Integer.parseInt(result[i][5]));

@@ -35,7 +35,7 @@ GAME
 	"gamePassword": "password",
 	"startingLife": 40,
 	"started": false,
-	"host": "Tyler@gmail.com,
+	"host": "Tyler@gmail.com",
 	"currentSize": 0,
 	"maxSize": 5
 }
