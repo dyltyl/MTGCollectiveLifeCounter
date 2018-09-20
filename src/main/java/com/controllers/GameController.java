@@ -179,6 +179,7 @@ public class GameController {
                 games[i].setHost(result[i][4]);
                 games[i].setCurrentSize(Integer.parseInt(result[i][5]));
                 games[i].setMaxSize(Integer.parseInt(result[i][6]));
+                System.out.println("Game started: "+games[i].getStarted());
             }
             response = new ResponseEntity<>(games, new HttpHeaders(), HttpStatus.OK);
         }
