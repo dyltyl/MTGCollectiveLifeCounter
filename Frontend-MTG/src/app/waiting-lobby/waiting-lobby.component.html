@@ -4,15 +4,20 @@
         </span>
     </div>
 </h1>
+<!--Displaying each slot-->
 <div *ngFor="let player of players">
+    <!--Player slot-->
     <div *ngIf="player !== null" class="playerSlot">
         {{player.name}}
         <button *ngIf="game.host !== player.email && currentPlayer.email === game.host" class="kickButton" (click)="kickPlayer(player);"></button>
     </div>
+    <!--Waiting Slot-->
     <div *ngIf="player === null" class="waitingSlot">
         ...Waiting for player...
         <button *ngIf="currentPlayer.email === game.host" class="deletePlayer" (click)="removeSlot(players.indexOf(player))"></button>
     </div>
 </div>
+
+<!--Host controls-->
 <button *ngIf="currentPlayer.email === game.host" (click)="addSlot()">Add Slot</button>
 <button *ngIf="currentPlayer.email === game.host" (click)="startGame()">Start Game</button>

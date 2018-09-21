@@ -1,6 +1,5 @@
 <h1>
   User Details
-  <br/>
 </h1>
 <div style= 'text-align: center;color:white'>
   Your Name
@@ -15,8 +14,8 @@
   <div *ngIf="hasPartner">
     <input [(ngModel)]="commanderBName" type = 'text' id = 'commanderName'>
   </div>
+  
   <div>
     <div id='cP' class = 'divButton' (click)="createPlayer()">Create Yourself!</div>
   </div>
-  <div id='joinLink'></div>
 </div>

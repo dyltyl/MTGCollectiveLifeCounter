@@ -1,27 +1,38 @@
-<div *ngFor="let player of players"> <!--Enemy life things-->
+<!--Enemy life things-->
+<div *ngFor="let player of players"> 
     <div>{{player.name}}</div>
     <div>{{player.life}}</div>
 </div> 
-<div class="lifeStats"> <!--My life things-->
+
+<!--My life things-->
+<div class="lifeStats"> 
+    <!--Display Life total-->
     <div *ngIf="currentStat === 0">
         <h2>Life</h2>
         <h2>{{currentPlayer.life}}</h2>
     </div>
+
+    <!--Display Poison-->
     <div *ngIf="currentStat === 1">
         <h2>Poison</h2>
         <h2>{{currentPlayer.poison}}</h2>
     </div>
+
+    <!--Display Experience-->
     <div *ngIf="currentStat === 2">
         <h2>Experience</h2>
         <h2>{{currentPlayer.experience}}</h2>
     </div>
+
+    <!--Buttons to modify the currentStat-->
     <div>
-    <button (click)="addStat(1)">+1</button>
-    <button (click)="addStat(-1)">-1</button>
-    <button (click)="addStat(5)">+5</button>
-    <button (click)="addStat(-5)">-5</button>
+        <button (click)="addStat(1)">+1</button>
+        <button (click)="addStat(-1)">-1</button>
+        <button (click)="addStat(5)">+5</button>
+        <button (click)="addStat(-5)">-5</button>
     </div>
     
+    <!--Buttons to switch the currentStat-->
     <button *ngIf="currentStat !== 0" (click)="switchTo(0)">Life</button>
     <button *ngIf="currentStat !== 1" (click)="switchTo(1)">Poison</button>
     <button *ngIf="currentStat !== 2" (click)="switchTo(2)">Experience</button>
