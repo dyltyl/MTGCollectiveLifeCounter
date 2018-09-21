@@ -5,6 +5,8 @@ import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CommanderDamage } from './commanderDamage';
 import { Game } from './game';
+import { Router } from '@angular/router';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ import { Game } from './game';
  * A service used to access api methods involved in the Player table
  */
 export class PlayerService {
-  constructor(private web: WebService) { }
+  constructor(private web: WebService, private router: Router, private dataService: DataService) { }
   /**
    * Gets the Player in the Game, with life stats
    * @param gameId The id of the game
@@ -65,16 +67,15 @@ export class PlayerService {
    * @param email The email of the player
    * @param password The password of the player
    */
-  login(email: string, password: string): Observable<string> {
+  login(email: string, password: string): Observable<boolean> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
         'email': email,
         'password': password
-      }),
-      responseType: 'text' as 'text'
+      })
     };
-    return this.web.http.get(this.web.baseSite + 'login', httpOptions);
+    return this.web.http.get<boolean>(this.web.baseSite + 'login', httpOptions);
   }
   /**
    * Puts the player inside of the game
@@ -108,6 +109,19 @@ export class PlayerService {
       responseType: 'text' as 'text'
     };
     return this.web.http.post(this.web.baseSite + 'player', player, httpOptions);
+  }
+  /**
+   * Creates a guest user in the database, and returns the email
+   * @param name The name of the guest
+   */
+  createGuest(name: string): Observable<string> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json; charset=UTF-8'
+      }),
+      responseType: 'text' as 'text'
+    };
+    return this.web.http.post(this.web.baseSite + 'player/' + name, null, httpOptions);
   }
   /**
    * Updates the player's email/password in the database
@@ -256,5 +270,39 @@ export class PlayerService {
       responseType: 'text' as 'text'
     };
     return this.web.http.delete(this.web.baseSite + 'leaveGame', httpOptions);
+  }
+
+  /**
+   * Puts the player inside of the game. If it is successful then it navigates to WaitingLobby.
+   * If this step fails then the newly created player is deleted so that the user can try again.
+   * @param player The player to put in the game, should be the newly created player
+   * @param game The game to put the player in
+   * @param commanders The commanders of the player if there are any. Pass in an empty array if there are none
+   */
+  putInGame(player: Player, game: Game, commanders: string[]) { // TODO I think there are still some bugs involved with joining games
+    this.joinGame(player, game, commanders).subscribe(
+      result => {
+        if (this.dataService.isHost()) {
+          game.host = player.email;
+          this.dataService.setGame(game);
+          this.gameService.updateHost(game).subscribe(
+            res => {
+            },
+            err => { throw err; }
+          );
+        }
+        this.router.navigate(['WaitingLobby']);
+      },
+      err => {
+        // Delete player if join fails
+        this.deletePlayer(player.email, player.password).subscribe(
+          result2 => {
+            console.log('Deleted: ' + player.email);
+          },
+          err2 => { throw err2; }
+        );
+        throw err;
+      }
+    );
   }
 }

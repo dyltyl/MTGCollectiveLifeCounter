@@ -11,6 +11,9 @@ import { PlayerCreationComponent } from './player-creation/player-creation.compo
 import { WaitingLobbyComponent } from './waiting-lobby/waiting-lobby.component';
 import { GameStateComponent } from './game-state/game-state.component';
 import { DataService } from './data.service';
+import { UserTypeComponent } from './user-type/user-type.component';
+import { LoginComponent } from './login/login.component';
+import { GuestCreationComponent } from './guest-creation/guest-creation.component';
 /**
  * The routes in the app
  */
@@ -19,6 +22,9 @@ const appRoutes: Routes = [
   { path: 'PlayerCreation', component: PlayerCreationComponent },
   { path: 'WaitingLobby', component: WaitingLobbyComponent },
   { path: 'GameState', component: GameStateComponent },
+  { path: 'UserType', component: UserTypeComponent}, // TODO: Perhaps find a better path?
+  { path: 'GuestLogin', component: GuestCreationComponent },
+  { path: 'Login', component: LoginComponent },
   { path: '', component: HomeComponent } // TODO: Add a default with a 404 page
 ];
 
@@ -29,7 +35,10 @@ const appRoutes: Routes = [
     GameCreationComponent,
     PlayerCreationComponent,
     WaitingLobbyComponent,
-    GameStateComponent
+    GameStateComponent,
+    UserTypeComponent,
+    LoginComponent,
+    GuestCreationComponent
   ],
   imports: [
     BrowserModule,

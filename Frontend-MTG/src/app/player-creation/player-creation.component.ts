@@ -71,49 +71,9 @@ export class PlayerCreationComponent implements OnInit {
     this.dataService.setCurrentPlayer(player);
     this.playerService.createPlayer(player).subscribe(
       result => {
-        this.joinGame(player, game, commanders);
+        this.playerService.putInGame(player, game, commanders);
       },
       err => { throw err; }
     );
   }
-  /**
-   * Puts the player inside of the game. If it is successful then it navigates to WaitingLobby.
-   * If this step fails then the newly created player is deleted so that the user can try again.
-   * @param player The player to put in the game, should be the newly created player
-   * @param game The game to put the player in
-   * @param commanders The commanders of the player if there are any. Pass in an empty array if there are none
-   */
-  joinGame(player: Player, game: Game, commanders: string[]) { // TODO I think there are still some bugs involved with joining games
-    this.playerService.joinGame(player, game, commanders).subscribe(
-      result => {
-        if (this.dataService.isHost()) {
-          game.host = player.email;
-          this.dataService.setGame(game);
-          this.gameService.updateHost(game).subscribe(
-            res => {
-            },
-            err => { throw err; }
-          );
-        }
-        this.router.navigate(['WaitingLobby']);
-      },
-      err => {
-        this.deletePlayer(player);
-        throw err;
-      }
-    );
-  }
-  /**
-   * Deletes the player from the database, called if joinGame fails
-   * @param player The player to delete
-   */
-  deletePlayer(player: Player) {
-    this.playerService.deletePlayer(player.email, player.password).subscribe(
-      result => {
-        console.log('Deleted: ' + player.email);
-      },
-      err => { throw err; }
-    );
-  }
-
 }
