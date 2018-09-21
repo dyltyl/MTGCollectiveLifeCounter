@@ -67,7 +67,7 @@ export class HomeComponent implements OnInit {
     const password = prompt('Please enter the password for the game');
     this.gameService.login(gameId, password).subscribe(
       result => {
-        if ( result === 'true') {
+        if ( result === true) {
           const game = new Game(gameId, password, -1, null, -1, false);
           this.dataService.setGame(game);
           this.router.navigate(['PlayerCreation']);

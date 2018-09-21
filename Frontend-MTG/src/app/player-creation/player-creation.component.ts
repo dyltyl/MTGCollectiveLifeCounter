@@ -11,12 +11,33 @@ import { Router } from '@angular/router';
   templateUrl: './player-creation.component.html',
   styleUrls: ['./player-creation.component.css']
 })
+/**
+ * The player creation page
+ */
 export class PlayerCreationComponent implements OnInit {
+  /**
+   * The name of the player, cannot be left blank
+   */
   public playerName = '';
-  public commanderAName = '';
+  /**
+   * The name of the commander, can be left blank if not playing commander
+   */
+  public commanderAName = ''; // TODO: Have different game types, don't prompt this if not playing commander
+  /**
+   * The name of the partner commander, if there is one
+   */
   public commanderBName = '';
+  /**
+   * The email of the player, cannot be left blank
+   */
   public email = '';
+  /**
+   * The password for the player, can be left blank
+   */
   public password = '';
+  /**
+   * True if the player has a partner commander
+   */
   public hasPartner = false;
 
   constructor(private playerService: PlayerService, private gameService: GameService,
@@ -24,6 +45,10 @@ export class PlayerCreationComponent implements OnInit {
 
   ngOnInit() {
   }
+  /**
+   * Creates the player in the database and then calls joinGame if it was successful.
+   * Also sets the host of the game if this player created it
+   */
   createPlayer() {
     if (this.playerName.trim().length < 1) {
       throw new Error('Player name must be set');
@@ -51,19 +76,23 @@ export class PlayerCreationComponent implements OnInit {
       err => { throw err; }
     );
   }
+  /**
+   * Puts the player inside of the game. If it is successful then it navigates to WaitingLobby.
+   * If this step fails then the newly created player is deleted so that the user can try again.
+   * @param player The player to put in the game, should be the newly created player
+   * @param game The game to put the player in
+   * @param commanders The commanders of the player if there are any. Pass in an empty array if there are none
+   */
   joinGame(player: Player, game: Game, commanders: string[]) { // TODO I think there are still some bugs involved with joining games
     this.playerService.joinGame(player, game, commanders).subscribe(
       result => {
         if (this.dataService.isHost()) {
           game.host = player.email;
-          console.log(game);
           this.dataService.setGame(game);
           this.gameService.updateHost(game).subscribe(
             res => {
             },
-            err => {
-              console.log(err);
-            }
+            err => { throw err; }
           );
         }
         this.router.navigate(['WaitingLobby']);
@@ -74,6 +103,10 @@ export class PlayerCreationComponent implements OnInit {
       }
     );
   }
+  /**
+   * Deletes the player from the database, called if joinGame fails
+   * @param player The player to delete
+   */
   deletePlayer(player: Player) {
     this.playerService.deletePlayer(player.email, player.password).subscribe(
       result => {

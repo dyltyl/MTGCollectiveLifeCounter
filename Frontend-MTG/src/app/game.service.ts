@@ -8,19 +8,28 @@ import { HttpHeaders } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * A service used to access api methods involved in the Game table
+ */
 export class GameService {
-  public game: Game;
   constructor(private web: WebService) { }
-  getCommanders(): Observable<string[][]> {
+  /**
+   * Gets the commanders in the game with their associated player
+   */
+  getCommanders(game: Game): Observable<string[][]> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
       })
     };
     return this.web.http.get<string[][]>(this.web.baseSite + 'commanders', httpOptions);
   }
+  /**
+   * Gets all of the players with their life stats in the game
+   * @param game The current game
+   */
   getPlayers(game: Game): Observable<Player[]> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -31,6 +40,10 @@ export class GameService {
     };
     return this.web.http.get<Player[]>(this.web.baseSite + 'players', httpOptions);
   }
+  /**
+   * Searches for a game and returns the results
+   * @param gameId The gameId to search for
+   */
   getGame(gameId: string): Observable<Game[]> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -40,6 +53,10 @@ export class GameService {
     };
     return this.web.http.get<Game[]>(this.web.baseSite + 'game', httpOptions);
   }
+  /**
+   * Starts the current game
+   * @param game The game to start
+   */
   startGame(game: Game): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -51,17 +68,26 @@ export class GameService {
     };
     return this.web.http.get(this.web.baseSite + 'startGame', httpOptions);
   }
-  hasGameStarted(): Observable<boolean> {
+  /**
+   * Checks if the game has started
+   * @param game The game to check
+   */
+  hasGameStarted(game: Game): Observable<boolean> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
       })
     };
     return this.web.http.get<boolean>(this.web.baseSite + 'hasGameStarted', httpOptions);
   }
-  login(gameId: string, gamePassword: string): Observable<string> {
+  /**
+   * Checks the login credentials to the game
+   * @param gameId The gameId to login to
+   * @param gamePassword The password to enter the game
+   */
+  login(gameId: string, gamePassword: string): Observable<boolean> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
@@ -69,8 +95,12 @@ export class GameService {
         'gamePassword': gamePassword
       })
     };
-    return this.web.http.get<string>(this.web.baseSite + 'verifyGame', httpOptions);
+    return this.web.http.get<boolean>(this.web.baseSite + 'verifyGame', httpOptions);
   }
+  /**
+   * Creates the game in the database
+   * @param game The game to create
+   */
   createGame(game: Game): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -82,6 +112,10 @@ export class GameService {
     };
     return this.web.http.post(this.web.baseSite + 'game', game, httpOptions);
   }
+  /**
+   * Updates the game in the database with the provided game
+   * @param game The updated game
+   */
   updateGame(game: Game):
   Observable<Game> {
     const httpOptions = {
@@ -93,6 +127,10 @@ export class GameService {
     };
     return this.web.http.put<Game>(this.web.baseSite + 'game', game, httpOptions);
   }
+  /**
+   * Updates the host of the game, based on the provided game's host value
+   * @param game The game to update the host on
+   */
   updateHost(game: Game): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -104,15 +142,19 @@ export class GameService {
     };
     return this.web.http.put(this.web.baseSite + 'host', null, httpOptions);
   }
-  deleteGame(): Observable<string> {
+  /**
+   * Deletes the game from the database
+   */
+  deleteGame(game: Game): Observable<string> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8',
-        'gameId': this.game.gameId,
-        'gamePassword': this.game.gamePassword
-      })
+        'gameId': game.gameId,
+        'gamePassword': game.gamePassword
+      }),
+      responseType: 'text' as 'text'
     };
-    return this.web.http.delete<string>(this.web.baseSite + 'game', httpOptions);
+    return this.web.http.delete(this.web.baseSite + 'game', httpOptions);
   }
 
 }
