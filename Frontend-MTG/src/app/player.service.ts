@@ -7,6 +7,7 @@ import { CommanderDamage } from './commanderDamage';
 import { Game } from './game';
 import { Router } from '@angular/router';
 import { DataService } from './data.service';
+import { GameService } from './game.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ import { DataService } from './data.service';
  * A service used to access api methods involved in the Player table
  */
 export class PlayerService {
-  constructor(private web: WebService, private router: Router, private dataService: DataService) { }
+  constructor(private web: WebService, private router: Router, private dataService: DataService, private gameService: GameService) { }
   /**
    * Gets the Player in the Game, with life stats
    * @param gameId The id of the game
