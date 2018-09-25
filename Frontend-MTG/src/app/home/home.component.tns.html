@@ -1,0 +1,22 @@
+<Page class="page">
+  <Page.actionBar>
+    <ActionBar class="action-bar">
+        <StackLayout class="action-bar-title">
+            <Label text="MTG Life Counter" class="font-weight-bold"></Label>
+        </StackLayout>
+    </ActionBar>
+  </Page.actionBar>
+  <StackLayout>
+    <Button class="btn btn-primary" text="Return to Game" (tap)="searchBarVisible = !searchBarVisible"></Button>
+    <Button class="btn btn-primary" text="Create Game" [nsRouterLink]="['/GameCreation']"></Button>
+    <Button class="btn btn-primary" text="Search Game" (tap)="searchBarVisible = !searchBarVisible"></Button>
+    <DockLayout *ngIf="searchBarVisible" stretchLastChild="false">
+        <TextField [(ngModel)]="query" dock="left" hint="Game Id" class="input input-primary" style="color:white"></TextField>
+        <Button dock="right" class="btn btn-primary" text="Search" (tap)="search()"></Button>
+    </DockLayout>
+    <StackLayout *ngFor="let game of games" dock="bottom">
+        <Label class="h1" *ngIf="searchBarVisible" [text]="game.gameId"></Label>
+    </StackLayout>
+  </StackLayout>
+</Page> 
+       
