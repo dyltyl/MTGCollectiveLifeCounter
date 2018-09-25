@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "Frontend-MTG"
+  "defaultProject": "Frontend-MTG",
+  "cli": {
+    "defaultCollection": "@nativescript/schematics"
+  }
 }
