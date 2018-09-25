@@ -10,7 +10,8 @@
     <Button class="btn btn-primary" text="Return to Game" (tap)="searchBarVisible = !searchBarVisible"></Button>
     <Button class="btn btn-primary" text="Create Game" [nsRouterLink]="['/GameCreation']"></Button>
     <Button class="btn btn-primary" text="Search Game" (tap)="searchBarVisible = !searchBarVisible"></Button>
-    <DockLayout *ngIf="searchBarVisible" stretchLastChild="false">
+    <Label *ngIf="searchBarVisible" class="body" text="Game Id"></Label>
+    <DockLayout *ngIf="searchBarVisible" stretchLastChild="false">    
         <TextField [(ngModel)]="query" dock="left" hint="Game Id" class="input input-primary" style="color:white"></TextField>
         <Button dock="right" class="btn btn-primary" text="Search" (tap)="search()"></Button>
     </DockLayout>

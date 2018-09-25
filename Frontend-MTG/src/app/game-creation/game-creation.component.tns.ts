@@ -32,7 +32,6 @@ export class GameCreationComponent implements OnInit {
   constructor(public gameService: GameService, public dataService: DataService, private router: Router) { }
 
   ngOnInit() {
-      console.log('game creation');
   }
   /**
    * Creates the game and then navigates to PlayerCreation
