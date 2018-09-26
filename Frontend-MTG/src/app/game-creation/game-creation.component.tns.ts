@@ -52,7 +52,13 @@ export class GameCreationComponent implements OnInit {
       result => {
         this.router.navigate(['PlayerCreation']);
       },
-      err => { throw err; }
+      err => {
+        if (err.status === 200) { // Problem with the NativeScript httpClient with returning a string
+          this.router.navigate(['PlayerCreation']);
+        } else {
+          throw err;
+        }
+      }
     );
   }
 

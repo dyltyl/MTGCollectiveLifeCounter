@@ -40,8 +40,7 @@ import { DataService } from './data.service';
     NativeScriptFormsModule
   ],
   providers: [DataService], // Says to use AppComponent to handle errors in the app
-  bootstrap: [AppComponent],
-  schemas: [NO_ERRORS_SCHEMA]
+  bootstrap: [AppComponent]
 })
 /*
 Pass your application module to the bootstrapModule function located in main.ts to start your app
