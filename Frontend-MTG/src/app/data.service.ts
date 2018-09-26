@@ -15,7 +15,7 @@ export class DataService {
    * @param isHost True if the current player is the host
    */
   public setIsHost(isHost: boolean) {
-    if (localStorage !== undefined) {
+    if (!this.isMobile()) {
       localStorage.setItem('isHost', JSON.stringify(isHost));
     } else {
       this.host = isHost;
@@ -25,7 +25,7 @@ export class DataService {
    * Retrieves the isHost value from local storage
    */
   public isHost(): boolean {
-    if (localStorage !== undefined) {
+    if (!this.isMobile()) {
       return localStorage.getItem('isHost') === 'true';
     } else {
       return this.host;
@@ -36,7 +36,7 @@ export class DataService {
    * @param game The current game
    */
   public setGame(game: Game) {
-    if (typeof localStorage !== 'undefined') {
+    if (!this.isMobile()) {
       localStorage.setItem('game', JSON.stringify(game));
     } else {
       this.myGame = game;
@@ -46,7 +46,7 @@ export class DataService {
    * Retrieves the current game from local storage
    */
   public getGame(): Game {
-    if (localStorage !== undefined) {
+    if (!this.isMobile()) {
       return JSON.parse(localStorage.getItem('game'));
     } else {
       return this.myGame;
@@ -57,7 +57,7 @@ export class DataService {
    * @param player The current player
    */
   public setCurrentPlayer(player: Player) {
-    if (localStorage !== undefined) {
+    if (!this.isMobile()) {
       localStorage.setItem('currentPlayer', JSON.stringify(player));
     } else {
       this.myPlayer = player;
@@ -67,10 +67,17 @@ export class DataService {
    * Retrieves the current player from local storage
    */
   public getCurrentPlayer(): Player {
-    if (localStorage !== undefined) {
+    if (!this.isMobile()) {
       return JSON.parse(localStorage.getItem('currentPlayer'));
     } else {
       return this.myPlayer;
     }
+  }
+  /**
+   * Checks if currently running on mobile
+   * @returns True if the current platform is a mobile app
+   */
+  public isMobile(): boolean {
+    return typeof localStorage === 'undefined';
   }
 }
