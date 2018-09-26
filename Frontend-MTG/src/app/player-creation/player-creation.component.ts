@@ -73,7 +73,13 @@ export class PlayerCreationComponent implements OnInit {
       result => {
         this.playerService.putInGame(player, game, commanders);
       },
-      err => { throw err; }
+      err => {
+        if (err.status === 200) { // Problem with the NativeScript httpClient with returning a string
+          this.playerService.putInGame(player, game, commanders);
+        } else {
+          throw err;
+        }
+      }
     );
   }
 }
