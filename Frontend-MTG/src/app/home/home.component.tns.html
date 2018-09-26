@@ -16,8 +16,12 @@
         <Button dock="right" class="btn btn-primary" text="Search" (tap)="search()"></Button>
     </DockLayout>
     <StackLayout *ngFor="let game of games" dock="bottom">
-        <Label class="h1" *ngIf="searchBarVisible" [text]="game.gameId"></Label>
+        <DockLayout *ngIf="searchBarVisible">
+            <Label class="h2" [text]="game.gameId" dock="left"></Label>
+            <Label class="h2" [text]="game.host" dock="left"></Label>
+            <Label class="h2" text="{{game.currentSize}}/{{game.maxSize}}" dock="left"></Label>
+        </DockLayout>
+        <Button text="JoinGame" class="btn btn-primary" (tap)="joinGame(game.gameId)"></Button>
     </StackLayout>
   </StackLayout>
 </Page> 
-       
