@@ -289,20 +289,45 @@ export class PlayerService {
           this.gameService.updateHost(game).subscribe(
             res => {
             },
-            err => { throw err; }
+            err => {
+              if (err.status !== 200) { // Problem with the NativeScript httpClient with returning a string
+                throw err;
+              }
+            }
           );
         }
         this.router.navigate(['WaitingLobby']);
       },
       err => {
-        // Delete player if join fails
-        this.deletePlayer(player.email, player.password).subscribe(
-          result2 => {
-            console.log('Deleted: ' + player.email);
-          },
-          err2 => { throw err2; }
-        );
-        throw err;
+        if (err.status !== 200) {
+          // Delete player if join fails
+          this.deletePlayer(player.email, player.password).subscribe(
+            result2 => {
+              console.log('Deleted: ' + player.email);
+            },
+            err2 => {
+              if (err.status !== 200) { // Problem with the NativeScript httpClient with returning a string
+                throw err;
+              }
+            }
+          );
+          throw err;
+        } else {
+          if (this.dataService.isHost()) {
+            game.host = player.email;
+            this.dataService.setGame(game);
+            this.gameService.updateHost(game).subscribe(
+              res => {
+              },
+              err2 => {
+                if (err2.status !== 200) { // Problem with the NativeScript httpClient with returning a string
+                  throw err2;
+                }
+              }
+            );
+          }
+          this.router.navigate(['WaitingLobby']);
+        }
       }
     );
   }
