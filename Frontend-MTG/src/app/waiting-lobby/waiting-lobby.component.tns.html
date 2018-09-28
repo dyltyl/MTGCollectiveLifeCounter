@@ -1,13 +1,26 @@
-<Page class="page">
+<ScrollView class="page">
     <Page.actionBar>
       <ActionBar class="action-bar">
           <StackLayout class="action-bar-title">
-              <Label text="Waiting Lobby" class="font-weight-bold"></Label>
+              <Label text="Welcome to {{game.gameId}}" class="font-weight-bold"></Label>
           </StackLayout>
       </ActionBar>
     </Page.actionBar>
-    <StackLayout>      
-        
+    <StackLayout>
+        <StackLayout *ngFor="let player of players">      
+            <DockLayout *ngIf="player !== null">
+                <Label [text]="player.name" class="h2" dock="left"></Label>
+                <Button text="Kick" class="btn btn-primary"></Button>
+            </DockLayout>
+            <DockLayout *ngIf="player === null">
+                <Label text="...Waiting for player..." class="h2" dock="left"></Label>
+                <Button text="Delete" class="btn btn-primary"></Button>
+            </DockLayout>
+        </StackLayout>
+        <StackLayout *ngIf="currentPlayer.email === game.host">
+            <Button class="btn btn-primary" text="AddSlot"></Button>
+            <Button class="btn btn-primary" text="StartGame"></Button>
+        </StackLayout>
     </StackLayout>
-</Page> 
+</ScrollView> 
      
