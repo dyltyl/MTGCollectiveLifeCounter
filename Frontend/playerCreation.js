@@ -1,6 +1,6 @@
-const jGURL = 'https://magic-database.herokuapp.com/joinGame';
-const pCURL = 'https://magic-database.herokuapp.com/player';
-
+/**
+ * Toggles the Partner commander field
+ */
 function togglePartner(){
     var root = document.getElementById('root'); //Root located within HTML body
     if(root.childElementCount <1){
@@ -16,17 +16,6 @@ function togglePartner(){
     }
 }
 
-function insertLink(){
-    if (document.getElementById('joinLink').childElementCount == 0){
-        var entrance = document.createElement('button');
-        var entranceLink = document.createElement('a');
-        entranceLink.setAttribute('href','waitingLobby.html');
-        entranceLink.appendChild(document.createTextNode('Enter Match'));
-        entrance.appendChild(entranceLink);
-        cP.appendChild(entrance);
-        document.getElementById('cP').style.display = 'none';
-    }
-}
 /**
  * create the localStorage for a player
  */
@@ -41,17 +30,18 @@ function createLocalLog(){
         localStorage.setItem('partnerName', document.getElementById('partnerName').value);
     }
 }
-function checkLocalLog(){
-    console.log('Player: ' + localStorage.getItem('playerName') + ' locally stored.');
-    console.log('Player Email: ' + localStorage.getItem('playerEmail') + ' locally stored.');
-    console.log('Commander" ' + localStorage.getItem('commanderName') + ' locally stored.');
-    console.log('Partner_Name: ' + localStorage.getItem('partnerName') + ' stored locally.');
-    console.log('Base_Life_Total: ' + localStorage.getItem('baseLife') + ' stored locally');
-    console.log('Game_Name: ' + localStorage.getItem('gameName') + ' stored locally.');
-}
-
-
+/**
+ * Creates the Player in the database and joins the game stored locally
+ */
 function createPlayer(){
+    if(!document.getElementById('playerName').value) {
+        alert('Player name must be set');
+        return;
+    }
+    if(!document.getElementById('playerEmail').value) {
+        alert('Player email must be set');
+        return;
+    }
     createLocalLog();
     const playerObject ={
         name : document.getElementById('playerName').value,
@@ -66,41 +56,101 @@ function createPlayer(){
             "content-type": "application/json; charset=UTF-8"
         }
     };
-    fetch(pCURL, requestBody)
-    .then(function(response){
-        console.log(response.text())
-    })
-    .then(res=>{console.log(res)})
-    .catch(error=>console.log(error))
-}
-
-function joinGame(){
-    var cmdrArr;
-    if(root.childElementCount <1){
-        cmdrArr = [document.getElementById('commanderName').value];
-    }else{
-        cmdrArr = [document.getElementById('commanderName').value,document.getElementById('partnerName').value ]
-    }
-    const requestBody={
-        method: 'POST',
-        body: JSON.stringify(cmdrArr),
-        headers:{
-            "content-type": "application/json; charset=UTF-8",
-            gameId: localStorage.getItem('gameName'),
-            gamePassword: localStorage.getItem('gamePass'),
-            email: localStorage.getItem('playerEmail'),
-            password: localStorage.getItem('playerPass')
+    fetch(getUrl('player'), requestBody)
+    .then(res=>{
+        if(res.status == 200) {
+            joinGame();
         }
-    };
-
-    console.log('joinGame Called');
-    console.log(JSON.stringify(requestBody));
-    fetch(jGURL, requestBody)
-    .then(function(response){
-        console.log(response.text())
+        else {
+            res.text().then(error => alert(error));
+        }
     })
-    .then(res=>{console.log(res)})
-    .catch(error=>console.log(error))
+    .catch(error=>alert(error))
+}
+/**
+ * Sends a request to have the Player join the Game stored locally
+ */
+function joinGame(){
+    console.log('join game called');
+    let failed = false;
+    if(root.childElementCount > 0 && document.getElementById('partnerName').value === document.getElementById('commanderName').value) {
+        alert('Dylan stop making players with partner commanders with the same name');
+        failed = true;
+    }
+    else {
+        var cmdrArr;
+        if(root.childElementCount <1){
+            cmdrArr = [document.getElementById('commanderName').value];
+        }
+        else{
+            cmdrArr = [document.getElementById('commanderName').value, document.getElementById('partnerName').value ]
+        }
+        const requestBody={
+            method: 'POST',
+            body: JSON.stringify(cmdrArr),
+            headers:{
+                "content-type": "application/json; charset=UTF-8",
+                gameId: localStorage.getItem('gameName'),
+                gamePassword: localStorage.getItem('gamePass'),
+                email: localStorage.getItem('playerEmail'),
+                password: localStorage.getItem('playerPass')
+            }
+        };
+
+        console.log('joinGame Called');
+        console.log(JSON.stringify(requestBody));
+        fetch(getUrl('joinGame'), requestBody)
+        .then(function(response){
+            if(response.status === 200) {
+                try {
+                    setHost(localStorage.getItem('playerEmail'))
+                    .then(function() {
+                        window.location.href = 'waitingLobby.html';
+                    });
+                }
+                catch(err) {
+                    console.log(err.message);
+                    if(err.message === 'You are not the host') {
+                        window.location.href = 'waitingLobby.html';
+                    }
+                    else {
+                        alert(err.message);
+                    }
+                }
+            }
+            else {
+                res.text().then(error => {
+                    alert(error);
+                    failed = true;
+                });
+            }
+        })
+        .catch(error=>{
+            alert(error);
+            failed = true;
+        })
+    }
+    if(failed) {
+        const requestBody={
+            method: 'DELETE',
+            headers:{
+                "content-type": "application/json; charset=UTF-8",
+                gameId: localStorage.getItem('gameName'),
+                email: localStorage.getItem('playerEmail'),
+            }
+        };
+        fetch(getUrl('player'), requestBody)
+        .then(res => {
+            if(res.status === 200) {
+                console.log('deleted player');
+            }
+            else {
+                res.text().then(error => {
+                    alert(error);
+                });
+            }
+        })
+    }
 }
 
 function loadLocal_Storage(){
@@ -112,8 +162,3 @@ function loadLocal_Storage(){
         }
 }
 
-function pcWrapped(){
-    insertLink();
-    createPlayer();
-    joinGame();
-}

@@ -19,13 +19,26 @@ h1{
     padding:1%
 }
 
-.playerSlot{
-    text-align: center;
+div.playerSlot{
+    display:flex;
+    align-items: center;
+    justify-content: center;
     color:rgb(220,220,220);
     border:rgb(220,220,220) solid;
     padding: 1%;
 }
-
+div.waitingSlot{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color:rgb(220,220,220);
+    border:rgb(220,220,220) solid;
+    padding: 1%;
+}
+button.deletePlayer{
+    background-image: url('http://www.clker.com/cliparts/Z/u/b/a/j/i/big-red-x-md.png');
+    background-size: 100%;
+}
 .column {
     text-align: center;
     flex: 50%;
@@ -101,7 +114,10 @@ section{
     color:rgb(220,220,220);
 }
 a{
-    color: rgb(147, 171, 202);
+    text-decoration: none;
+    display:block;
+    visibility: visible;
+    color:rgb(220,220,220);
     -webkit-transition-duration: 0.7s;
     transition-duration: 0.7s;
 }
@@ -114,7 +130,7 @@ button{
     background-color: rgb(100, 100, 100, 0.3);
     filter: alpha(opacity=30);
     padding: 1%;
-    border:rgb(220,220,220) solid;
+    /* border:rgb(220,220,220) solid; */
     border-radius: 5%;
     -webkit-transition-duration: 0.7s;
     transition-duration: 0.7s;
@@ -139,3 +155,55 @@ button:hover{
     padding:0.5em 0;
   }
 
+.divButton{
+    display:inline-block;
+    color:rgb(220,220,220);
+    border:5px solid #CCC;
+    background:rgb(100, 100, 100, 0.3);;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+    cursor:pointer;
+    vertical-align:middle;
+    max-width: 100px;
+    padding: 5px;
+    text-align: center;
+    -webkit-transition-duration: 0.7s;
+    transition-duration: 0.7s;
+}
+.divButton:hover{
+    color:rgb(220,220,220);
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
+    background-color: rgb(133, 98, 98);
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 100%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    font-size: 10px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+button.kickButton{
+    display:inline-block;
+    text-align: right;
+    align-self: center;
+    width:1px;
+    height:1px;
+    background-image: url('https://pastorhobbins.files.wordpress.com/2011/07/kickedout1.gif');
+    background-size: 100%;
+}

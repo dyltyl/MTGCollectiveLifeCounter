@@ -371,7 +371,6 @@ public class PlayerController {
             String query = "INSERT INTO commanders (game, player, commander) VALUES (?, ?, ?);";
             Connection connection = null;
             PreparedStatement statement = null;
-
             try {
                 connection = Application.getDataSource().getConnection();
                 statement = connection.prepareStatement(query);

@@ -5,8 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>playerCreation</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
-        <script src="playerCreation.js"></script> 
+        <script type="application/x-javascript" src="scripts.js"></script> <!--this script file is to be shared among all pages-->
+        <script type="application/x-javascript" src="playerCreation.js"></script> <!--this script file is unique to this page-->
+        
 </head>
+<ul class = "navBar">
+        <li><a href='index.html'>Home_Page</a></li>
+        <li><a href='gameCreation.html'>GCP</a></li>
+        <li><a href='playerCreation.html'>PCP</a></li>
+        <li><a href='waitingLobby.html'>WL</a></li>
+        <li><a href='gameState.html'>GS</a></li>
+        <li><div class='divButton' onclick="checkLocalLog()">checkLocalLog</div></li>
+        <li style="float:right"><div style='padding:13px'>Developer_Bar</div></li>
+    </ul>
 <h1>
    User Details
     <br/>
@@ -22,7 +33,8 @@
     <input type = 'text' id = 'playerPass'>
     <input type= 'checkbox' id ='partnerBool' name = 'partner' value ='false' onClick = 'togglePartner()'> Partner?
     <div id='root'></div>
-    <button id = 'cP' onclick="pcWrapped();">Create Player</button>
+    <div id='cP' class = 'divButton' onclick='createPlayer()'>Create Yourself!</div>
+
     <div id='joinLink'></div>
     <!-- <button><a href = 'waitingLobby.html'>Enter Match</a></button> -->
     <!-- <button onClick = 'checkLocalLog()'>checkLocalLog</button> -->

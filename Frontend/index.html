@@ -5,15 +5,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Home</title>
         <link rel="stylesheet" type="text/css" href="styles.css" media="screen"/>
-        <script src="homeScript.js"></script> 
+        <script src="index.js"></script>
+        <script src="scripts.js"></script> <!--this script file is to be shared among all pages-->
+
 </head>
-<h1>
-    Welcome!
-    <br/>
-    <button id="returnGame" onclick='addInput(returnGame)'>Return to Game</button>
-    <a href = 'gameCreation.html'><button id="createGame">Create a Game</button></a>
-    <button id="searchGame" onclick ='addInput(this)'>Search for a Game</button>
-</h1>
-<body style= 'text-align: center;color:white'>
-    <div id='root'></div>
+<body>
+    <div style= 'text-align: center;color:white'>
+        <ul class = "navBar">
+            <li><a href='index.html'>Home_Page</a></li>
+            <li><a href='gameCreation.html'>GCP</a></li>
+            <li><a href='playerCreation.html'>PCP</a></li>
+            <li><a href='waitingLobby.html'>WL</a></li>
+            <li><a href='gameState.html'>GS</a></li>
+            <li><div class='divButton' onclick="checkLocalLog()">checkLocalLog</div></li>
+            <li style="float:right"><div style='padding:13px'>Developer_Bar</div></li>
+        </ul>
+        <h1>
+            Welcome!
+            <br/>
+            <div id='returnGame' class = 'divButton' onclick='addInput(returnGame); localStorage.setItem("hostToggle","false")'>Return to Game</div>
+            <div id='createGame' class ='divButton' onclick='localStorage.setItem("hostToggle","true")'><a href ='gameCreation.html'>Create Game</a></div>
+            <div id='searchGame' class = 'divButton' onclick='addInput(this); localStorage.setItem("hostToggle","false")'>Search Game</div>
+        </h1>
+    
+        <div id='root'></div>
+        <div id='games'></div>
+    </div>
 </body>
