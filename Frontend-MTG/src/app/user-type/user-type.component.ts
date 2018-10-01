@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class UserTypeComponent implements OnInit {
 
-  constructor(private playerService: PlayerService, private router: Router) { }
+  constructor() { }
 
   ngOnInit() {
   }
