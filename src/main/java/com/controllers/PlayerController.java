@@ -77,7 +77,11 @@ public class PlayerController {
                 statement.setString(2, name);
                 String[][] result = Application.query(statement);
                 if (result.length > 0) {
-                    response = new ResponseEntity<>(email, new HttpHeaders(), HttpStatus.OK);
+                    Player newPlayer = new Player();
+                    newPlayer.setEmail(email);
+                    newPlayer.setName(name);
+                    newPlayer.setPassword("");
+                    response = new ResponseEntity<>(newPlayer, new HttpHeaders(), HttpStatus.OK);
                 }
                 done = true;
             } catch (SQLException e) {
