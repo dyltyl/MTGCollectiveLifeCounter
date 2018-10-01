@@ -1,0 +1,16 @@
+<h1>Game Creation</h1>
+<div style= 'text-align: center;color:white'>
+    <div>
+            Number of players
+        <input [(ngModel)]="gameSize" type="number" id="gameSize" name="gS" max="8" min="2"> <!-- Min and Max for gameSize here -->
+        <input [(ngModel)]="baseLife" type='number' id='baseLife' name='lifeTotal' min="1">
+            LifeTotal
+        <br/>
+            Game Name
+        <input [(ngModel)]="gameName" type='text' id='gameName' name = 'gN' placeholder ='Name me for Later!'>
+        <input [(ngModel)]="gamePassword" type='text' id='gamePass' name = 'gP' placeholder ='Hold your secrets Here'>
+            Password
+        <br/>
+    </div>
+    <div id='cG' class = 'divButton' (click)='createGame()'>CreateGame</div>
+  </div>

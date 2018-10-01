@@ -1,32 +1,7 @@
-/target/
-!.mvn/wrapper/maven-wrapper.jar
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-*.cache
-*.class
-
-
+# NativeScriptnode_modules/
+platforms/
+hooks/
+src/**/*.js
 # compiled output
 /dist
 /tmp
@@ -51,6 +26,10 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# e2e
+/e2e/*.js
+/e2e/*.map
+
 # misc
 /.sass-cache
 /connect.lock
@@ -64,8 +43,3 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
-
-/bin
-/.bin
-/node_modules

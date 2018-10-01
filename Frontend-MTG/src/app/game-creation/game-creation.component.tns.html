@@ -1,0 +1,26 @@
+<Page class="page">
+    <Page.actionBar>
+      <ActionBar class="action-bar">
+          <StackLayout class="action-bar-title">
+              <Label text="Game Creation" class="font-weight-bold"></Label>
+          </StackLayout>
+      </ActionBar>
+    </Page.actionBar>
+    <StackLayout>
+        
+        <Label text="Game Size" class="body"></Label>
+        <TextField class="input input-primary" [(ngModel)]="gameSize" keyboardType="number"></TextField>
+        
+        <Label text="Starting Life" class="body"></Label>
+        <TextField class="input input-primary" [(ngModel)]="baseLife" keyboardType="number"></TextField>
+        
+        <Label text="Game Name" class="body"></Label>
+        <TextField class="input input-primary" [(ngModel)]="gameName" hint="Name me!"></TextField>
+        
+        <Label text="Game Password" class="body"></Label>
+        <TextField class="input input-primary" [(ngModel)]="gamePassword" hint="Keep it secret..."></TextField>
+
+        <Button class="btn btn-primary" text="Create Game" (tap)="createGame()"></Button>
+    </StackLayout>
+</Page> 
+         
