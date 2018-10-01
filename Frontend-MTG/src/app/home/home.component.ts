@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
         if (result === true) {
           const game = new Game(gameId, gamePassword, -1, null, -1, false);
           this.dataService.setGame(game);
-          this.router.navigate(['/GuestLogin']);
+          this.router.navigate(['/UserType']);
         } else {
           throw new Error('Password incorrect');
         }
