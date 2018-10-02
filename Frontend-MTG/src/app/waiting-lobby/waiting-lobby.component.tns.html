@@ -8,14 +8,14 @@
     </Page.actionBar>
     <StackLayout>
         <StackLayout *ngFor="let player of players">      
-            <DockLayout *ngIf="player !== null">
-                <Label [text]="player.name" class="h2" dock="left"></Label>
-                <Button text="Kick" class="btn btn-primary"></Button>
-            </DockLayout>
-            <DockLayout *ngIf="player === null">
-                <Label text="...Waiting for player..." class="h2" dock="left"></Label>
-                <Button text="Delete" class="btn btn-primary"></Button>
-            </DockLayout>
+            <FlexboxLayout *ngIf="player !== null" justifyContent="center">
+                <Label [text]="player.name" class="h2" width="200" style="text-align: center;"></Label>
+                <Button *ngIf="currentPlayer.email === game.host" text="Kick" class="btn btn-primary" width="80"></Button>
+            </FlexboxLayout>
+            <FlexboxLayout *ngIf="player === null && currentPlayer.email === game.host" justifyContent="center">
+                <Label text="...Waiting for player..." class="h3" width="200"></Label>
+                <Button text="Delete" class="btn btn-primary" width="80"></Button>
+            </FlexboxLayout>
         </StackLayout>
         <StackLayout *ngIf="currentPlayer.email === game.host">
             <Button class="btn btn-primary" text="AddSlot"></Button>
