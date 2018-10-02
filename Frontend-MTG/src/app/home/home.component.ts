@@ -95,7 +95,7 @@ export class HomeComponent implements OnInit {
     const game = new Game('Uh', '', 40, 'TyLer', 8, false);
     this.dataService.setGame(game);
     this.dataService.setIsHost(false);
-    this.router.navigate(['WaitingLobby']);
+    this.router.navigate(['GameState']);
   }
 
 }
