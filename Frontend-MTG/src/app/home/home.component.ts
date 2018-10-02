@@ -3,6 +3,7 @@ import { GameService } from '../game.service';
 import { Game } from '../game';
 import { DataService } from '../data.service';
 import { Router } from '@angular/router';
+import { Player } from '../player';
 
 @Component({
   selector: 'app-home',
@@ -87,6 +88,14 @@ export class HomeComponent implements OnInit {
       },
       err => { throw err; }
     );
+  }
+  shortcut() {
+    const player = new Player('TEST', 'TEST', '', 40);
+    this.dataService.setCurrentPlayer(player);
+    const game = new Game('Uh', '', 40, 'TyLer', 8, false);
+    this.dataService.setGame(game);
+    this.dataService.setIsHost(false);
+    this.router.navigate(['WaitingLobby']);
   }
 
 }
