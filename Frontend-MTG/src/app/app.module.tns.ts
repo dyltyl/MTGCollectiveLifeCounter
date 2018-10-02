@@ -12,11 +12,6 @@ import { UserTypeComponent } from './user-type/user-type.component';
 import { LoginComponent } from './login/login.component';
 import { GuestCreationComponent } from './guest-creation/guest-creation.component';
 
-
-// Uncomment and add to NgModule imports if you need to use two-way binding
-// import { NativeScriptFormsModule } from 'nativescript-angular/forms';
-
-// Uncomment and add to NgModule imports  if you need to use the HTTP wrapper
 import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { DataService } from './data.service';
@@ -39,7 +34,7 @@ import { DataService } from './data.service';
     NativeScriptHttpClientModule,
     NativeScriptFormsModule
   ],
-  providers: [DataService], // Says to use AppComponent to handle errors in the app
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 /*
