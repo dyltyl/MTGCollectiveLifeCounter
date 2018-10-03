@@ -3,6 +3,7 @@ import { GameService } from '../game.service';
 import { Game } from '../game';
 import { DataService } from '../data.service';
 import { Router } from '@angular/router';
+import { Player } from '../player';
 
 @Component({
   selector: 'app-home',
@@ -63,14 +64,12 @@ export class HomeComponent implements OnInit {
    * @param gameId The id of the Game to join
    */
   joinGame(gameId: string) {
-    console.log('joining: ' + gameId);
     const pass: any = prompt('Please enter the password for the game');
     // On mobile, prompt returns a promise.
     // By not calling then it goes straight to checking the credentials before the user provides input
     if (this.dataService.isMobile()) { // TODO: Find a better workaround?
-      console.log(pass);
       pass.then(password => {
-      this.verifyLogin(gameId, password);
+        this.verifyLogin(gameId, password.text);
       });
     } else { // Web
       this.verifyLogin(gameId, pass);
@@ -79,17 +78,24 @@ export class HomeComponent implements OnInit {
   private verifyLogin(gameId: string, gamePassword: string) {
     this.gameService.login(gameId, gamePassword).subscribe(
       result => {
-        console.log(result);
         if (result === true) {
           const game = new Game(gameId, gamePassword, -1, null, -1, false);
           this.dataService.setGame(game);
-          this.router.navigate(['PlayerCreation']);
+          this.router.navigate(['/UserType']);
         } else {
           throw new Error('Password incorrect');
         }
       },
       err => { throw err; }
     );
+  }
+  shortcut() {
+    const player = new Player('TEST', 'TEST', '', 40);
+    this.dataService.setCurrentPlayer(player);
+    const game = new Game('Uh', '', 40, 'TyLer', 8, false);
+    this.dataService.setGame(game);
+    this.dataService.setIsHost(false);
+    this.router.navigate(['GameState']);
   }
 
 }

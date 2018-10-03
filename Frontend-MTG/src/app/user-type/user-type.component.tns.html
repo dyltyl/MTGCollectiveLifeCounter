@@ -1,0 +1,12 @@
+<StackLayout class="page">
+    <Page.actionBar>
+        <ActionBar class="action-bar">
+            <StackLayout class="action-bar-title">
+                <Label text="User Type" class="font-weight-bold"></Label>
+            </StackLayout>
+        </ActionBar>
+    </Page.actionBar>
+    <Button class="btn btn-primary" text="Login" [nsRouterLink]="['/Login']"></Button>
+    <Button class="btn btn-primary" text="Create Account" [nsRouterLink]="['/PlayerCreation']"></Button>
+    <Button class="btn btn-primary" text="Continue as Guest" [nsRouterLink]="['/GuestLogin']"></Button>
+</StackLayout>

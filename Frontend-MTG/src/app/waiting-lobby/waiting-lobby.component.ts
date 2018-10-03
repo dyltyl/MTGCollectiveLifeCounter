@@ -33,6 +33,7 @@ export class WaitingLobbyComponent implements OnInit {
      * Called when the page is initialized, calls the refresh function
      */
   ngOnInit() {
+    console.log(this.currentPlayer);
     this.game = this.dataService.getGame();
     this.refresh();
   }

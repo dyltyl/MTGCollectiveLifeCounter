@@ -36,7 +36,8 @@ export class GuestCreationComponent implements OnInit {
   createGuest() {
     this.playerService.createGuest(this.playerName).subscribe(
       result => {
-        const player = new Player(this.playerName, result, '', -1);
+        const player = new Player(this.playerName, result.email, '', -1);
+        this.dataService.setCurrentPlayer(player);
         const game = this.dataService.getGame();
         const commanders: string[] = [];
         if (this.commanderAName.trim().length > 0) {

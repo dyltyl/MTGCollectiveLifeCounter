@@ -115,14 +115,13 @@ export class PlayerService {
    * Creates a guest user in the database, and returns the email
    * @param name The name of the guest
    */
-  createGuest(name: string): Observable<string> {
+  createGuest(name: string): Observable<Player> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json; charset=UTF-8'
-      }),
-      responseType: 'text' as 'text'
+      })
     };
-    return this.web.http.post(this.web.baseSite + 'player/' + name, null, httpOptions);
+    return this.web.http.post<Player>(this.web.baseSite + 'player/' + name, null, httpOptions);
   }
   /**
    * Updates the player's email/password in the database
