@@ -67,6 +67,9 @@ export class GameStateComponent implements OnInit {
       },
       err => { throw err; }
     );
+    setTimeout(_ => {
+      this.refresh();
+    }, 5000);
   }
   /**
    * Sets the current player and the players array
