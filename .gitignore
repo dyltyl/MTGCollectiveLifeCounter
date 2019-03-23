@@ -69,3 +69,7 @@ Thumbs.db
 /bin
 /.bin
 /node_modules
+*.dll
+Backend/.vs
+Backend/MTGCollectiveLifeCounterBackend/bin
+Backend/MTGCollectiveLifeCounterBackend/obj
