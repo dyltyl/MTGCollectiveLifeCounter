@@ -1,0 +1,14 @@
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\bin\Debug\netcoreapp2.1\Backend.deps.json
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\bin\Debug\netcoreapp2.1\Backend.runtimeconfig.json
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\bin\Debug\netcoreapp2.1\Backend.runtimeconfig.dev.json
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\bin\Debug\netcoreapp2.1\Backend.dll
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\bin\Debug\netcoreapp2.1\Backend.pdb
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.csprojAssemblyReference.cache
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.csproj.CoreCompileInputs.cache
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.RazorAssemblyInfo.cache
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.RazorAssemblyInfo.cs
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.AssemblyInfoInputs.cache
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.AssemblyInfo.cs
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.RazorTargetAssemblyInfo.cache
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.dll
+E:\Files\ComputerScience\Github\MTGCollectiveLifeCounter\Backend\MTGCollectiveLifeCounterBackend\obj\Debug\netcoreapp2.1\Backend.pdb
