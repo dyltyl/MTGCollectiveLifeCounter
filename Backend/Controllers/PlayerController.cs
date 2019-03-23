@@ -13,8 +13,8 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
     public class PlayerController : ControllerBase {
         [HttpGet]
         public ActionResult<Player> Get() {
-            string dbUrl = Environment.GetEnvironmentVariable("JDBC_DATABASE_URL");
-            string dbUsername = Environment.GetEnvironmentVariable("JDBC_DATABASE_USERNAME");
+            string dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            string dbUsername = Environment.GetEnvironmentVariable("DATABASE_USERNAME");
             Player player = new Player {
                 Name = dbUrl,
                 Username = dbUsername
