@@ -21,8 +21,10 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
             Program.Connection.Open();
             using (var cmd = new NpgsqlCommand(sql, Program.Connection)) {
                 using (var reader = cmd.ExecuteReader()) {
-                    reader.Read();
-                    result = reader.GetString(0);
+                    Console.WriteLine(reader.FieldCount);
+                    while(reader.Read()) {
+                        result += reader.GetString(0) + "\n";
+                    }
                 }
             }
             return result;
