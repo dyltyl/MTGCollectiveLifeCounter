@@ -27,6 +27,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                     }
                 }
             }
+            Program.Connection.Close();
             return result;
         }
     }
