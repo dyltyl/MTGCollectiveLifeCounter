@@ -18,6 +18,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
             // quite complex sql statement
             string sql = "SELECT * FROM information_schema.tables";
             string result = "";
+            Program.Connection.Open();
             using (var cmd = new NpgsqlCommand(sql, Program.Connection)) {
                 using (var reader = cmd.ExecuteReader()) {
                     reader.Read();
