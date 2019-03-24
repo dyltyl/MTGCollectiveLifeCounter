@@ -20,7 +20,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
             Console.WriteLine(test);
             Program.Connection.Open();
             string result = "";
-            using(NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players (email, password, name) VALUES(@email, digest(@password, 'sha512'), @name) RETURNING email")) {
+            using(NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players (email, password, name) VALUES(@email, digest(@password, 'sha512'), @name) RETURNING email", Program.Connection)) {
                 cmd.Parameters.AddWithValue("email", player.Username);
                 cmd.Parameters.AddWithValue("password", player.Password);
                 cmd.Parameters.AddWithValue("name", player.Name);
