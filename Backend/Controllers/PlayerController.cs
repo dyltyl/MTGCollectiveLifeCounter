@@ -30,9 +30,9 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
             da.Fill(ds);
             // since it C# DataSet can handle multiple tables, we will select first
             dt = ds.Tables[0];
-            var x = (string[])dt.Rows[0].ItemArray;            
+            Object[] x = dt.Rows[0].ItemArray;            
             conn.Close();
-            return x[0];
+            return x[0].ToString();
         }
     }
 }
