@@ -7,9 +7,11 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace MTGCollectiveLifeCounterBackend {
     public class Program {
+        public static NpgsqlConnection Connection;
         public static void Main(string[] args) {
             CreateWebHostBuilder(args).Build().Run();
         }
