@@ -50,6 +50,8 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                     }
                 }
                 catch(PostgresException e) {
+                    Console.WriteLine(e.MessageText);
+                    Console.WriteLine(cmd.CommandText);
                     return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
                 }
                 finally {
