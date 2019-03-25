@@ -52,8 +52,8 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                 catch(PostgresException e) {
                     Console.WriteLine(e.MessageText);
                     Console.WriteLine(cmd.Statements[0].SQL);
-                    foreach(var param in cmd.Parameters)
-                        Console.WriteLine(param.ToString());
+                    foreach(NpgsqlParameter param in cmd.Parameters)
+                        Console.WriteLine(param.NpgsqlValue);
                     return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
                 }
                 finally {
