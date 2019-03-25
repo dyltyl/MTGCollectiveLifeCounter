@@ -58,5 +58,26 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
             }
             return result;
         }
+        [HttpDelete]
+        public ActionResult<Player> DeletePlayer([FromHeader] string email, [FromHeader] string password) {
+            Program.Connection.Open();
+            Player result = null;
+            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM players WHERE email = @email AND password = @password RETURNING *", Program.Connection)) {
+                cmd.Parameters.AddWithValue("email", email);
+                cmd.Parameters.AddWithValue("password", password);
+                try {
+                    using (var reader = cmd.ExecuteReader()) {
+                        result = (Player)reader;
+                    }
+                }
+                catch(PostgresException e) {
+                    return StatusCode((int)HttpStatusCode.BadRequest, "Incorrect User Credentials");
+                }
+                finally {
+                    Program.Connection.Close();
+                }
+                return result;
+            }
+        }
     }
 }
