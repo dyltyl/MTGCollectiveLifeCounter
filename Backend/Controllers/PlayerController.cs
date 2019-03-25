@@ -38,7 +38,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
         public ActionResult<Player> UpdatePlayer([FromHeader] string email, [FromHeader] string password, [FromBody] Player player) {
             Program.Connection.Open();
             Player result = null;
-            using(NpgsqlCommand cmd = new NpgsqlCommand("UPDATE players SET email = @newEmail, password = text(digest(@newPassword, 'sha512')), name = @name WHERE email = @email AND password = digest(@password, 'sha512') RETURNING *;", Program.Connection)) {
+            using(NpgsqlCommand cmd = new NpgsqlCommand("UPDATE players SET email = @newEmail, password = text(digest(@newPassword, 'sha512')), name = @name WHERE email = @email AND password = text(digest(@password, 'sha512')) RETURNING *;", Program.Connection)) {
                 cmd.Parameters.AddWithValue("newEmail", player.Email);
                 cmd.Parameters.AddWithValue("newPassword", player.Password);
                 cmd.Parameters.AddWithValue("name", player.Name);
