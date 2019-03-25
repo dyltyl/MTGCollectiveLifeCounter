@@ -50,10 +50,6 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                     }
                 }
                 catch(PostgresException e) {
-                    Console.WriteLine(e.Hint);
-                    Console.WriteLine(cmd.Statements[0].SQL);
-                    foreach(NpgsqlParameter param in cmd.Parameters)
-                        Console.WriteLine(param.NpgsqlValue);
                     return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
                 }
                 finally {
@@ -62,22 +58,5 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
             }
             return result;
         }
-        /*[HttpGet]
-        public ActionResult<string> Get() {
-            // quite complex sql statement
-            string sql = "SELECT table_name FROM information_schema.tables";
-            string result = "";
-            Program.Connection.Open();
-            using (var cmd = new NpgsqlCommand(sql, Program.Connection)) {
-                using (var reader = cmd.ExecuteReader()) {
-                    Console.WriteLine(reader.FieldCount);
-                    while(reader.Read()) {
-                        result += reader.GetString(0) + "\n";
-                    }
-                }
-            }
-            Program.Connection.Close();
-            return result;
-        }*/
     }
 }
