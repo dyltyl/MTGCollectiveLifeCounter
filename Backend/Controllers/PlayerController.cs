@@ -34,6 +34,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
         [HttpPut]
         public ActionResult<Player> UpdatePlayer([FromHeader] string email, [FromHeader] string password, [FromBody] Player player) {
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
                 using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE players SET email = @newEmail, password = text(digest(@newPassword, 'sha512')), name = @name WHERE email = @email AND password = text(digest(@password, 'sha512')) RETURNING *;", connection)) {
                     cmd.Parameters.AddWithValue("newEmail", player.Email);
                     cmd.Parameters.AddWithValue("newPassword", player.Password);
@@ -54,6 +55,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
         [HttpDelete]
         public ActionResult<Player> DeletePlayer([FromHeader] string email, [FromHeader] string password) {
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
                 using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM players WHERE email = @email AND password = text(digest(@password, 'sha512')) RETURNING *", connection)) {
                     cmd.Parameters.AddWithValue("email", email);
                     cmd.Parameters.AddWithValue("password", password);
