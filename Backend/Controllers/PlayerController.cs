@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace MTGCollectiveLifeCounterBackend.Controllers {
@@ -21,26 +22,40 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                 cmd.Parameters.AddWithValue("email", player.Email);
                 cmd.Parameters.AddWithValue("password", player.Password);
                 cmd.Parameters.AddWithValue("name", player.Name);
-                result = (string)cmd.ExecuteScalar();
+                try {
+                    result = (string)cmd.ExecuteScalar();
+                }
+                catch(PostgresException e) {
+                    return StatusCode((int)HttpStatusCode.Conflict, "A user already exists with the username: " + player.Email);
+                } 
+                finally {
+                    Program.Connection.Close();
+                }
             }
-            Program.Connection.Close();
             return result;
         }
         [HttpPut]
         public ActionResult<Player> UpdatePlayer([FromHeader] string email, [FromHeader] string password, [FromBody] Player player) {
             Program.Connection.Open();
-            Player result;
+            Player result = null;
             using(NpgsqlCommand cmd = new NpgsqlCommand("UPDATE players SET email = @newEmail, password = digest(@newPassword, 'sha512'), name = @name WHERE email = @email AND password = digest(@password, 'sha512') RETURNING *;", Program.Connection)) {
                 cmd.Parameters.AddWithValue("newEmail", player.Email);
                 cmd.Parameters.AddWithValue("newPassword", player.Password);
                 cmd.Parameters.AddWithValue("name", player.Name);
                 cmd.Parameters.AddWithValue("email", email);
                 cmd.Parameters.AddWithValue("password", password);
-                using(var reader = cmd.ExecuteReader()) {
-                    result = (Player)reader;
+                try {
+                    using (var reader = cmd.ExecuteReader()) {
+                        result = (Player)reader;
+                    }
+                }
+                catch(PostgresException e) {
+                    return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
+                }
+                finally {
+                    Program.Connection.Close();
                 }
             }
-            Program.Connection.Close();
             return result;
         }
         /*[HttpGet]
