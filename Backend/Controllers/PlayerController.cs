@@ -62,7 +62,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
         public ActionResult<Player> DeletePlayer([FromHeader] string email, [FromHeader] string password) {
             Program.Connection.Open();
             Player result = null;
-            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM players WHERE email = @email AND password = @password RETURNING *", Program.Connection)) {
+            using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM players WHERE email = @email AND password = text(digest(@password, 'sha512')) RETURNING *", Program.Connection)) {
                 cmd.Parameters.AddWithValue("email", email);
                 cmd.Parameters.AddWithValue("password", password);
                 try {
