@@ -29,7 +29,7 @@ namespace MTGCollectiveLifeCounterBackend.Models {
                             result.Email = reader.GetString(i);
                             break;
                         case "password":
-                            result.Password = reader.GetString(i);
+                            result.Password = "*********";
                             break;
                         case "life":
                             result.Life = reader.GetInt32(i);
