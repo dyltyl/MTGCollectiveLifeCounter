@@ -11,7 +11,7 @@ using Npgsql;
 
 namespace MTGCollectiveLifeCounterBackend {
     public class Program {
-        public static NpgsqlConnection Connection;
+        public static string ConnectionString;
         public static void Main(string[] args) {
             CreateWebHostBuilder(args).Build().Run();
         }

@@ -36,8 +36,7 @@ namespace MTGCollectiveLifeCounterBackend {
             string Server = strConn[3];
             string Database = strConn[5];
             string Port = strConn[4];
-            string newConnectionString = "host=" + Server + ";port=" + Port + ";database=" + Database + ";uid=" + User + ";pwd=" + Pass + ";sslmode=Require;Trust Server Certificate=true;Timeout=1000";
-            Program.Connection = new NpgsqlConnection(newConnectionString);
+            Program.ConnectionString = "host=" + Server + ";port=" + Port + ";database=" + Database + ";uid=" + User + ";pwd=" + Pass + ";sslmode=Require;Trust Server Certificate=true;Timeout=1000";
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
