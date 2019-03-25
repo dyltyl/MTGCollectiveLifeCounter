@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace MTGCollectiveLifeCounterBackend.Controllers {
     [EnableCors("*")]
@@ -16,15 +15,30 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
     public class PlayerController : ControllerBase {
         [HttpPost]
         public ActionResult<string> CreatePlayer([FromBody] Player player) {
-            string test = JsonConvert.SerializeObject(player);
-            Console.WriteLine(test);
             Program.Connection.Open();
             string result = "";
             using(NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players (email, password, name) VALUES(@email, digest(@password, 'sha512'), @name) RETURNING email", Program.Connection)) {
-                cmd.Parameters.AddWithValue("email", player.Username);
+                cmd.Parameters.AddWithValue("email", player.Email);
                 cmd.Parameters.AddWithValue("password", player.Password);
                 cmd.Parameters.AddWithValue("name", player.Name);
                 result = (string)cmd.ExecuteScalar();
+            }
+            Program.Connection.Close();
+            return result;
+        }
+        [HttpPut]
+        public ActionResult<Player> UpdatePlayer([FromHeader] string email, [FromHeader] string password, [FromBody] Player player) {
+            Program.Connection.Open();
+            Player result;
+            using(NpgsqlCommand cmd = new NpgsqlCommand("UPDATE players SET email = @newEmail, password = digest(@newPassword, 'sha512'), name = @name WHERE email = @email AND password = digest(@password, 'sha512') RETURNING *;", Program.Connection)) {
+                cmd.Parameters.AddWithValue("newEmail", player.Email);
+                cmd.Parameters.AddWithValue("newPassword", player.Password);
+                cmd.Parameters.AddWithValue("name", player.Name);
+                cmd.Parameters.AddWithValue("email", email);
+                cmd.Parameters.AddWithValue("password", password);
+                using(var reader = cmd.ExecuteReader()) {
+                    result = (Player)reader;
+                }
             }
             Program.Connection.Close();
             return result;
