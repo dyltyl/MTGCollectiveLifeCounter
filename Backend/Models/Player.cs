@@ -48,7 +48,7 @@ namespace MTGCollectiveLifeCounterBackend.Models {
         }
         public static Player[] GetPlayerArr(NpgsqlDataReader reader) {
             List<Player> players = new List<Player>();
-            while(reader.HasRows && reader.IsOnRow) {
+            while(reader.HasRows && (reader.IsOnRow || players.Count == 0)) {
                 Console.WriteLine(reader.FieldCount);
                 Player player = (Player)reader;
                 Console.WriteLine(player.Email);
