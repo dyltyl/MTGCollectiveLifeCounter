@@ -12,7 +12,7 @@ namespace MTGCollectiveLifeCounterBackend.Models {
         public int Damage { get; set; }
 
         public static explicit operator CommanderDamage(NpgsqlDataReader reader) {
-            if (reader.HasRows && reader.Read()) {
+            if (reader.HasRows && reader.IsOnRow) {
                 CommanderDamage result = new CommanderDamage();
                 for (int i = 0; i < reader.FieldCount; i++) {
                     switch (reader.GetName(i)) {
@@ -36,7 +36,7 @@ namespace MTGCollectiveLifeCounterBackend.Models {
         }
         public static CommanderDamage[] GetCommanderDamageArr(NpgsqlDataReader reader) {
             List<CommanderDamage> players = new List<CommanderDamage>();
-            while (reader.HasRows && reader.FieldCount > 0) {
+            while (reader.HasRows && reader.Read()) {
                 players.Add((CommanderDamage)reader);
             }
             return players.ToArray();
