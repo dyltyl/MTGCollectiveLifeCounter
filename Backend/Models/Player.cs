@@ -18,7 +18,7 @@ namespace MTGCollectiveLifeCounterBackend.Models {
         public int Experience { get; set; }
         public Dictionary<string, Dictionary<string, int>> CommanderDamage;
         public static explicit operator Player(NpgsqlDataReader reader) {
-            if(reader.HasRows && reader.Read()) {
+            if(reader.HasRows && reader.IsOnRow) {
                 Player result = new Player();
                 for(int i = 0; i < reader.FieldCount; i++) {
                     switch(reader.GetName(i)) {
@@ -48,7 +48,7 @@ namespace MTGCollectiveLifeCounterBackend.Models {
         }
         public static Player[] GetPlayerArr(NpgsqlDataReader reader) {
             List<Player> players = new List<Player>();
-            while(reader.HasRows && (reader.IsOnRow || players.Count == 0)) {
+            while(reader.HasRows && reader.Read()) {
                 Console.WriteLine(reader.FieldCount);
                 Player player = (Player)reader;
                 Console.WriteLine(player.Email);

@@ -43,6 +43,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                     cmd.Parameters.AddWithValue("password", password);
                     try {
                         using (var reader = cmd.ExecuteReader()) {
+                            reader.Read();
                             return (Player)reader;
                         }
                     }
@@ -61,6 +62,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                     cmd.Parameters.AddWithValue("password", password);
                     try {
                         using (var reader = cmd.ExecuteReader()) {
+                            reader.Read();
                             return (Player)reader;
                         }
                     }
