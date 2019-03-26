@@ -46,5 +46,12 @@ namespace MTGCollectiveLifeCounterBackend.Models {
             }
             throw new ArgumentException("Cannot convert result into Player object");
         }
+        public static Player[] GetPlayerArr(NpgsqlDataReader reader) {
+            List<Player> players = new List<Player>();
+            while(reader.HasRows && reader.FieldCount > 0) {
+                players.Add((Player)reader);
+            }
+            return players.ToArray();
+        }
     }
 }

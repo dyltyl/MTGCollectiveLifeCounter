@@ -70,5 +70,48 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                 }
             }
         }
+        [HttpGet]
+        public ActionResult<Player[]> GetAllPlayers([FromHeader] string gameId) {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
+                Player[] players;
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT players.email, life, poison, experience, name FROM life JOIN players ON players.email = life.email WHERE game = @gameId", connection)) {
+                    cmd.Parameters.AddWithValue("gameId", gameId);
+                    try {
+                        using (var reader = cmd.ExecuteReader()) {
+                            players = Player.GetPlayerArr(reader);
+                        }
+                    }
+                    catch (PostgresException) {
+                        return StatusCode((int)HttpStatusCode.BadRequest, "Game Id not valid");
+                    }
+                }
+                //Getting Commander Damage
+                for (int i = 0; i < players.Length; i++) {
+                    players[i].CommanderDamage = new Dictionary<string, Dictionary<string, int>>();
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT enemy_player, commander, damage FROM commander_damage WHERE game = @gameId AND player = @player", connection)) {
+                        cmd.Parameters.AddWithValue("gameId", gameId);
+                        cmd.Parameters.AddWithValue("player", players[i].Email);
+                        try {
+                            using (var reader = cmd.ExecuteReader()) {
+                                CommanderDamage[] commanderDamage = CommanderDamage.GetCommanderDamageArr(reader);
+                                players[i].CommanderDamage = new Dictionary<string, Dictionary<string, int>>();
+                                foreach(CommanderDamage damage in commanderDamage) {
+                                    if(!players[i].CommanderDamage.ContainsKey(damage.EnemyPlayer)) {
+                                        Dictionary<string, int> dict = new Dictionary<string, int>();
+                                        players[i].CommanderDamage.Add(damage.EnemyPlayer, dict);
+                                    }
+                                    players[i].CommanderDamage[damage.EnemyPlayer].Add(damage.Commander, damage.Damage);
+                                }
+                            }
+                        }
+                        catch (PostgresException) {
+                            return StatusCode((int)HttpStatusCode.BadRequest, "Game Id not valid");
+                        }
+                    }
+                }
+                return players;
+            }
+        }
     }
 }
