@@ -22,7 +22,10 @@ namespace MTGCollectiveLifeCounterBackend {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            ConfigureConnectionString();
+        }
 
+        public static void ConfigureConnectionString() {
             //Get Database Connection 
             string originalConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
             originalConnectionString.Replace("//", "");
@@ -36,7 +39,7 @@ namespace MTGCollectiveLifeCounterBackend {
             string Server = strConn[3];
             string Database = strConn[5];
             string Port = strConn[4];
-            Program.ConnectionString = "host=" + Server + ";port=" + Port + ";database=" + Database + ";uid=" + User + ";pwd=" + Pass + ";sslmode=Require;Trust Server Certificate=true;Timeout=1000";
+            Program.ConnectionString = "host=" + Server + ";port=" + Port + ";database=" + Database + ";uid=" + User + ";pwd=" + Pass + ";sslmode=Prefer;Trust Server Certificate=true;Timeout=1000";
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
