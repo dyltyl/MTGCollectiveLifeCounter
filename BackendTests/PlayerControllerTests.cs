@@ -61,6 +61,18 @@ namespace BackendTests {
         }
 
         [Fact]
+        public void TestUpdatePlayerSuccess() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, createPlayerResult.Value);
+            Player newPlayer = testUtility.GeneratePlayer();
+
+            ActionResult<Player> result = playerController.UpdatePlayer(player.Email, player.Password, newPlayer);
+
+
+        }
+
+        [Fact]
         public void TestDeletePlayerSuccess() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
