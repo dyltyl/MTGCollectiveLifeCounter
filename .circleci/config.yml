@@ -12,6 +12,7 @@ jobs:
 
     steps:
       - checkout
+      - run: apt-get install -y postgresql-client
       - run: |
           psql \
           -d $DATABASE_URL \
