@@ -65,9 +65,6 @@ namespace BackendTests {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, result.Value);
-            Player resultPlayer = testUtility.GetPlayer(player.Email);
-            Assert.NotNull(resultPlayer);
-            Assert.Equal(player.Email, resultPlayer.Email);
 
             ActionResult<Player> deleteResult = playerController.DeletePlayer(player.Email, player.Password);
             Player resultingPlayer = deleteResult.Value;
@@ -76,7 +73,36 @@ namespace BackendTests {
             Assert.Null(testUtility.GetPlayer(player.Email));
 
             testUtility.createdPlayers.Remove(player);
+        }
 
+        [Fact]
+        public void TestDeletePlayerFailureWrongPassword() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> result = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, result.Value);
+
+            ActionResult<Player> deleteResult = playerController.DeletePlayer(player.Email, "dummy password");
+            ObjectResult objectResult = (ObjectResult)deleteResult.Result;
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+            Assert.Equal("Incorrect User Credentials", (string)objectResult.Value);
+            Player resultPlayer = testUtility.GetPlayer(player.Email);
+            Assert.NotNull(resultPlayer);
+            Assert.Equal(player.Email, resultPlayer.Email);
+        }
+
+        [Fact]
+        public void TestDeletePlayerFailureWrongEmail() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> result = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, result.Value);
+
+            ActionResult<Player> deleteResult = playerController.DeletePlayer("Test user email", player.Password);
+            ObjectResult objectResult = (ObjectResult)deleteResult.Result;
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+            Assert.Equal("Incorrect User Credentials", (string)objectResult.Value);
+            Player resultPlayer = testUtility.GetPlayer(player.Email);
+            Assert.NotNull(resultPlayer);
+            Assert.Equal(player.Email, resultPlayer.Email);
         }
     }
 }
