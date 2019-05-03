@@ -12,7 +12,17 @@ jobs:
 
     steps:
       - checkout
-      - run: apt-get update && apt-get install -y postgresql-client
+      - run:
+        name: Install PostgreSQL Client
+        command: |
+
+        echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
+
+        wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+        apt-get update
+
+        apt-get install postgresql-client-9.6
       - run: |
           psql \
           -d $DATABASE_URL \
