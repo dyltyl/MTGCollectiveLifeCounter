@@ -4,6 +4,8 @@ using MTGCollectiveLifeCounterBackend.Controllers;
 using MTGCollectiveLifeCounterBackend.Models;
 using Npgsql;
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using Xunit;
 
@@ -11,69 +13,70 @@ namespace BackendTests {
     public class PlayerControllerTests : IDisposable {
 
         private readonly PlayerController playerController;
+        private readonly TestUtility testUtility;
 
         //Setup
         public PlayerControllerTests() {
             Startup.ConfigureConnectionString();
             playerController = new PlayerController();
+            testUtility = new TestUtility();
         }
 
         //Tear Down
         public void Dispose() {
-
-        }
-
-        private string GenerateRandomString() {
-            StringBuilder builder = new StringBuilder();
-            Random random = new Random();
-            char ch;
-            for (int i = 0; i < 10; i++) {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
+            foreach(Player player in testUtility.createdPlayers) {
+                playerController.DeletePlayer(player.Email, player.Password);
             }
-            return builder.ToString();
-        }
-
-        private Player GetPlayer(string email) {
-            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
-                connection.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM players WHERE email = '" + email + "'", connection)) {
-                    try {
-                        using (var reader = cmd.ExecuteReader()) {
-                            reader.Read();
-                            return (Player)reader;
-                        }
-                    }
-                    catch (PostgresException) {
-                        return null;
-                    }
-                }
-            }
+            testUtility.createdPlayers = new List<Player>();
         }
 
         [Fact]
-        public void TestCreatePlayer() {
-            //Setup
-            Player player = new Player {
-                Name = GenerateRandomString(),
-                Email = GenerateRandomString() + "@test.com",
-                Password = GenerateRandomString()
-            };
-
-            //API call
+        public void TestCreatePlayerSuccess() {
+            Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
 
-            //Assertions
-            Assert.NotNull(result);
             Assert.Equal(player.Email, result.Value);
-            Player resultPlayer = GetPlayer(player.Email);
+            Player resultPlayer = testUtility.GetPlayer(player.Email);
             Assert.NotNull(resultPlayer);
             Assert.Equal(player.Email, resultPlayer.Email);
             Assert.Equal(player.Name, resultPlayer.Name);
             Assert.NotEqual(player.Password, resultPlayer.Password); //The password should be obscured
+        }
 
-            //Tear down
-            playerController.DeletePlayer(player.Email, player.Password);
+        [Fact]
+        public void TestCreatePlayerFailure() {
+            Player player = testUtility.GeneratePlayer();
+
+            //1st API call
+            ActionResult<string> firstResult = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, firstResult.Value);
+
+            //2nd API call
+            ActionResult<string> secondResult = playerController.CreatePlayer(player);
+
+            //Assert Failure
+            ObjectResult objectResult = (ObjectResult)secondResult.Result;
+            Assert.Equal((int)HttpStatusCode.Conflict, objectResult.StatusCode);
+            Assert.Equal("A user already exists with the username: " + player.Email, (string)objectResult.Value);
+        }
+
+        [Fact]
+        public void TestDeletePlayerSuccess() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> result = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, result.Value);
+            Player resultPlayer = testUtility.GetPlayer(player.Email);
+            Assert.NotNull(resultPlayer);
+            Assert.Equal(player.Email, resultPlayer.Email);
+
+            ActionResult<Player> deleteResult = playerController.DeletePlayer(player.Email, player.Password);
+            Player resultingPlayer = deleteResult.Value;
+
+            Assert.Equal(player.Email, resultingPlayer.Email);
+            Assert.Null(testUtility.GetPlayer(player.Email));
+
+            testUtility.createdPlayers.Remove(player);
+
         }
     }
 }
