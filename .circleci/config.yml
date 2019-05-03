@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: dotnet/core/aspnet
+      - image: mcr.microsoft.com/dotnet/core/aspnet:2.2
     steps:
       - checkout
       - run: echo "Testing"
