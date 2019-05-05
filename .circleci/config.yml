@@ -12,26 +12,21 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: Install PostgreSQL Client
-          command: |
-
-            echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
-
-            wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-
-            apt-get update
-
-            apt-get install postgresql-client-9.6
-      - run: |
+      - run: 
+        name: Create test table
+        command: |
           psql \
           -d $DATABASE_URL \
           -c "CREATE TABLE test (name char(25));"
-      - run: |
+      - run: 
+        name: Create test table
+        command: |
           psql \
           -d $DATABASE_URL \
           -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Jennifer');"
-      - run: |
+      - run: 
+        name: Create test table
+        command: |
           psql \
           -d $DATABASE_URL \
           -c "SELECT * from test"
