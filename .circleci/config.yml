@@ -13,9 +13,9 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Start server
-        command: |
-          service postgresql start
+          name: Start server
+          command: |
+            service postgresql start
       - run: 
           name: Create test table
           command: |
