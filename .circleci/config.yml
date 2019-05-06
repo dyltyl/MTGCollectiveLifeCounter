@@ -16,8 +16,11 @@ jobs:
           name: update apt-get
           command: apt-get update
       - run:
+          name: reconfigure
+          command: dpkg --configure -a
+      - run:
           name: install postgres
-          command: apt-get -y install postgresql
+          command: apt-get -y install -f postgresql
       - run:
           name: Start server
           command: |
