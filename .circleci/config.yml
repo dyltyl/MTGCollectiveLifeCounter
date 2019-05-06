@@ -5,7 +5,7 @@ jobs:
     - image: lostntkd/magicimage
       auth:
         username: lostntkd
-        password: DockerhubPassword
+        password: $DockerhubPassword
 
     steps:
       - checkout
