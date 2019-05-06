@@ -13,22 +13,9 @@ jobs:
           name: Start server
           command: |
             service postgresql start
-      - run: 
-          name: Create test table
-          command: |
-            su - postgres psql \
-            -d $DATABASE_URL \
-            -c "CREATE TABLE test (name char(25));"
-      - run: 
-          name: Create test table
-          command: |
-            psql \
-            -d $DATABASE_URL \
-            -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Jennifer');"
-      - run: 
-          name: Create test table
-          command: |
-            psql \
-            -d $DATABASE_URL \
-            -c "SELECT * from test"
-      - run: echo "Testing"
+      - run:
+          name: Check directory
+          command: ls
+      - run:
+          name: Run tests
+          command: dotnet test
