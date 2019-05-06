@@ -17,7 +17,7 @@ jobs:
           command: apt-get update
       - run:
           name: install postgres
-          command: apt-get install postgresql
+          command: apt-get -y install postgresql
       - run:
           name: Start server
           command: |
