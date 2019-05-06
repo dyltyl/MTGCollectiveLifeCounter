@@ -13,13 +13,10 @@ jobs:
           name: Start server
           command: |
             service postgresql start
-      - run:
-          name: Login to postgres user
-          command: su - postgres
       - run: 
           name: Create test table
           command: |
-            psql \
+            su - postgres psql \
             -d $DATABASE_URL \
             -c "CREATE TABLE test (name char(25));"
       - run: 
