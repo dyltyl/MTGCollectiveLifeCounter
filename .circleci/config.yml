@@ -2,29 +2,20 @@ version: 2
 jobs:
   build:
     docker:
-    - image: mcr.microsoft.com/dotnet/core/aspnet:2.2
-    #- image: circleci/postgres:9.6-alpine
-      environment:
-        DATABASE_URL: postgresql://postgres:pass@localhost/magic
-        POSTGRES_USER: postgres
-        POSTGRES_DB: magic
-        POSTGRES_PASSWORD: "pass"
+    - image: lostntkd/magicimage
+      auth:
+        username: lostntkd
+        password: DockerhubPassword
 
     steps:
       - checkout
       - run:
-          name: update apt-get
-          command: apt-get update
-      - run:
-          name: reconfigure
-          command: dpkg --configure -a
-      - run:
-          name: install postgres
-          command: apt-get -y install -f postgresql
-      - run:
           name: Start server
           command: |
             service postgresql start
+      - run:
+          name: Login to postgres user
+          command: su - postgres
       - run: 
           name: Create test table
           command: |
