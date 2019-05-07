@@ -9,8 +9,10 @@ class DatabaseInstaller:
         self.password = parts[2][0:parts[2].index("@")]
         self.database = parts[3][parts[3].index("/") + 1:]
         self.path = os.path.realpath(__file__)
-        self.path = self.path[0:self.path.rindex('\\')]
-
+        try:
+            self.path = self.path[0:self.path.rindex('/')]
+        except ValueError:
+            self.path = self.path[0:self.path.rindex('\\')]
         print('username: ' + self.username)
         print('password: ' + self.password)
         print('database: ' + self.database)
