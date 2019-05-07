@@ -68,6 +68,11 @@ namespace BackendTests {
             Player newPlayer = testUtility.GeneratePlayer();
 
             ActionResult<Player> result = playerController.UpdatePlayer(player.Email, player.Password, newPlayer);
+            Player resultingPlayer = result.Value;
+            Assert.NotNull(resultingPlayer);
+            Assert.Equal(newPlayer.Email, resultingPlayer.Email);
+            Assert.Equal(newPlayer.Name, resultingPlayer.Name);
+            Assert.NotEqual(newPlayer.Password, resultingPlayer.Password);
 
 
         }
