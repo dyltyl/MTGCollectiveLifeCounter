@@ -20,7 +20,7 @@ jobs:
           command: dotnet --version
       - run:
           name: Build project
-          command: dotnet build
+          command: dotnet build -v d
       - run:
           name: Run tests
           command: dotnet test
