@@ -31,6 +31,25 @@ namespace BackendTests {
         }
 
         [Fact]
+        public void TestTest() {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM players", connection)) {
+                    try {
+                        using (var reader = cmd.ExecuteReader()) {
+                            reader.Read();
+                            Player player = (Player)reader;
+                            Assert.NotNull(player);
+                        }
+                    }
+                    catch (Exception e) {
+                        Assert.Equal("", e.Message);
+                    }
+                }
+            }
+        }
+
+        [Fact]
         public void TestCreatePlayerSuccess() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
