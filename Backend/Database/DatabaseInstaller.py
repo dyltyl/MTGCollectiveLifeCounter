@@ -24,7 +24,7 @@ def check_table_exists(table):
 def create_table(tablename, filename):
     if not check_table_exists(tablename):
         database = connect_to_database()
-        sql_file = open("Database/"+filename.sql, "r")
+        sql_file = open(filename, "r")
         sql = sql_file.read()
         sql_file.close()
         cursor = database.cursor()
