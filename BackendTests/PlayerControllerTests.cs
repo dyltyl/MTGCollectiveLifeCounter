@@ -34,13 +34,10 @@ namespace BackendTests {
         public void TestTest() {
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM players", connection)) {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players(email, password, name) VALUES('test999@mail.com', digest('password', 'sha512'), 'Name') RETURNING email", connection)) {
                     try {
-                        using (var reader = cmd.ExecuteReader()) {
-                            reader.Read();
-                            Player player = (Player)reader;
-                            Assert.NotNull(player);
-                        }
+                        string email = (string)cmd.ExecuteScalar();
+                        Assert.Equal("test999@mail.com", email);
                     }
                     catch (Exception e) {
                         Assert.Equal("", e.Message);
