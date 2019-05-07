@@ -50,6 +50,9 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                     catch (PostgresException e) {
                         return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
                     }
+                    catch (ArgumentException) {
+                        return StatusCode((int)HttpStatusCode.BadRequest, "Incorrect User Credentials");
+                    }
                 }
             }
         }

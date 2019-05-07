@@ -73,8 +73,17 @@ namespace BackendTests {
             Assert.Equal(newPlayer.Email, resultingPlayer.Email);
             Assert.Equal(newPlayer.Name, resultingPlayer.Name);
             Assert.NotEqual(newPlayer.Password, resultingPlayer.Password);
+        }
 
-
+        [Fact]
+        public void TestUpdatePlayerFailureWrongCreds() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, createPlayerResult.Value);
+            Player newPlayer = testUtility.GeneratePlayer();
+            ActionResult<Player> result = playerController.UpdatePlayer(newPlayer.Email, newPlayer.Password, newPlayer);
+            Player resultingPlayer = result.Value;
+            Assert.Null(resultingPlayer);
         }
 
         [Fact]
