@@ -47,6 +47,7 @@ class DatabaseInstaller:
             sql_file.close()
             cursor = database.cursor()
             cursor.execute(sql)
+            database.commit()
             cursor.close()
             database.close()
         else:
