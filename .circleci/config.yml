@@ -1,6 +1,9 @@
 version: 2
 jobs:
   build:
+    branches:
+      only:
+        - C#-conversions
     docker:
     - image: lostntkd/magicimage
       auth:
