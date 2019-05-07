@@ -30,7 +30,9 @@ namespace BackendTests {
             testUtility.createdPlayers = new List<Player>();
         }
 
+        //CREATE Player Tests
         [Fact]
+        [Trait("Function", "CreatePlayer")]
         public void TestCreatePlayerSuccess() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
@@ -44,7 +46,8 @@ namespace BackendTests {
         }
 
         [Fact]
-        public void TestCreatePlayerFailure() {
+        [Trait("Function", "CreatePlayer")]
+        public void TestCreatePlayerFailurePlayerAlreadyExists() {
             Player player = testUtility.GeneratePlayer();
 
             //1st API call
@@ -55,12 +58,25 @@ namespace BackendTests {
             ActionResult<string> secondResult = playerController.CreatePlayer(player);
 
             //Assert Failure
+            Assert.Null(secondResult.Value);
             ObjectResult objectResult = (ObjectResult)secondResult.Result;
             Assert.Equal((int)HttpStatusCode.Conflict, objectResult.StatusCode);
             Assert.Equal("A user already exists with the username: " + player.Email, (string)objectResult.Value);
         }
 
         [Fact]
+        [Trait("Function", "CreatePlayer")]
+        public void TestCreatePlayerFailureNullPlayer() {
+            ActionResult<string> result = playerController.CreatePlayer(null);
+            Assert.Null(result.Value);
+            ObjectResult objectResult = (ObjectResult)result.Result;
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+            Assert.Equal("The player cannot be null", (string)objectResult.Value);
+        }
+
+        //UPDATE Player Tests
+        [Fact]
+        [Trait("Function", "UpdatePlayer")]
         public void TestUpdatePlayerSuccess() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
@@ -76,6 +92,7 @@ namespace BackendTests {
         }
 
         [Fact]
+        [Trait("Function", "UpdatePlayer")]
         public void TestUpdatePlayerFailureWrongCreds() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
@@ -87,6 +104,33 @@ namespace BackendTests {
         }
 
         [Fact]
+        [Trait("Function", "UpdatePlayer")]
+        public void TestUpdatePlayerFailureNullPlayer() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, createPlayerResult.Value);
+            ActionResult<Player> result = playerController.UpdatePlayer(player.Email, player.Password, null);
+            Player resultingPlayer = result.Value;
+            Assert.Null(resultingPlayer);
+            ObjectResult objectResult = (ObjectResult)result.Result;
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+            Assert.Equal("Player cannot be null", (string)objectResult.Value);
+        }
+        
+        [Fact]
+        [Trait("Function", "UpdatePlayer")]
+        public void TestUpdatePlayerFailureNullCreds() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, createPlayerResult.Value);
+            ActionResult<Player> result = playerController.UpdatePlayer(null, null, player);
+            ObjectResult objectResult = (ObjectResult)result.Result;
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+            Assert.Equal("User credentials cannot be null", objectResult.Value);
+        }
+
+        [Fact]
+        [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerSuccess() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
@@ -102,6 +146,7 @@ namespace BackendTests {
         }
 
         [Fact]
+        [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerFailureWrongPassword() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
@@ -117,6 +162,7 @@ namespace BackendTests {
         }
 
         [Fact]
+        [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerFailureWrongEmail() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
@@ -129,6 +175,34 @@ namespace BackendTests {
             Player resultPlayer = testUtility.GetPlayer(player.Email);
             Assert.NotNull(resultPlayer);
             Assert.Equal(player.Email, resultPlayer.Email);
+        }
+
+        [Fact]
+        [Trait("Function", "DeletePlayer")]
+        public void TestDeletePlayerFailureNullEmail() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> result = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, result.Value);
+
+            ActionResult<Player> deleteResult = playerController.DeletePlayer(null, player.Password);
+            Assert.Null(deleteResult.Value);
+            ObjectResult objectResult = (ObjectResult)deleteResult.Result;
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+            Assert.Equal("Incorrect User Credentials", objectResult.Value);
+        }
+
+        [Fact]
+        [Trait("Function", "DeletePlayer")]
+        public void TestDeletePlayerFailureNullPassword() {
+            Player player = testUtility.GeneratePlayer();
+            ActionResult<string> result = playerController.CreatePlayer(player);
+            Assert.Equal(player.Email, result.Value);
+
+            ActionResult<Player> deleteResult = playerController.DeletePlayer(player.Email, null);
+            Assert.Null(deleteResult.Value);
+            ObjectResult objectResult = (ObjectResult)deleteResult.Result;
+            Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
+            Assert.Equal("Incorrect User Credentials", objectResult.Value);
         }
     }
 }

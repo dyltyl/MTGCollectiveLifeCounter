@@ -16,6 +16,9 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
     public class PlayerController : ControllerBase {
         [HttpPost]
         public ActionResult<string> CreatePlayer([FromBody] Player player) {
+            if(player == null) {
+                return StatusCode((int)HttpStatusCode.BadRequest, "The player cannot be null");
+            }
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
                 using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players (email, password, name) VALUES(@email, digest(@password, 'sha512'), @name) RETURNING email", connection)) {
@@ -33,6 +36,12 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
         }
         [HttpPut]
         public ActionResult<Player> UpdatePlayer([FromHeader] string email, [FromHeader] string password, [FromBody] Player player) {
+            if(player == null) {
+                return StatusCode((int)HttpStatusCode.BadRequest, "Player cannot be null");
+            }
+            if(email == null || password == null) {
+                return StatusCode((int)HttpStatusCode.BadRequest, "User credentials cannot be null");
+            }
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
                 using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE players SET email = @newEmail, password = text(digest(@newPassword, 'sha512')), name = @name WHERE email = @email AND password = text(digest(@password, 'sha512')) RETURNING *;", connection)) {
