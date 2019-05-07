@@ -19,5 +19,8 @@ jobs:
           name: Check Dotnet version
           command: dotnet --version
       - run:
+          name: Build project
+          command: dotnet build
+      - run:
           name: Run tests
           command: dotnet test
