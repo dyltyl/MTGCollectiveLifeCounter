@@ -31,22 +31,6 @@ namespace BackendTests {
         }
 
         [Fact]
-        public void TestTest() {
-            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
-                connection.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players(email, password, name) VALUES('test999@mail.com', 'password', 'Name') RETURNING email", connection)) {
-                    try {
-                        string email = (string)cmd.ExecuteScalar();
-                        Assert.Equal("test999@mail.com", email);
-                    }
-                    catch (Exception e) {
-                        Assert.Equal("", e.Message);
-                    }
-                }
-            }
-        }
-
-        [Fact]
         public void TestCreatePlayerSuccess() {
             Player player = testUtility.GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
