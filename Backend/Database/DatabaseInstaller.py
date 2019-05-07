@@ -51,12 +51,13 @@ class DatabaseInstaller:
 
 
     def setup_tables(self):
-        self.create_table('players', 'createPlayers.sql')
-        self.create_table('games', 'createGames.sql')
-        self.create_table('commanders', 'createCommanders.sql')
-        self.create_table('commander_damage', 'createCommanderDamage.sql')
-        self.create_table('life', 'createLife.sql')
+        self.create_table('players', './createPlayers.sql')
+        self.create_table('games', './createGames.sql')
+        self.create_table('commanders', './createCommanders.sql')
+        self.create_table('commander_damage', './createCommanderDamage.sql')
+        self.create_table('life', './createLife.sql')
 
 
+print(os.system('ls'))
 installer = DatabaseInstaller()
 installer.setup_tables()
