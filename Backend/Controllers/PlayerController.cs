@@ -18,7 +18,7 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
         public ActionResult<string> CreatePlayer([FromBody] Player player) {
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players (email, password, name) VALUES(@email, digest(@password, 'sha512'), @name) RETURNING email", connection)) {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players (email, password, name) VALUES(@email, @password, @name) RETURNING email", connection)) {
                     cmd.Parameters.AddWithValue("email", player.Email);
                     cmd.Parameters.AddWithValue("password", player.Password);
                     cmd.Parameters.AddWithValue("name", player.Name);
