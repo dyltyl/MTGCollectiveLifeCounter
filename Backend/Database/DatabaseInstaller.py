@@ -1,5 +1,6 @@
-import psycopg2
 import os
+os.system("python -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host pypi.python.org psycopg2")
+import psycopg2
 
 
 def connect_to_database(): #Todo: add null checks/etc
