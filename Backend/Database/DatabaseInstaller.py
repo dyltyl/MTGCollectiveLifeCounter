@@ -20,6 +20,10 @@ class DatabaseInstaller:
 
         try:
             database = self.connect_to_database()
+            cursor = database.cursor()
+            cursor.execute('CREATE EXTENSION pgcrypto;')
+            database.commit()
+            cursor.close()
             database.close()
         except psycopg2.OperationalError as e:
             print(e)
