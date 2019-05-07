@@ -15,7 +15,10 @@ namespace Backend.Controllers {
     [ApiController]
     public class GameController : ControllerBase {
         [HttpPost]
-        public ActionResult<string> CreateGame([FromBody] Game  game) {
+        public ActionResult<string> CreateGame([FromBody] Game game) {
+            if (game == null) {
+                return StatusCode((int)HttpStatusCode.BadRequest, "Game cannot be null");
+            }
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
                 using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO games(id, password, starting_life, host, max_size) VALUES(@id, digest(@password, 'sha512'), @startingLife, @host, @maxSize) RETURNING id; ", connection)) {
@@ -28,7 +31,26 @@ namespace Backend.Controllers {
                         return (string)cmd.ExecuteScalar();
                     }
                     catch (PostgresException e) {
-                        return StatusCode((int)HttpStatusCode.Conflict, "Cannot create game\n"+e.Message);
+                        return StatusCode((int)HttpStatusCode.Conflict, "Cannot create game\n" + e.Message);
+                    }
+                }
+            }
+        }
+        [HttpDelete]
+        public ActionResult<Game> DeleteGame([FromHeader] string gameId, [FromHeader] string gamePassword) {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM games WHERE id = @id AND password = text(digest(@password, 'sha512')) RETURNING *", connection)) {
+                    cmd.Parameters.AddWithValue("id", gameId);
+                    cmd.Parameters.AddWithValue("password", gamePassword);
+                    try {
+                        using (var reader = cmd.ExecuteReader()) {
+                            reader.Read();
+                            return (Game)reader;
+                        }
+                    }
+                    catch (Exception) {
+                        return StatusCode((int)HttpStatusCode.BadRequest, "Incorrect Game Credentials");
                     }
                 }
             }

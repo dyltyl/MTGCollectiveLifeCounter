@@ -30,7 +30,7 @@ namespace BackendTests {
             }
             createdPlayers = new List<Player>();
             foreach (Game game in createdGames) {
-                //gameController.DeleteGame(game.id, game.password);
+                gameController.DeleteGame(game.GameId, game.GamePassword);
             }
         }
 
@@ -79,6 +79,18 @@ namespace BackendTests {
                     }
                     catch (Exception) {
                         return null;
+                    }
+                }
+            }
+        }
+
+        public Game GetGame(string gameId) {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM games WHERE id = '" + gameId + "'", connection)) {
+                    using (var reader = cmd.ExecuteReader()) {
+                        reader.Read();
+                        return (Game)reader;
                     }
                 }
             }
