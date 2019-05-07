@@ -16,8 +16,8 @@ class DatabaseInstaller:
         try:
             database = self.connect_to_database()
             database.close()
-        except psycopg2.OperationalError:
-            raise Exception('Cannot connect to database')
+        except psycopg2.OperationalError as e:
+            raise Exception('Cannot connect to database\n'+e)
 
 
     def connect_to_database(self): #Todo: add null checks/etc
