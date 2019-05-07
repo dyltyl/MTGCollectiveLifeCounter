@@ -41,13 +41,16 @@ class DatabaseInstaller:
 
     def create_table(self, tablename, filename):
         if not self.check_table_exists(tablename):
+            print('Setting up: ' + tablename)
             database = self.connect_to_database()
             sql_file = open(filename, "r")
             sql = sql_file.read()
             sql_file.close()
             cursor = database.cursor()
             cursor.execute(sql)
+            database.commit()
             cursor.close()
+            database.close()
         else:
             print(tablename + ' needs updating')
 
