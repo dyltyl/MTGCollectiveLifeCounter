@@ -1,4 +1,6 @@
-﻿using MTGCollectiveLifeCounterBackend;
+﻿using Backend.Controllers;
+using MTGCollectiveLifeCounterBackend;
+using MTGCollectiveLifeCounterBackend.Controllers;
 using MTGCollectiveLifeCounterBackend.Models;
 using Npgsql;
 using System;
@@ -6,11 +8,30 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace BackendTests {
-    public class TestUtility {
-        public List<Player> createdPlayers;
+    public abstract class TestBase : IDisposable {
+        protected readonly GameController gameController;
+        protected readonly PlayerController playerController;
+        protected List<Player> createdPlayers;
+        protected List<Game> createdGames;
 
-        public TestUtility() {
+        //Setup
+        public TestBase() {
+            Startup.ConfigureConnectionString();
+            gameController = new GameController();
+            playerController = new PlayerController();
             createdPlayers = new List<Player>();
+            createdGames = new List<Game>();
+        }
+
+        //Tear Down
+        public void Dispose() {
+            foreach (Player player in createdPlayers) {
+                playerController.DeletePlayer(player.Email, player.Password);
+            }
+            createdPlayers = new List<Player>();
+            foreach (Game game in createdGames) {
+                //gameController.DeleteGame(game.id, game.password);
+            }
         }
 
         public string GenerateRandomString() {
@@ -32,6 +53,18 @@ namespace BackendTests {
             };
             createdPlayers.Add(player);
             return player;
+        }
+
+        public Game GenerateGame() {
+            Game game = new Game {
+                GameId = GenerateRandomString(),
+                GamePassword = GenerateRandomString(),
+                Host = GenerateRandomString(),
+                StartingLife = 40,
+                MaxSize = 5
+            };
+            createdGames.Add(game);
+            return game;
         }
 
         public Player GetPlayer(string email) {

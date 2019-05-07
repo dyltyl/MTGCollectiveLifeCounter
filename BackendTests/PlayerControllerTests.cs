@@ -10,35 +10,17 @@ using System.Text;
 using Xunit;
 
 namespace BackendTests {
-    public class PlayerControllerTests : IDisposable {
-
-        private readonly PlayerController playerController;
-        private readonly TestUtility testUtility;
-
-        //Setup
-        public PlayerControllerTests() {
-            Startup.ConfigureConnectionString();
-            playerController = new PlayerController();
-            testUtility = new TestUtility();
-        }
-
-        //Tear Down
-        public void Dispose() {
-            foreach(Player player in testUtility.createdPlayers) {
-                playerController.DeletePlayer(player.Email, player.Password);
-            }
-            testUtility.createdPlayers = new List<Player>();
-        }
+    public class PlayerControllerTests : TestBase {
 
         #region Create Player Tests
         [Fact]
         [Trait("Function", "CreatePlayer")]
         public void TestCreatePlayerSuccess() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
 
             Assert.Equal(player.Email, result.Value);
-            Player resultPlayer = testUtility.GetPlayer(player.Email);
+            Player resultPlayer = GetPlayer(player.Email);
             Assert.NotNull(resultPlayer);
             Assert.Equal(player.Email, resultPlayer.Email);
             Assert.Equal(player.Name, resultPlayer.Name);
@@ -48,7 +30,7 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "CreatePlayer")]
         public void TestCreatePlayerFailurePlayerAlreadyExists() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
 
             //1st API call
             ActionResult<string> firstResult = playerController.CreatePlayer(player);
@@ -78,10 +60,10 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "UpdatePlayer")]
         public void TestUpdatePlayerSuccess() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, createPlayerResult.Value);
-            Player newPlayer = testUtility.GeneratePlayer();
+            Player newPlayer = GeneratePlayer();
 
             ActionResult<Player> result = playerController.UpdatePlayer(player.Email, player.Password, newPlayer);
             Player resultingPlayer = result.Value;
@@ -94,10 +76,10 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "UpdatePlayer")]
         public void TestUpdatePlayerFailureWrongCreds() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, createPlayerResult.Value);
-            Player newPlayer = testUtility.GeneratePlayer();
+            Player newPlayer = GeneratePlayer();
             ActionResult<Player> result = playerController.UpdatePlayer(newPlayer.Email, newPlayer.Password, newPlayer);
             Player resultingPlayer = result.Value;
             Assert.Null(resultingPlayer);
@@ -106,7 +88,7 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "UpdatePlayer")]
         public void TestUpdatePlayerFailureNullPlayer() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, createPlayerResult.Value);
             ActionResult<Player> result = playerController.UpdatePlayer(player.Email, player.Password, null);
@@ -120,7 +102,7 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "UpdatePlayer")]
         public void TestUpdatePlayerFailureNullCreds() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> createPlayerResult = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, createPlayerResult.Value);
             ActionResult<Player> result = playerController.UpdatePlayer(null, null, player);
@@ -133,7 +115,7 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerSuccess() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, result.Value);
 
@@ -141,15 +123,15 @@ namespace BackendTests {
             Player resultingPlayer = deleteResult.Value;
 
             Assert.Equal(player.Email, resultingPlayer.Email);
-            Assert.Null(testUtility.GetPlayer(player.Email));
+            Assert.Null(GetPlayer(player.Email));
 
-            testUtility.createdPlayers.Remove(player);
+            createdPlayers.Remove(player);
         }
 
         [Fact]
         [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerFailureWrongPassword() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, result.Value);
 
@@ -157,7 +139,7 @@ namespace BackendTests {
             ObjectResult objectResult = (ObjectResult)deleteResult.Result;
             Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
             Assert.Equal("Incorrect User Credentials", (string)objectResult.Value);
-            Player resultPlayer = testUtility.GetPlayer(player.Email);
+            Player resultPlayer = GetPlayer(player.Email);
             Assert.NotNull(resultPlayer);
             Assert.Equal(player.Email, resultPlayer.Email);
         }
@@ -165,7 +147,7 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerFailureWrongEmail() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, result.Value);
 
@@ -173,7 +155,7 @@ namespace BackendTests {
             ObjectResult objectResult = (ObjectResult)deleteResult.Result;
             Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
             Assert.Equal("Incorrect User Credentials", (string)objectResult.Value);
-            Player resultPlayer = testUtility.GetPlayer(player.Email);
+            Player resultPlayer = GetPlayer(player.Email);
             Assert.NotNull(resultPlayer);
             Assert.Equal(player.Email, resultPlayer.Email);
         }
@@ -181,7 +163,7 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerFailureNullEmail() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, result.Value);
 
@@ -195,7 +177,7 @@ namespace BackendTests {
         [Fact]
         [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerFailureNullPassword() {
-            Player player = testUtility.GeneratePlayer();
+            Player player = GeneratePlayer();
             ActionResult<string> result = playerController.CreatePlayer(player);
             Assert.Equal(player.Email, result.Value);
 
