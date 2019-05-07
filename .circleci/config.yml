@@ -6,10 +6,6 @@ jobs:
       auth:
         username: lostntkd
         password: $DockerhubPassword
-      environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: password
-        POSTGRES_DB: magic
 
     steps:
       - checkout
