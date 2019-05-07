@@ -11,8 +11,10 @@ jobs:
       - checkout
       - run:
           name: Start server
-          command: |
-            service postgresql start
+          command: service postgresql start
+      - run:
+          name: Configure Database
+          command: python Backend/Database/DatabaseInstaller.py
       - run:
           name: Check directory
           command: ls
