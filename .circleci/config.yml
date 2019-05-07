@@ -16,8 +16,8 @@ jobs:
           name: Configure Database
           command: python Backend/Database/DatabaseInstaller.py
       - run:
-          name: Check directory
-          command: ls
+          name: Check Dotnet version
+          command: dotnet --version
       - run:
           name: Run tests
           command: dotnet test

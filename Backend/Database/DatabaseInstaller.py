@@ -29,7 +29,7 @@ class DatabaseInstaller:
         database = self.connect_to_database()
         cursor = database.cursor()
         cursor.execute("SELECT 1 FROM information_schema.tables WHERE table_name = '"+table+"';")
-        result = cursor.fetchone() == 1
+        result = cursor.fetchone()
         cursor.close()
         database.close()
         if result is None:
