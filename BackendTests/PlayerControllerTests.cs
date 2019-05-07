@@ -34,7 +34,7 @@ namespace BackendTests {
         public void TestTest() {
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players(email, password, name) VALUES('test999@mail.com', digest('password', 'sha512'), 'Name') RETURNING email", connection)) {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO players(email, password, name) VALUES('test999@mail.com', 'password', 'Name') RETURNING email", connection)) {
                     try {
                         string email = (string)cmd.ExecuteScalar();
                         Assert.Equal("test999@mail.com", email);
