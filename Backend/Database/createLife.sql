@@ -11,11 +11,11 @@ CREATE TABLE public.life
     experience integer DEFAULT 0,
     CONSTRAINT life_pkey PRIMARY KEY (email, game),
     CONSTRAINT life_email_fkey FOREIGN KEY (email)
-        REFERENCES public.players (email) MATCH SIMPLE
+        REFERENCES players (email) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE NO ACTION,
     CONSTRAINT life_game_fkey FOREIGN KEY (game)
-        REFERENCES public.games (id) MATCH SIMPLE
+        REFERENCES games (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE
 )

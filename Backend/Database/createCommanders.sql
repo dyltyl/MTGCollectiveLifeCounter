@@ -13,7 +13,7 @@ CREATE TABLE public.commanders
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT commanders_player_fkey FOREIGN KEY (player)
-        REFERENCES public.players (email) MATCH SIMPLE
+        REFERENCES players (email) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE
 )
