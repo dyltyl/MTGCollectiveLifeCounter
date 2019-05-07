@@ -29,10 +29,12 @@ class DatabaseInstaller:
         database = self.connect_to_database()
         cursor = database.cursor()
         cursor.execute("SELECT 1 FROM information_schema.tables WHERE table_name = '"+table+"';")
-        result = cursor.fetchone()[0] == 1
+        result = cursor.fetchone() == 1
         cursor.close()
         database.close()
-        return result
+        if result is None:
+            return False
+        return True
 
 
     def create_table(self, tablename, filename):
