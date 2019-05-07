@@ -30,7 +30,7 @@ namespace BackendTests {
             testUtility.createdPlayers = new List<Player>();
         }
 
-        //CREATE Player Tests
+        #region Create Player Tests
         [Fact]
         [Trait("Function", "CreatePlayer")]
         public void TestCreatePlayerSuccess() {
@@ -73,8 +73,8 @@ namespace BackendTests {
             Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
             Assert.Equal("The player cannot be null", (string)objectResult.Value);
         }
-
-        //UPDATE Player Tests
+        #endregion
+        #region Update Player Tests
         [Fact]
         [Trait("Function", "UpdatePlayer")]
         public void TestUpdatePlayerSuccess() {
@@ -128,7 +128,8 @@ namespace BackendTests {
             Assert.Equal((int)HttpStatusCode.BadRequest, objectResult.StatusCode);
             Assert.Equal("User credentials cannot be null", objectResult.Value);
         }
-
+        #endregion
+        #region Delete Player Tests
         [Fact]
         [Trait("Function", "DeletePlayer")]
         public void TestDeletePlayerSuccess() {
@@ -205,4 +206,5 @@ namespace BackendTests {
             Assert.Equal("Incorrect User Credentials", objectResult.Value);
         }
     }
+    #endregion
 }
