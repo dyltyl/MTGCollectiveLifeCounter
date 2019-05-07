@@ -8,10 +8,13 @@ class DatabaseInstaller:
         self.username = parts[1][2:]
         self.password = parts[2][0:parts[2].index("@")]
         self.database = parts[3][parts[3].index("/") + 1:]
+        self.path = os.path.realpath(__file__)
+        self.path = self.path[0:self.path.rindex('\\')]
 
         print('username: ' + self.username)
         print('password: ' + self.password)
         print('database: ' + self.database)
+        print('path: ' + self.path)
 
         try:
             database = self.connect_to_database()
@@ -20,10 +23,8 @@ class DatabaseInstaller:
             print(e)
             raise Exception('Cannot connect to database\n'+str(e))
 
-
     def connect_to_database(self): #Todo: add null checks/etc
         return psycopg2.connect("dbname="+self.database+" user="+self.username+" password="+self.password)
-
 
     def check_table_exists(self, table):
         database = self.connect_to_database()
@@ -35,7 +36,6 @@ class DatabaseInstaller:
         if result is None:
             return False
         return True
-
 
     def create_table(self, tablename, filename):
         if not self.check_table_exists(tablename):
@@ -49,15 +49,14 @@ class DatabaseInstaller:
         else:
             print(tablename + ' needs updating')
 
-
     def setup_tables(self):
-        self.create_table('players', './createPlayers.sql')
-        self.create_table('games', './createGames.sql')
-        self.create_table('commanders', './createCommanders.sql')
-        self.create_table('commander_damage', './createCommanderDamage.sql')
-        self.create_table('life', './createLife.sql')
+        self.create_table('players', self.path+'/createPlayers.sql')
+        self.create_table('games', self.path+'/createGames.sql')
+        self.create_table('commanders', self.path+'/createCommanders.sql')
+        self.create_table('commander_damage', self.path+'/createCommanderDamage.sql')
+        self.create_table('life', self.path+'/createLife.sql')
+        print(self.path+'/createPlayers.sql')
 
 
-print(os.system('ls'))
 installer = DatabaseInstaller()
 installer.setup_tables()
