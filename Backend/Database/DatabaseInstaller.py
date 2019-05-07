@@ -41,14 +41,12 @@ class DatabaseInstaller:
 
     def create_table(self, tablename, filename):
         if not self.check_table_exists(tablename):
-            print('Setting up: ' + tablename)
             database = self.connect_to_database()
             sql_file = open(filename, "r")
             sql = sql_file.read()
             sql_file.close()
             cursor = database.cursor()
             cursor.execute(sql)
-            database.commit()
             cursor.close()
             database.close()
         else:
@@ -60,8 +58,24 @@ class DatabaseInstaller:
         self.create_table('commanders', self.path+'/createCommanders.sql')
         self.create_table('commander_damage', self.path+'/createCommanderDamage.sql')
         self.create_table('life', self.path+'/createLife.sql')
-        print(self.path+'/createPlayers.sql')
+
+    def verify_tables(self):
+        database = self.connect_to_database()
+        cursor = database.cursor()
+        cursor.execute('SELECT pg_tables.tablename FROM pg_catalog.pg_tables;')
+        row = cursor.fetchone()
+        tables = []
+        while row is not None:
+            tables.append(row[0])
+            row = cursor.fetchone()
+        expected_tables = ['players', 'commander_damage', 'games', 'commanders', 'life']
+        for table in expected_tables:
+            if table not in tables:
+                raise Exception(table + ' table missing from installation')
+        cursor.close()
+        database.close()
 
 
 installer = DatabaseInstaller()
 installer.setup_tables()
+installer.verify_tables()
