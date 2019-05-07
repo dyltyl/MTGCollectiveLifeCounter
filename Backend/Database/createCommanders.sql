@@ -9,7 +9,7 @@ CREATE TABLE public.commanders
     commander character varying COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT commanders_pkey PRIMARY KEY (game, player, commander),
     CONSTRAINT commanders_game_fkey FOREIGN KEY (game)
-        REFERENCES public.games (id) MATCH SIMPLE
+        REFERENCES games (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT commanders_player_fkey FOREIGN KEY (player)
