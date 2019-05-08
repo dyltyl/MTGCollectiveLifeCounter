@@ -15,6 +15,7 @@ POST /game (Game) - inserts the game object into the database
 POST /joinGame HEADERS: {gameId, gamePassword, email, password} BODY: ["commander1", "commander2"] - adds the player to the game
 POST /player HEADERS: {email} (Player) - createPlayer
 POST /life HEADERS {gameId} (Player) - updateLife
+POST /player/{name} creates a guest user
 
 PUT /life/{amount} HEADERS: {gameId, gamePassword, email, password} 
 PUT /poison/{amount}  HEADERS: {gameId, gamePassword, email, password} 
@@ -34,7 +35,7 @@ GAME
 	"gamePassword": "password",
 	"startingLife": 40,
 	"started": false,
-	"host": "Tyler@gmail.com,
+	"host": "Tyler@gmail.com",
 	"currentSize": 0,
 	"maxSize": 5
 }
