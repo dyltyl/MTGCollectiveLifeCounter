@@ -1,0 +1,46 @@
+<ScrollView class="page">
+    <Page.actionBar>
+        <ActionBar class="action-bar">
+            <StackLayout class="action-bar-title">
+                <Label text="Game State" class="font-weight-bold"></Label>
+            </StackLayout>
+        </ActionBar>
+    </Page.actionBar>
+    <StackLayout>
+        <ScrollView orientation="horizontal" *ngFor="let player of players">
+            <StackLayout>
+                <Label [text]="player.name" class="h3"></Label>
+                <Label [text]="player.life" class="h3"></Label>
+            </StackLayout>
+        </ScrollView>
+        <!-- Add a larger space here -->
+        <StackLayout *ngIf="currentStat === 0">
+            <Label text="Life" class="h1"></Label>
+            <Label text="{{currentPlayer.life}}" class="h1"></Label>
+        </StackLayout>
+
+        <StackLayout *ngIf="currentStat === 1">
+            <Label text="Poison" class="h1"></Label>
+            <Label text="{{currentPlayer.poison}}" class="h1"></Label>
+        </StackLayout>
+
+        <StackLayout *ngIf="currentStat === 2">
+            <Label text="Experience" class="h1"></Label>
+            <Label text="{{currentPlayer.experience}}" class="h1"></Label>
+        </StackLayout>
+
+        <FlexboxLayout>
+            <Button text="+1" class="btn btn-primary" style="margin: 0" (tap)="addStat(1)"></Button>
+            <Button text="-1" class="btn btn-primary" style="margin: 0" (tap)="addStat(-1)"></Button>
+            <Button text="+5" class="btn btn-primary" style="margin: 0" (tap)="addStat(5)"></Button>
+            <Button text="-5" class="btn btn-primary" style="margin: 0" (tap)="addStat(-5)"></Button>
+        </FlexboxLayout>
+
+        <FlexboxLayout>
+            <Button *ngIf="currentStat !== 0" text="Life" (tap)="switchTo(0)"></Button>
+            <Button *ngIf="currentStat !== 1" text="Poison" (tap)="switchTo(1)"></Button>
+            <Button *ngIf="currentStat !== 2" text="Experience" (tap)="switchTo(2)"></Button>
+        </FlexboxLayout>>
+    
+    </StackLayout>
+</ScrollView> 

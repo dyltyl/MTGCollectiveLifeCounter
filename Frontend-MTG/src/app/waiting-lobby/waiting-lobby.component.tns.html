@@ -1,0 +1,26 @@
+<ScrollView class="page">
+    <Page.actionBar>
+      <ActionBar class="action-bar">
+          <StackLayout class="action-bar-title">
+              <Label text="Welcome to {{game.gameId}}" class="font-weight-bold"></Label>
+          </StackLayout>
+      </ActionBar>
+    </Page.actionBar>
+    <StackLayout>
+        <StackLayout *ngFor="let player of players">      
+            <FlexboxLayout *ngIf="player !== null" justifyContent="center">
+                <Label [text]="player.name" class="h2" width="200" style="text-align: center;"></Label>
+                <Button *ngIf="currentPlayer.email === game.host" text="Kick" class="btn btn-primary" width="80"></Button>
+            </FlexboxLayout>
+            <FlexboxLayout *ngIf="player === null && currentPlayer.email === game.host" justifyContent="center">
+                <Label text="...Waiting for player..." class="h3" width="200"></Label>
+                <Button text="Delete" class="btn btn-primary" width="80"></Button>
+            </FlexboxLayout>
+        </StackLayout>
+        <StackLayout *ngIf="currentPlayer.email === game.host">
+            <Button class="btn btn-primary" text="AddSlot"></Button>
+            <Button class="btn btn-primary" text="StartGame"></Button>
+        </StackLayout>
+    </StackLayout>
+</ScrollView> 
+     

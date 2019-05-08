@@ -1,0 +1,30 @@
+<ScrollView class="page">
+  <Page.actionBar>
+    <ActionBar class="action-bar">
+        <StackLayout class="action-bar-title">
+            <Label text="MTG Life Counter" class="font-weight-bold"></Label>
+        </StackLayout>
+    </ActionBar>
+  </Page.actionBar>
+  <StackLayout>
+    <Button class="btn btn-primary" text="Return to Game" (tap)="searchBarVisible = !searchBarVisible"></Button>
+    <Button class="btn btn-primary" text="Create Game" (tap)="dataService.setIsHost(true)" [nsRouterLink]="['/GameCreation']"></Button>
+    <Button class="btn btn-primary" text="Search Game" (tap)="searchBarVisible = !searchBarVisible"></Button>
+    <Label *ngIf="searchBarVisible" class="body" text="Game Id"></Label>
+    <FlexboxLayout *ngIf="searchBarVisible" stretchLastChild="false">    
+        <TextField [(ngModel)]="query" hint="Game Id" class="input input-primary" style="color:white" width="250"></TextField>
+        <Button class="btn btn-primary" text="Search" (tap)="search()" width="100"></Button>
+    </FlexboxLayout>
+    <StackLayout *ngFor="let game of games" dock="bottom">
+        <FlexboxLayout *ngIf="searchBarVisible">
+            <Label class="h2" [text]="game.gameId" width="150"></Label>
+            <Label class="h2" [text]="game.host" width="150"></Label>
+            <Label class="h2" text="{{game.currentSize}}/{{game.maxSize}}" width="45"></Label>
+        </FlexboxLayout>
+        <Button text="Join Game" class="btn btn-primary" (tap)="joinGame(game.gameId)"></Button>
+    </StackLayout>
+
+    <!--Temporary button to get through the app-->
+    <Button (tap)="shortcut()" text="Shortcut"></Button>
+  </StackLayout>
+</ScrollView> 

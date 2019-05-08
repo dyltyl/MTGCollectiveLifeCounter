@@ -1,0 +1,9 @@
+<div>Email<input [(ngModel)]="email" type="text"></div>
+<div>Password<input [(ngModel)]="password" type="text"></div>
+Commander's Name
+<input [(ngModel)]="commanderAName" type = 'text' id = 'commanderName'>
+<input [(ngModel)]="hasPartner" type= 'checkbox' id ='partnerBool' name = 'partner' value ='false'> Partner?
+<div *ngIf="hasPartner">
+  <input [(ngModel)]="commanderBName" type = 'text' id = 'commanderName'>
+</div><br/>
+<button (click)="login()">Login</button>

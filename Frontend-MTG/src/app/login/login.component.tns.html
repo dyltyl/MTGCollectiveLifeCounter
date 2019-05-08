@@ -1,0 +1,25 @@
+<StackLayout class="page">
+    <Page.actionBar>
+        <ActionBar class="action-bar">
+            <StackLayout class="action-bar-title">
+                <Label text="Login" class="font-weight-bold"></Label>
+            </StackLayout>
+        </ActionBar>
+    </Page.actionBar>
+    <Label text="Email" class="body"></Label>
+    <TextField [(ngModel)]="email" class="input input-primary" hint="Email"></TextField>
+
+    <Label text="Password" class="body"></Label>
+    <TextField [(ngModel)]="password" class="input input-primary" hint="Keep it secret..."></TextField>
+
+    <Label text="Commander Name" class="body"></Label>
+    <TextField [(ngModel)]="commanderAName" class="input input-primary" hint="Commander"></TextField>
+        
+    <Label text="Partner?" class="body"></Label>
+    <Switch [(ngModel)]="hasPartner" checked="false"></Switch> <!--Aligned weird-->
+
+    <Label *ngIf="hasPartner" text="Partner Commander Name" class="body"></Label>
+    <TextField *ngIf="hasPartner" [(ngModel)]="commanderBName" class="input input-primary" hint="Partner Commander"></TextField>
+
+    <Button class="btn btn-primary" text="Login" (tap)="login()"
+</StackLayout>
