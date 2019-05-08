@@ -25,3 +25,5 @@
 /.nb-gradle/
 *.cache
 *.class
+Frontend-MTG/hooks/
+Frontend-MTG/node_modules
