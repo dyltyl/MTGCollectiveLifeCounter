@@ -48,7 +48,7 @@ namespace Backend.Controllers {
             }
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE games SET id = @id, password = text(digest(@password, 'sha512')), starting_life = @startingLife, host = @host, current_size = @currentSize, max_size = @maxSize WHERE id = @gameId AND password = @gamePassword RETURNING *;", connection)) {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE games SET id = @id, password = text(digest(@password, 'sha512')), starting_life = @startingLife, host = @host, current_size = @currentSize, max_size = @maxSize WHERE id = @gameId AND password = text(digest(@gamePassword, 'sha512')) RETURNING *;", connection)) {
                     cmd.Parameters.AddWithValue("id", game.GameId);
                     cmd.Parameters.AddWithValue("password", game.GamePassword);
                     cmd.Parameters.AddWithValue("startingLife", game.StartingLife);
