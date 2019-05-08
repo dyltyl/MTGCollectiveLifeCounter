@@ -15,6 +15,33 @@ function checkLocalLog(){
     console.log('Commander: ' + localStorage.getItem('commanderName') + ' || Partner_Name: ' + localStorage.getItem('partnerName'));
 }
 /**
+ * checks with the DB that the current player is the host
+ */
+function hostCheck(email){
+    const requestBody={
+        method: 'GET',
+        headers:{
+            "content-type": "application/json; charset=UTF-8",
+            gameId: localStorage.getItem('gameName')
+        }
+    };
+    return fetch(getUrl('game'),requestBody)
+        .then(function(response){
+            if(response.status !== 200) {
+                response.text().then(res => {console.log(res)});
+            } else{
+                return response.json();
+            }
+        }).then(function(myJSON){
+            if(myJSON[0].host === localStorage.getItem('playerEmail')){
+                return true;
+            } else{
+                return false;
+            }
+        })
+        .catch(error=>console.log(error));
+    }
+/**
  * Sends a request to the server to retrieve all players in the current game
  */
 function getAllPlayers(){ //Gets all players and returns a promise containing the response

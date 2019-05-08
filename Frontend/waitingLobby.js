@@ -24,10 +24,18 @@ function createEmptySlot(){
  * @param {HTMLDivElement} emptySlot The waiting slot
  */
 function insertDeleteButton(emptySlot){
-    var delButt = document.createElement('button');
-    delButt.setAttribute('class','deletePlayer');
-    delButt.setAttribute('onclick','deletePlayer()');
-    emptySlot.appendChild(delButt);
+    hostCheck()
+    .then(isHost => {
+        console.log(isHost);
+        if(isHost){//Ensure the current player is the host
+            console.log('Are we the Host?');
+            var delButt = document.createElement('button');
+            delButt.setAttribute('class','deletePlayer');
+            delButt.setAttribute('onclick','decreaseGameSize()');
+            emptySlot.appendChild(delButt);
+        }
+    });
+    
 }
 /**
  * Decriments the game size
@@ -154,6 +162,7 @@ function addPlayer(player) {
         document.getElementById('root').children[index].setAttribute('email', player.email);
         document.getElementById('root').children[index].id = player.email;
         players.push(player);
+
         insertKickButton(player.email);
     }
 }
@@ -238,15 +247,20 @@ function kickPlayer(playersEmail){
  * @param {number} i The index of the slot the player is in
  */
 function insertKickButton(i){
-    let slots = document.getElementById('root').children;
-    let kickButton = document.createElement('button');
-    kickButton.setAttribute('class','kickButton');
-    kickButton.setAttribute('onclick','kickPlayer("'+i+'")' );
-    if(i !== localStorage.getItem('playerEmail') && (document.getElementById(i))){
-        document.getElementById(i).appendChild(kickButton);
-    }
+     hostCheck()
+    .then(isHost => {
+        let slots = document.getElementById('root').children;
+        let kickButton = document.createElement('button');
+        kickButton.setAttribute('class','kickButton');
+        kickButton.setAttribute('onclick','kickPlayer("'+i+'")' );
+        if(i !== localStorage.getItem('playerEmail') && (document.getElementById(i))){
+            document.getElementById(i).appendChild(kickButton);
+        }
+    });
 }
-
+/**
+ * HostControls include: Increasing Max Game Size,
+ */
 function createHostControls(){
 
 }

@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: lostntkd/magicimage
+      auth:
+        username: lostntkd
+        password: $DockerhubPassword
+
+    steps:
+      - checkout
+      - run:
+          name: Start server
+          command: |
+            service postgresql start
+      - run:
+          name: Check directory
+          command: ls
+      - run:
+          name: Run tests
+          command: dotnet test
