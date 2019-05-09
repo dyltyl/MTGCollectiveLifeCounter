@@ -69,3 +69,4 @@ Thumbs.db
 /node_modules
 Frontend-MTG/hooks/
 Frontend-MTG/node_modules
+Frontend-MTG/.tmp_backup/
