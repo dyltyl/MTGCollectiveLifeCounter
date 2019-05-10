@@ -34,7 +34,7 @@ namespace BackendTests {
             }
         }
 
-        public string GenerateRandomString() {
+        public static string GenerateRandomString() {
             StringBuilder builder = new StringBuilder();
             Random random = new Random();
             char ch;
