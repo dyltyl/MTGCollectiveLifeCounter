@@ -31,8 +31,8 @@ namespace Backend.Controllers {
                     try {
                         return (string)cmd.ExecuteScalar();
                     }
-                    catch (PostgresException e) {
-                        return StatusCode((int)HttpStatusCode.Conflict, "Cannot create game\n" + e.Message);
+                    catch (PostgresException) {
+                        return StatusCode((int)HttpStatusCode.Conflict, "Cannot create game, it already exists");
                     }
                 }
             }
