@@ -16,7 +16,7 @@ namespace MTGCollectiveLifeCounterBackend.Models {
         public int Life { get; set; }
         public int Poison { get; set; }
         public int Experience { get; set; }
-        public Dictionary<string, Dictionary<string, int>> CommanderDamage;
+        public Dictionary<string, Dictionary<string, int>> CommanderDamage; //TODO: Why isn't the CommanderDamage object being used?
         public static explicit operator Player(NpgsqlDataReader reader) {
             if(reader.HasRows && reader.IsOnRow) {
                 Player result = new Player();
