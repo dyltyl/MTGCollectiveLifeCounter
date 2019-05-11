@@ -1,8 +1,8 @@
--- Table: public.games
+-- Table: games
 
--- DROP TABLE public.games;
+-- DROP TABLE games;
 
-CREATE TABLE public.games
+CREATE TABLE games
 (
     id character varying COLLATE pg_catalog."default" NOT NULL,
     password character varying COLLATE pg_catalog."default" NOT NULL,
@@ -11,12 +11,16 @@ CREATE TABLE public.games
     host character varying COLLATE pg_catalog."default",
     current_size integer DEFAULT 0,
     max_size integer DEFAULT 0,
-    CONSTRAINT games_pkey PRIMARY KEY (id)
+    CONSTRAINT games_pkey PRIMARY KEY (id),
+    CONSTRAINT games_host_fkey FOREIGN KEY (host)
+        REFERENCES players (email) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 )
 WITH (
     OIDS = FALSE
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public.games
+ALTER TABLE games
     OWNER to postgres;
