@@ -15,7 +15,7 @@ namespace Backend.Controllers {
     public class LifeController : ControllerBase {
 
         [HttpGet("/commanderDamage/{commander}")] //TODO: Probably change this to return CommanderDamage object
-        public ActionResult<int> GetCommanderDamage(string commander, [FromHeader] string playerEmail, [FromHeader] string enemyPlayerEmail, [FromHeader] string gameId) {
+        public ActionResult<int> GetCommanderDamage([FromRoute] string commander, [FromHeader] string playerEmail, [FromHeader] string enemyPlayerEmail, [FromHeader] string gameId) {
             using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
                 connection.Open();
                 using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT damage FROM commander_damage WHERE player = @player AND enemy_player = @enemyPlayer AND commander = @commander AND game = @gameId;", connection)) {
@@ -109,6 +109,46 @@ namespace Backend.Controllers {
                 }
             }
             return resultingPlayer;
+        }
+        [HttpPut("/poison/{poison}")]
+        public ActionResult<int> SetPoison([FromRoute] int poison, [FromHeader] string gameId, [FromHeader] string gamePassword, [FromHeader] string email, [FromHeader] string password) {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE life SET poison = @poison WHERE email = @email AND game = @gameId RETURNING poison;", connection)) {
+                    cmd.Parameters.AddWithValue("email", email);
+                    cmd.Parameters.AddWithValue("poison", poison);
+                    cmd.Parameters.AddWithValue("gameId", gameId);
+                    try {
+                        using (var reader = cmd.ExecuteReader()) {
+                            reader.Read();
+                            return reader.GetInt32(0);
+                        }
+                    }
+                    catch (PostgresException e) {
+                        return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
+                    }
+                }
+            }
+        }
+        [HttpPut("/experience/{experience}")]
+        public ActionResult<int> SetExperience([FromRoute] int experience, [FromHeader] string gameId, [FromHeader] string gamePassword, [FromHeader] string email, [FromHeader] string password) {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand("UPDATE life SET experience = @experience WHERE email = @email AND game = @gameId RETURNING experience", connection)) {
+                    cmd.Parameters.AddWithValue("email", email);
+                    cmd.Parameters.AddWithValue("experience", experience);
+                    cmd.Parameters.AddWithValue("gameId", gameId);
+                    try {
+                        using (var reader = cmd.ExecuteReader()) {
+                            reader.Read();
+                            return reader.GetInt32(0);
+                        }
+                    }
+                    catch (PostgresException e) {
+                        return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
+                    }
+                }
+            }
         }
     }
 }
