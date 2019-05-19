@@ -56,10 +56,12 @@ namespace BackendTests {
         }
 
         public Game GenerateGame() {
+            Player host = GeneratePlayer();
+            playerController.CreatePlayer(host);
             Game game = new Game {
                 GameId = GenerateRandomString(),
                 GamePassword = GenerateRandomString(),
-                Host = GenerateRandomString(),
+                Host = host.Email,
                 StartingLife = 40,
                 MaxSize = 5
             };
