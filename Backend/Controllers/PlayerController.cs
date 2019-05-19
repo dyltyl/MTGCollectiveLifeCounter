@@ -127,5 +127,39 @@ namespace MTGCollectiveLifeCounterBackend.Controllers {
                 return players;
             }
         }
+        [HttpPost("/joinGame")]
+        public ActionResult<string> JoinGame([FromHeader] string gameId, [FromHeader] string gamePassword, [FromHeader] string email, [FromHeader] string password, [FromBody] string[] commanderNames) {
+            using (NpgsqlConnection connection = new NpgsqlConnection(Program.ConnectionString)) {
+                connection.Open();
+                foreach (string commanderName in commanderNames) {
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO commanders (game, player, commander) VALUES (@gameId, @email, @commander);", connection)) {
+                        cmd.Parameters.AddWithValue("gameId", gameId);
+                        cmd.Parameters.AddWithValue("email", email);
+                        cmd.Parameters.AddWithValue("commander", commanderName);                            
+                        int result = cmd.ExecuteNonQuery();
+                        if(result != 1) {
+                            return StatusCode((int)HttpStatusCode.BadRequest, "Something went wrong, could not add commander: " + commanderName);
+                        }
+                    }
+                }
+                int startingLife;
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT starting_life FROM games WHERE id = @gameId AND password = text(digest(@password, 'sha512'));", connection)) {
+                    cmd.Parameters.AddWithValue("gameId", gameId);
+                    cmd.Parameters.AddWithValue("password", gamePassword);
+                    startingLife = (int)cmd.ExecuteScalar();
+                }
+                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO life (email, game, life) VALUES (@email, @gameId, @life) RETURNING email;", connection)) {
+                    cmd.Parameters.AddWithValue("email", email);
+                    cmd.Parameters.AddWithValue("gameId", gameId);
+                    cmd.Parameters.AddWithValue("life", startingLife);
+                    try {
+                        return (string)cmd.ExecuteScalar();
+                    }
+                    catch(PostgresException) {
+                        return StatusCode((int)HttpStatusCode.BadRequest, "Could not add player into game");
+                    }
+                }
+            }
+        }
     }
 }
